@@ -124,12 +124,12 @@ async def setup_server():
 
 
 
-    if config.is_minecraft_server_connect:
-        mcr = MCRcon("127.0.0.1", "3699", port=25575)
-        mcr.connect()
-        print("Minecraft サーバーに接続しました。")
-    else:
-        print("Minecraft サーバー接続をスキップしました。")
+    # if config.is_minecraft_server_connect:
+    #     mcr = MCRcon("127.0.0.1", "3699", port=25575)
+    #     mcr.connect()
+    #     print("Minecraft サーバーに接続しました。")
+    # else:
+    #     print("Minecraft サーバー接続をスキップしました。")
 
     if config.is_combo_system_connect:
         print("test")

@@ -1,9 +1,12 @@
 from modules import command_worker_mod as cwm
 import asyncio
-import datetime
+from datetime import datetime
 
 # その配信でのコインの総量
 coin_counter = 0
+# コンボカウンター
+gift_counter = 0
+
 # 個別ユーザーごとのいいね数を保持
 user_like_count = {}
 # 配信全体の累計いいね数
@@ -52,12 +55,7 @@ async def summon_zombies(user, count):
     await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
     for z in range(count):
         for i in range(15):
-            await command_send_queue(
-                f'execute at @a run summon zombie ~ ~3 ~ '
-                f'{{IsBaby:0,ArmorItems:[{{}},{{}},{{}},{{id:"minecraft:carved_pumpkin",Count:1}}],'
-                f'ArmorDropChances:[0F,0F,0F,0F],'
-                f'CustomName:"{user}の分身",CustomNameVisible:1}}'
-            )
+            await command_send_queue(f'execute at @a run summon zombie ~ ~3 ~ {{IsBaby:0,ArmorItems:[{{}},{{}},{{}},{{id:"minecraft:carved_pumpkin",Count:1}}],ArmorDropChances:[0F,0F,0F,0F],CustomName:"{user}の分身",CustomNameVisible:1}}')
             await asyncio.sleep(0.05)
 
 async def levitation_effect(user,count,delay):

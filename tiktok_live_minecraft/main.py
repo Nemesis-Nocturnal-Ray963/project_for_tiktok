@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from modules import config,setup,combo_system
 from modules import minecraft_interactive_command as m_intr_c
 from modules import command_worker_mod as cwm
+from modules import combo_system as c_sys
 
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import * # CommentEvent, GiftEvent, FollowEvent, LikeEvent
@@ -28,7 +29,6 @@ import colorsys
 #グローバルサーバーに対応予定
 #受け取ったギフト情報を使ってマインクラフトサーバーにコマンドを送信
 #--------------------------------------------------
-gift_counter = 0
 combo_counter = 0
 last_update_time = 0
 # command_queue = asyncio.Queue()
@@ -40,11 +40,12 @@ async def command_worker():
 
 
 async def combo_system():
-    await combo_system.combo_system_mod()
+    await c_sys.combo_system_mod()
 
 
 async def main():
     # ワーカー開始
+    await setup.setup_scene_and_source(config.obs_client,config.SCENE_NAME,config.SOURCES_NAMES)
     asyncio.create_task(command_worker())
     asyncio.create_task(combo_system())
     # TikTok 接続（イベントループ内で動く）
@@ -61,8 +62,7 @@ async def main():
 #--------------------------------------------------
 #接続基本情報
 #サーバー情報
-mcr = config.minecraft_rcon_setup_info
-mcr.connect()
+
 
 # TikTokのユーザー名
 name = input("TikTokのユーザー名を入力してください（@は不要）: ")
@@ -92,10 +92,31 @@ async def on_gift(event: GiftEvent):
     await m_intr_c.on_gift_mod(event)
 
 
+
+
 @client.on(LinkMicBattleEvent)
 async def on_battle(event: LinkMicBattleEvent):
     print("バトルについて")
-    print(event)
+    print(event.base_message)
+    print(event.battle_id)
+    print(event.battle_setting)
+    print(event.action)
+    print(event.battle_result)
+    print(event.m_battle_display_config)
+    # print(event.invitee_gift_permission_type)　必ず存在するわけではないらしい。最後に見たときに記載があったのはLinkmicBattleNoticeEvent 2025-09-19 03:25:44
+    print(event.armies)
+    print(event.anchor_info)
+    print(event.bubble_text)
+    print(event.supported_actions)
+    print(event.battle_combos)
+    print(event.team_users)
+    print(event.invitee_gift_permission_types)
+    print(event.action_by_user_id)
+    print(event.team_battle_result)
+    print(event.team_armies)
+    print(event.abtest_settings)
+    print(event.team_match_campaign)
+    print(event.fuzzy_display_config_v2)
     # バトル開始時と終了時
 
 @client.on(LinkmicAnimationEvent)
@@ -146,6 +167,14 @@ async def LinkMic_Battle_Task_Event(event: LinkmicBattleTaskEvent):
     now = datetime.now()
     print(f"LinkmicBattleTaskEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"スピードチャレンジについて")
+    
+    print(event.base_message)
+    print(event.battle_task_message_type)
+    print(event.task_start)
+    print(event.task_update)
+    print(event.task_settle)
+    print(event.reward_settle)
+    print(event.battle_id)
     # print(event)
     # 開始時と終了時に、発火
     # スピードチャレンジタスク開始時、解決時、未解決時、スピードチャレンジ開始時、終了時 
@@ -166,11 +195,28 @@ async def Linkmic_Battle_Notice_Event(event: LinkmicBattleNoticeEvent):
 @client.on(LinkMicArmiesEvent)
 async def LinkMic_Armies_Event(event: LinkMicArmiesEvent):
     now = datetime.now()
-    print(f"LinkMicArmiesEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-    # print(event)
-    # 団結イベント。みんなで、どうやって攻略したかってこと？それとも、すぴちゃれ？人数のタスク？
-    # ４コラとか？
-
+    # print(f"LinkMicArmiesEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+    # print(event.base_message)
+    # print(event.battle_id)
+    # print(event.armies)
+    # print(event.channel_id)
+    # print(event.gift_sent_time)
+    # print(event.score_update_time)
+    # print(event.trigger_reason)
+    # print(event.from_user_id)
+    # print(event.gift_id)
+    # print(event.gift_count)
+    # print(event.gif_icon_image)
+    # print(event.total_diamond_count)
+    # print(event.repeat_count)
+    # print(event.team_armies)
+    # print(event.trigger_critical_strike)
+    # print(event.has_team_match_mvp_sfx)
+    # print(event.log_id)
+    # print(event.battle_settings)
+    # print(event.fuzzy_display_config_v2)
+# 配信にいてバトルに参加している人の情報、画像やらギフトやら、うまく使えば、バトル終了時に、貢献者１位２位３位とか表示できるかも？
+# バトルしてる配信に入っただけで、強制的に反応しそう？どのタイミングで反応するんだろうか？trigger_reason...トリガー理由…
 @client.on(LinkMicFanTicketMethodEvent)
 async def LinkMic_FanTicket_Method_Event(event: LinkMicFanTicketMethodEvent):
     now = datetime.now()
@@ -185,51 +231,51 @@ async def LinkMicMethodEvent(event: LinkMicMethodEvent):
     print(f"LinkMicMethodEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
     # print(event)
     # ギフトが投げられたとき、反応した
-    for attr in [
-        "base_message", "m_type", "access_key", "anchor_link_mic_id", "user_id",
-        "fan_ticket", "total_fan_ticket", "channel_id", "layout", "vendor",
-        "dimension", "theme", "invite_uid", "reply", "duration", "match_type",
-        "win", "prompts", "to_user_id", "tips", "start_time_ms", "confluence_type",
-        "from_room_id", "invite_type", "sub_type", "rtc_ext_info", "app_id",
-        "app_sign", "anchor_link_mic_id_str", "rival_anchor_id", "rival_linkmic_id",
-        "rival_linkmic_id_str", "should_show_popup", "rtc_join_channel", "fan_ticket_type"
-        ]:
-        print(attr, "=", getattr(event, attr, None))
-    # print(event.base_message)
-    # print(event.m_type)
-    # print(event.access_key)
-    # print(event.anchor_link_mic_id)
-    # print(event.user_id)
-    # print(event.fan_ticket)
-    # print(event.total_fan_ticket)
-    # print(event.channel_id)
-    # print(event.layout)
-    # print(event.vendor)
-    # print(event.dimension)
-    # print(event.theme)
-    # print(event.invite_uid)
-    # print(event.reply)
-    # print(event.duration)
-    # print(event.match_type)
-    # print(event.win)
-    # print(event.prompts)
-    # print(event.to_user_id)
-    # print(event.tips)
-    # print(event.start_time_ms)
-    # print(event.confluence_type)
-    # print(event.from_room_id)
-    # print(event.invite_type)
-    # print(event.sub_type)
-    # print(event.rtc_ext_info)
-    # print(event.app_id)
-    # print(event.app_sign)
-    # print(event.anchor_link_mic_id_str)
-    # print(event.rival_anchor_id)
-    # print(event.rival_linkmic_id)
-    # print(event.rival_linkmic_id_str)
-    # print(event.should_show_popup)
-    # print(event.rtc_join_channel)
-    # print(event.fan_ticket_type)
+    # for attr in [
+    #     "base_message", "m_type", "access_key", "anchor_link_mic_id", "user_id",
+    #     "fan_ticket", "total_fan_ticket", "channel_id", "layout", "vendor",
+    #     "dimension", "theme", "invite_uid", "reply", "duration", "match_type",
+    #     "win", "prompts", "to_user_id", "tips", "start_time_ms", "confluence_type",
+    #     "from_room_id", "invite_type", "sub_type", "rtc_ext_info", "app_id",
+    #     "app_sign", "anchor_link_mic_id_str", "rival_anchor_id", "rival_linkmic_id",
+    #     "rival_linkmic_id_str", "should_show_popup", "rtc_join_channel", "fan_ticket_type"
+    #     ]:
+    #     print(attr, "=", getattr(event, attr, None))
+    print(event.base_message)
+    print(event.m_type)
+    print(event.access_key)
+    print(event.anchor_link_mic_id)
+    print(event.user_id)
+    print(event.fan_ticket)
+    print(event.total_fan_ticket)
+    print(event.channel_id)
+    print(event.layout)
+    print(event.vendor)
+    print(event.dimension)
+    print(event.theme)
+    print(event.invite_uid)
+    print(event.reply)
+    print(event.duration)
+    print(event.match_type)
+    print(event.win)
+    print(event.prompts)
+    print(event.to_user_id)
+    print(event.tips)
+    print(event.start_time_ms)
+    print(event.confluence_type)
+    print(event.from_room_id)
+    print(event.invite_type)
+    print(event.sub_type)
+    print(event.rtc_ext_info)
+    print(event.app_id)
+    print(event.app_sign)
+    print(event.anchor_link_mic_id_str)
+    print(event.rival_anchor_id)
+    print(event.rival_linkmic_id)
+    print(event.rival_linkmic_id_str)
+    print(event.should_show_popup)
+    print(event.rtc_join_channel)
+    print(event.fan_ticket_type)
 
 # 実行開始
 if __name__ == "__main__":
