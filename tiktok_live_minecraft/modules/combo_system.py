@@ -1,8 +1,9 @@
 # コンボシステム
 import sys
 import os
-print("//sys.path")
-print(sys.path)
+# print("//sys.path")
+# print(sys.path)
+print(os.path.basename(__file__))
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from modules import setup,config,receive
@@ -22,7 +23,7 @@ import colorsys
 import math
 from mcrcon import MCRcon
 
-async def combo_system():
+async def combo_system_mod():
     config.fade_started = False
 
 

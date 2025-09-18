@@ -1,11 +1,14 @@
 import sys
 import os
-print("//sys.path")
-print(sys.path)
+# print("//sys.path")
+# print(sys.path)
+print(os.path.basename(__file__))
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import asyncio
 import obsws_python as obs
+from mcrcon import MCRcon
+
 
 is_test_now = False
 gift_counter = 0
@@ -41,8 +44,8 @@ obs_client = obs.ReqClient(host=HOST, port=PORT, password=PASSWORD)
 
 
 text_queue = asyncio.Queue()
-command_queue = asyncio.Queue()
-mcr = str()
+# command_queue = asyncio.Queue()
+minecraft_rcon_setup_info = MCRcon("127.0.0.1", "3699", port=25575)
 
 tiktok_name = str()
 tiktok_client = str()
