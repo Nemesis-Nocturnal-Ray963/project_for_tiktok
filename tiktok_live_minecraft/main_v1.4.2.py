@@ -193,8 +193,8 @@ async def LinkMicMethodEvent(event: LinkMicMethodEvent):
         "from_room_id", "invite_type", "sub_type", "rtc_ext_info", "app_id",
         "app_sign", "anchor_link_mic_id_str", "rival_anchor_id", "rival_linkmic_id",
         "rival_linkmic_id_str", "should_show_popup", "rtc_join_channel", "fan_ticket_type"
-    ]:
-    print(attr, "=", getattr(event, attr, None))
+        ]:
+        print(attr, "=", getattr(event, attr, None))
     # print(event.base_message)
     # print(event.m_type)
     # print(event.access_key)
