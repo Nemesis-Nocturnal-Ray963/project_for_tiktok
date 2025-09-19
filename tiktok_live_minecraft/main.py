@@ -19,6 +19,7 @@ import asyncio
 import time
 import obsws_python as obs
 import colorsys
+import json
 
 
 #--------------------------------------------------
@@ -56,6 +57,7 @@ async def main():
     # TikTok 接続（イベントループ内で動く）
         # TikTokクライアント起動
     try:
+        load_data()
         await client.connect()
     except UserOfflineError:
         print("⚠️ 配信者がオフラインです。配信を開始してください。")
@@ -63,9 +65,26 @@ async def main():
         print("y を押して、Enterで閉じます")
 
 #--------------------------------------------------
-#接続基本情報
-#サーバー情報
+DATA_FILE = "gifts.json"
+gifts_data = {}
+def load_data():
+    global gifts_data
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            gifts_data = json.load(f)
+        print("💾 データをロードしました")
+    else:
+        gifts_data = {}
 
+def save_data():
+    sorted_data = dict(sorted(gifts_data.items(), key=lambda x: x[1], reverse=False))  # 昇順
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(sorted_data, f, ensure_ascii=False, indent=2)
+    print("💾 データを保存しました")
+def add_gift(name, coins):
+    if name not in gifts_data:  # 未登録なら追加
+        gifts_data[name] = coins
+        print(f"✅ 新しいギフトを保存しました: {name} - {coins}コイン")
 
 # TikTokのユーザー名
 name = input("TikTokのユーザー名を入力してください（@は不要）: ") or config.name

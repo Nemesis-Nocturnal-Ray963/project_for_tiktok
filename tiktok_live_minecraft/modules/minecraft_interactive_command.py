@@ -3,7 +3,7 @@ from modules import config
 import asyncio
 from datetime import datetime,timedelta
 # その配信でのコインの総量
-coin_counter = 5000
+coin_counter = 0
 # コンボカウンター
 gift_counter = 0
 
@@ -195,7 +195,7 @@ async def time_measurement():
             else:
                 await command_send_queue(f"bossbar set timer value {finish_time}")
 
-            await command_send_queue(f"bossbar set timer name 残り時間：{finish_time}")
+            await command_send_queue(f'bossbar set timer name "残り時間：{finish_time}"')
 
             await asyncio.sleep(1)
             finish_time -= 1
