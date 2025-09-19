@@ -3,7 +3,7 @@ from modules import config
 import asyncio
 from datetime import datetime,timedelta
 # その配信でのコインの総量
-coin_counter = 0
+coin_counter = 5000
 # コンボカウンター
 gift_counter = 0
 
@@ -15,7 +15,7 @@ total_likes = 0
 USER_LIKE_THRESHOLD = 300
 TOTAL_LIKE_THRESHOLD = 10000
 
-
+finish_time = 0
 
 async def command_send_queue(code):
     await cwm.command_queue.put(code)
@@ -69,7 +69,7 @@ async def fill_blocks(user,count):
     await command_send_queue('title @a title {"text":"§c400ブロック埋めたて"}')
     await command_send_queue(f'title @a subtitle {{"text":"ありがとう、{user}"}}')
     for i in range(count):
-        await command_send_queue("bedrock fillblock 400")
+        await command_send_queue("bedrock fillblock 200")
     await asyncio.sleep(1)
 
 async def fill_area(user):
@@ -97,7 +97,7 @@ async def gift_counting(gift_times):
 async def coin_counting(coin,times):
     global coin_counter
     coin_counter += coin * times
-    print("total coin :",coin_counter)
+    print("total coin (coin_counter):",coin_counter)
 
 
 
@@ -166,7 +166,7 @@ async def on_comment_mod(event):
 
 async def add_time(seconds=300):
     global finish_time,coin_counter
-    now = datetime.now()
+    # now = datetime.now()t
     if finish_time <= 0:
         # 初めて追加する場合、今から5分後
         finish_time = seconds
@@ -179,21 +179,23 @@ async def add_time(seconds=300):
 async def time_measurement():
     global finish_time
     if config.time_measurement_running:
-        await command_send_queue(f'bossbar add timer "Countdown"')
-        await command_send_queue(f'bossbar set timer max {finish_time}')
         return  # すでに実行中なら何もしない
     config.time_measurement_running = True
     config.current_multiplier = 2
-
+    await command_send_queue(F'bossbar add timer "Countdown"')
+    await command_send_queue(f"bossbar set timer players @a")
+    await command_send_queue(f'bossbar set timer max {finish_time}')
     # finish_time = datetime.now() + timedelta(minutes=5)
     try:
-        await command_send_queue(f"bossbar set timer players @a")
+
         while 0 < finish_time:
             if 300 < finish_time:
                 await command_send_queue(f"bossbar set timer max {finish_time}")
                 await command_send_queue(f"bossbar set timer value {finish_time}")
             else:
                 await command_send_queue(f"bossbar set timer value {finish_time}")
+
+            await command_send_queue(f"bossbar set timer name 残り時間：{finish_time}")
 
             await asyncio.sleep(1)
             finish_time -= 1
@@ -261,7 +263,7 @@ async def on_gift_mod(event):
         elif name == "Galaxy":
             asyncio.create_task(blank_info(user,name))
 
-        if 5000 <= coin_counter:
-            while coin_counter > 5000:
-                await add_time()
-            asyncio.create_task(time_measurement())
+    if 5000 <= coin_counter:
+        while coin_counter > 5000:
+            await add_time()
+        asyncio.create_task(time_measurement())
