@@ -43,7 +43,11 @@ name = "muzukiray963"
 HOST = "localhost"
 PORT = 4455
 PASSWORD = "MjKHwza9OEDkkAuD"
-obs_client = obs.ReqClient(host=HOST, port=PORT, password=PASSWORD)
+
+
+
+obs_client_setting = None
+
 
 
 text_queue = asyncio.Queue()
@@ -102,3 +106,6 @@ current_probability = 0
 # # しきい値
 # USER_LIKE_THRESHOLD = 300
 # TOTAL_LIKE_THRESHOLD = 10000
+
+
+current_multiplier = 1

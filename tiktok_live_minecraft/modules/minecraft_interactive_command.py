@@ -1,7 +1,7 @@
 from modules import command_worker_mod as cwm
+from modules import config
 import asyncio
-from datetime import datetime
-
+from datetime import datetime,timedelta
 # その配信でのコインの総量
 coin_counter = 0
 # コンボカウンター
@@ -164,7 +164,28 @@ async def on_comment_mod(event):
     print(f"{event.user.nickname} >> {event.comment}"f" at {now.strftime('%Y-%m-%d %H:%M:%S')}")
 
 
+async def add_time(minutes=5):
+    global finish_time,coin_counter
+    now = datetime.now()
+    if finish_time is None or finish_time < now:
+        # 初めて追加する場合、今から5分後
+        finish_time = now + timedelta(minutes=minutes)
+    else:
+        # すでに残り時間がある場合は延長
+        finish_time += timedelta(minutes=minutes)
+    coin_counter -= 5000
 
+async def time_measurement():
+    global finish_time
+    # finish_time = datetime.now() + timedelta(minutes=5)
+    while datetime.now() <= finish_time:
+        now = datetime.now()
+        remaining = finish_time -now
+        minutes, seconds = divmod(int(remaining.total_seconds()), 60)
+        print(f"残り時間: {minutes:02d}:{seconds:02d}")
+        asyncio.sleep(1)
+        config.current_multiplier = 2
+    config.current_multiplier = 1
 async def on_gift_mod(event):
     global gift_counter,coin_counter
 
@@ -224,3 +245,8 @@ async def on_gift_mod(event):
 
         elif name == "Galaxy":
             asyncio.create_task(blank_info(user,name))
+
+        if 5000 <= coin_counter:
+            while coin_counter > 5000:
+                await add_time()
+            asyncio.create_task(time_measurement())

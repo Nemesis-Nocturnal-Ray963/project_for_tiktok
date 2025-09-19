@@ -46,8 +46,9 @@ async def main():
     # ワーカー開始
     is_use_obs = input("OBSを使いますか？ (y/n): ").lower() == "y"
     is_use_minecraft = input("Minecraftを使いますか？ (y/n): ").lower() == "y"
-    
+
     if is_use_obs:
+        config.obs_client = obs.ReqClient(config.HOST,config.PORT,config.PASSWORD)
         await setup.setup_scene_and_source(config.obs_client,config.SCENE_NAME,config.SOURCES_NAMES)
         asyncio.create_task(combo_system())
     if is_use_minecraft:
@@ -82,6 +83,7 @@ async def on_like(event: LikeEvent):
 @client.on(FollowEvent)
 async def on_follow(event: FollowEvent):
     await m_intr_c.on_follow_mod(event)
+    print("thx follow ",event.user.nickname)
 
 # コメントを受け取ったとき
 @client.on(CommentEvent)
@@ -91,7 +93,8 @@ async def on_comment(event: CommentEvent):
 # ギフトを受け取ったとき
 @client.on(GiftEvent)
 async def on_gift(event: GiftEvent):
-    await m_intr_c.on_gift_mod(event)
+    for i in range(config.current_multiplier):
+        await m_intr_c.on_gift_mod(event)
 
 
 

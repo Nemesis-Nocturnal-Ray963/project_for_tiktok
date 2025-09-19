@@ -9,16 +9,20 @@ import asyncio
 
 command_queue = asyncio.Queue()
 mcr = config.minecraft_rcon_setup_info
-try:
-    mcr.connect()
-finally:
-    mcr.disconnect()
+
 async def command_worker_mod():
-    print("command worker boot now...")
-    while True:
-        cmd = await command_queue.get()
-        try:
-            mcr.command(cmd)# 実際にコマンドを送信
-        except Exception as e:
-            print (f"Error while executing {cmd}:{e}")
-        await asyncio.sleep(0.05) # レート制御（高頻度すぎ防止）
+    try:
+        mcr.connect()
+
+        print("command worker boot now...")
+        while True:
+            cmd = await command_queue.get()
+            try:
+                mcr.command(cmd)# 実際にコマンドを送信
+            except Exception as e:
+                print (f"Error while executing {cmd}:{e}")
+            await asyncio.sleep(0.05) # レート制御（高頻度すぎ防止）
+
+
+    finally:
+        mcr.disconnect()
