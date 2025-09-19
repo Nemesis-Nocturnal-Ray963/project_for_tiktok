@@ -173,24 +173,29 @@ async def add_time(seconds=300):
     else:
         # すでに残り時間がある場合は延長
         finish_time += seconds
-    await command_send_queue(f'bossbar set timer max {finish_time}')
     
     coin_counter -= 5000
 
 async def time_measurement():
     global finish_time
     if config.time_measurement_running:
+        await command_send_queue(f'bossbar add timer "Countdown"')
+        await command_send_queue(f'bossbar set timer max {finish_time}')
         return  # すでに実行中なら何もしない
     config.time_measurement_running = True
     config.current_multiplier = 2
-    
+
     # finish_time = datetime.now() + timedelta(minutes=5)
-    await command_send_queue(f'bossbar add timer "Countdown"')
     try:
         await command_send_queue(f"bossbar set timer players @a")
         while 0 < finish_time:
-            await command_send_queue(f"bossbar set timer value {finish_time}")
-            asyncio.sleep(1)
+            if 300 < finish_time:
+                await command_send_queue(f"bossbar set timer max {finish_time}")
+                await command_send_queue(f"bossbar set timer value {finish_time}")
+            else:
+                await command_send_queue(f"bossbar set timer value {finish_time}")
+
+            await asyncio.sleep(1)
             finish_time -= 1
     finally:
         config.current_multiplier = 1
