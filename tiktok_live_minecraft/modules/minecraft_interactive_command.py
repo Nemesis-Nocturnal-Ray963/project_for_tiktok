@@ -164,28 +164,38 @@ async def on_comment_mod(event):
     print(f"{event.user.nickname} >> {event.comment}"f" at {now.strftime('%Y-%m-%d %H:%M:%S')}")
 
 
-async def add_time(minutes=5):
+async def add_time(seconds=300):
     global finish_time,coin_counter
     now = datetime.now()
-    if finish_time is None or finish_time < now:
+    if finish_time <= 0:
         # 初めて追加する場合、今から5分後
-        finish_time = now + timedelta(minutes=minutes)
+        finish_time = seconds
     else:
         # すでに残り時間がある場合は延長
-        finish_time += timedelta(minutes=minutes)
+        finish_time += seconds
+    await command_send_queue(f'bossbar set timer max {finish_time}')
+    
     coin_counter -= 5000
 
 async def time_measurement():
     global finish_time
+    if config.time_measurement_running:
+        return  # すでに実行中なら何もしない
+    config.time_measurement_running = True
+    config.current_multiplier = 2
+    
     # finish_time = datetime.now() + timedelta(minutes=5)
-    while datetime.now() <= finish_time:
-        now = datetime.now()
-        remaining = finish_time -now
-        minutes, seconds = divmod(int(remaining.total_seconds()), 60)
-        print(f"残り時間: {minutes:02d}:{seconds:02d}")
-        asyncio.sleep(1)
-        config.current_multiplier = 2
-    config.current_multiplier = 1
+    await command_send_queue(f'bossbar add timer "Countdown"')
+    try:
+        await command_send_queue(f"bossbar set timer players @a")
+        while 0 < finish_time:
+            await command_send_queue(f"bossbar set timer value {finish_time}")
+            asyncio.sleep(1)
+            finish_time -= 1
+    finally:
+        config.current_multiplier = 1
+        config.time_measurement_running = False
+        await command_send_queue(f"bossbar remove timer")
 async def on_gift_mod(event):
     global gift_counter,coin_counter
 

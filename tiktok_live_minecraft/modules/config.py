@@ -109,3 +109,5 @@ current_probability = 0
 
 
 current_multiplier = 1
+
+time_measurement_running = False
