@@ -9,7 +9,10 @@ import asyncio
 
 command_queue = asyncio.Queue()
 mcr = config.minecraft_rcon_setup_info
-mcr.connect()
+try:
+    mcr.connect()
+finally:
+    mcr.disconnect()
 async def command_worker_mod():
     print("command worker boot now...")
     while True:

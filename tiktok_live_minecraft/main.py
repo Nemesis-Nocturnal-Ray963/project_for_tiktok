@@ -31,7 +31,6 @@ import colorsys
 #--------------------------------------------------
 combo_counter = 0
 last_update_time = 0
-# command_queue = asyncio.Queue()
 #--------------------------------------------------
 
 # バックグラウンドで動くコマンドワーカー
@@ -45,17 +44,20 @@ async def combo_system():
 
 async def main():
     # ワーカー開始
-    await setup.setup_scene_and_source(config.obs_client,config.SCENE_NAME,config.SOURCES_NAMES)
-    asyncio.create_task(command_worker())
-    asyncio.create_task(combo_system())
+    is_use_obs = input("OBSを使いますか？ (y/n): ").lower() == "y"
+    is_use_minecraft = input("Minecraftを使いますか？ (y/n): ").lower() == "y"
+    
+    if is_use_obs:
+        await setup.setup_scene_and_source(config.obs_client,config.SCENE_NAME,config.SOURCES_NAMES)
+        asyncio.create_task(combo_system())
+    if is_use_minecraft:
+        asyncio.create_task(command_worker())
     # TikTok 接続（イベントループ内で動く）
         # TikTokクライアント起動
     try:
         await client.connect()
     except UserOfflineError:
         print("⚠️ 配信者がオフラインです。配信を開始してください。")
-    finally:
-        mcr.disconnect()
         print("\n✅ 📺配信が終了しました。お疲れさまでした…💤")
         print("y を押して、Enterで閉じます")
 
@@ -65,7 +67,7 @@ async def main():
 
 
 # TikTokのユーザー名
-name = input("TikTokのユーザー名を入力してください（@は不要）: ")
+name = input("TikTokのユーザー名を入力してください（@は不要）: ") or config.name
 client = TikTokLiveClient(unique_id=name)
 print(name)
 # マイクラのプレイヤー名

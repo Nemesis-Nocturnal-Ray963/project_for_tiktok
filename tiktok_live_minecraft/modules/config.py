@@ -35,6 +35,9 @@ master_hp_before = 0
 is_combo_system_connect = False
 is_minecraft_server_connect = False
         # --- クライアント作成 ---
+# tiktokの接続
+name = "muzukiray963"
+
 
 # obs setting
 HOST = "localhost"
@@ -83,7 +86,6 @@ MASTER_ATTACKS = [
 wait_time = 0
 max_battle_time = 15 * 60  # 15分間（秒刻み）900秒
 
-name = "muzukiray963"
 # global is_running_vrpg
 base_wait = 10
 cooldown_time = 900
@@ -92,11 +94,11 @@ last_battle_time = 0
 current_probability = 0
 
 
-# 個別ユーザーごとのいいね数を保持
-user_like_count = {}
-# 配信全体の累計いいね数
-total_likes = 0
+# # 個別ユーザーごとのいいね数を保持
+# user_like_count = {}
+# # 配信全体の累計いいね数
+# total_likes = 0
 
-# しきい値
-USER_LIKE_THRESHOLD = 300
-TOTAL_LIKE_THRESHOLD = 10000
+# # しきい値
+# USER_LIKE_THRESHOLD = 300
+# TOTAL_LIKE_THRESHOLD = 10000
