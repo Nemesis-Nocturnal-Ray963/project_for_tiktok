@@ -61,7 +61,7 @@ async def combo_system_mod():
             config.fade_started = False
 
             for i in range(10):
-                
+
                 combosettings = {
                     "text": str(config.combo_counter)+"combo!",
                     "color": int(color_value),
@@ -75,19 +75,19 @@ async def combo_system_mod():
                         "scaleY":1.0 -(float(i)/20)
                     })
                 await asyncio.sleep(0.015)
-            
+
         if now - config.last_update_time > 30: #30秒間のコンボ受付時間
             config.combo_counter = 0
             config.gift_counter = 0
             config.fade_started = False
-        
+
 
         if now - config.last_update_time > 20:  # 20秒経過したらフェード開始
             config.fade_started = True
             elapsed = now - (config.last_update_time + 20)
             opacity = max(0, 100 - (elapsed / 10) * 100)  # 10秒で0に
-        
-        
+
+
         combosettings = {
             "text": str(config.combo_counter)+"combo!",
             "color": int(color_value),
@@ -96,7 +96,7 @@ async def combo_system_mod():
             # color など他の設定はそのまま
         }
         h = (h + step) % 1.0
-        
+
         config.obs_client.set_input_settings(config.SOURCES_NAMES, combosettings, overlay=True)
 
         await asyncio.sleep(0.05)

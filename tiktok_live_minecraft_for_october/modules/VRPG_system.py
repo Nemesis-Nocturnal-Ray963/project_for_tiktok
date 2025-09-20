@@ -64,7 +64,7 @@ def update_text(scene_name: str, source_name: str, new_text: str):
         config.obs_client.set_input_settings(source_name, {"text": new_text}, True)
     except Exception as e:
         print(f"エラー: {source_name} を更新できませんでした → {e}")
-        
+
 
 async def master_attacks_kind():
     # """ランダムで1つの技を返す"""
@@ -129,7 +129,7 @@ async def v_rpg_system():
             return heal_point
 
 
-    
+
     asyncio.create_task(hp_changer())
 
     print("=== 戦闘開始！")
@@ -147,7 +147,7 @@ async def v_rpg_system():
         #             "text": "HP:" + str(config.MASTER_HP),
         #             "opacity": 100,
         #         }
-        
+
         # 選ばれた技（戦闘中に有効な4つ）
         # current_attacks = []
         # for i in range(4):
@@ -225,9 +225,9 @@ async def encount_system():
             # 曲線上昇(sin曲線を使った緩やかに始まり加速)
             fraction = ramp_elapsed / config.ramp_time # 0 ~ 1
             current_probability = math.sin(fraction * math.pi / 2)  * 100
-            
+
             # current_probability = (ramp_elapsed / ramp_time) * 100
-            
+
         roll = random.uniform(0,100)
         if roll <= current_probability:
             print(f"戦闘発生！確率: {current_probability:.1f}% / roll: {roll:.1f}")
@@ -244,7 +244,7 @@ async def encount_system():
         # if encount_probability <= 50:  # 50%の確率で戦闘発生
         #     asyncio.create_task(v_rpg_system())
         # await asyncio.sleep(10)  # 10秒ごとに判定
-        
+
 # # --- 個別処理を関数化 ---
 async def calculate_system(user,giftname,attack_time,attack_id):
     # global MASTER_HP

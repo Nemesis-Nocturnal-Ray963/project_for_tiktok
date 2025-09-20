@@ -3,6 +3,7 @@ from modules import config
 import asyncio
 from datetime import datetime
 import random
+import math
 
 # その配信でのコインの総量
 coin_counter = 0
@@ -116,7 +117,7 @@ async def on_like_mod(event):
     # 個別カウント更新
     if user_id not in user_like_count:
         user_like_count[user_id] = 0
-    
+
     user_like_count[user_id] += user_like_total_count
     print("user:",user_id,"like count... ",user_like_count[user_id])
     # 全体カウント更新
@@ -132,20 +133,20 @@ async def on_like_mod(event):
         # await command_send_queue(f'title @a title {{"text":"{USER_LIKE_THRESHOLD}いいねTNT"}}')
         # await command_send_queue(f'title @a subtitle {{"text":"{event.user.nickname}"}}')
         # await command_send_queue(f"bedrock tnt 1 {event.user.nickname}")
-        
+
         selected = random.choices(
             config.minecraft_effects,
             weights=[e[2] for e in config.minecraft_effects],
             k=1
-            
+
         )[0]
         print(selected)
         await command_send_queue(f'{selected[0]}')
         await command_send_queue(f'title {config.player_name} title {{"text":"{selected[1]}"}}')
         await command_send_queue(f'title @a subtitle {{"text":"{event.user.nickname}"}}')
-        
-        
-        
+
+
+
         user_like_count[user_id] -= USER_LIKE_THRESHOLD
 
     # 全体累計のイベント
@@ -170,8 +171,23 @@ async def on_follow_mod(event):
     user_id = event.user.unique_id
     if user_id not in already_triggered:
         already_triggered.add(user_id)
-        await command_send_queue(f"bedrock tnt 3 {event.user.nickname}")
-        await command_send_queue('title @a title {"text":"§cフォロー、ありがとう！"}')
+        # await command_send_queue(f"bedrock tnt 3 {event.user.nickname}")
+        # await command_send_queue('title @a title {"text":"§cフォロー、ありがとう！"}')
+        for i in range(5):
+            monster = random.choices(
+                config.panic_monsters,
+                weights=[m[1]for m in config.panic_monsters],
+                k=1
+            )[0]
+
+            # 半径4〜6の円形範囲にランダム座標生成
+            r = random.uniform(4, 6)          # 半径4〜6
+            theta = random.uniform(0, 2*math.pi)  # 角度0〜360度
+            x_offset = round(r * math.cos(theta))
+            z_offset = round(r * math.sin(theta))
+            y_offset = 1  # プレイヤーの頭上1ブロック
+
+            await command_send_queue(f'execute at @r run summon {monster} ~{x_offset} ~{y_offset} ~{z_offset} {{CustomName:"\\"{event.user.nickname}の試験官\\""}}')
         await command_send_queue(f'title @a subtitle {{"text":"{event.user.nickname}"}}')
 
 
@@ -189,7 +205,7 @@ async def add_time(seconds=300):
     else:
         # すでに残り時間がある場合は延長
         finish_time += seconds
-    
+
     coin_counter -= 5000
 
 async def time_measurement():

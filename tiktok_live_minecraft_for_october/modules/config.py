@@ -9,6 +9,11 @@ import asyncio
 import obsws_python as obs
 from mcrcon import MCRcon
 
+# tiktok ID
+# TikTokのユーザー名
+
+usernames = []
+
 
 is_test_now = False
 gift_counter = 0
@@ -97,23 +102,9 @@ ramp_time = 30 * 60
 last_battle_time = 0
 current_probability = 0
 
-
-# # 個別ユーザーごとのいいね数を保持
-# user_like_count = {}
-# # 配信全体の累計いいね数
-# total_likes = 0
-
-# # しきい値
-# USER_LIKE_THRESHOLD = 300
-# TOTAL_LIKE_THRESHOLD = 10000
-
-
 current_multiplier = 1
 
 time_measurement_running = False
-
-
-data_file_default = "gifts.json"
 
 player_name = "rey963_muzuki"
 print(player_name)
@@ -158,4 +149,19 @@ minecraft_effects = [
     [f"execute at @a run effect give {player_name} wind_charged 60", "敵が風の力を溜めた", 2],
     [f"execute at @a run effect give {player_name} infested 60", "敵は石喰虫を呼ぶ気だ", 2],
     [f"execute at @a run effect give {player_name} oozing 60", "スライムの気配がする", 2]
+]
+panic_monsters = [
+    ("zombie", 5),
+    ("skeleton", 5),
+    ("spider", 5),
+    ("slime", 3),
+    ("bogged", 3),
+    ("stray", 3),
+    ("husk", 4),
+    ("drowned", 4),
+    ("enderman", 2),
+    ("witch", 3),
+    ("wither_skeleton", 3),
+    ("blaze", 1),
+    ("magma_cube", 3)
 ]

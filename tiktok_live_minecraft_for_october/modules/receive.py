@@ -180,8 +180,8 @@ async def handle_gift(event: GiftEvent):
                 await VRPG_system.calculate_system(user, name, attack_time,attack["id"])
                 print("current_attacks:", [a['gift'] for a in config.current_attacks])
                 print("attack_id:", attack["id"])
-            
-        
+
+
         if name == "Heart Me":
             asyncio.create_task(heart_me(user))
 
