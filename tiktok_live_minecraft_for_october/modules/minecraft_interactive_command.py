@@ -46,7 +46,7 @@ async def spawn_multi_tnt(user, count, per, delay):
 
 
 async def spawn_donuts_tnt(user, count, per, delay):
-    await command_send_queue(f'title @a title {{"text":"{per * 2}TNT"}}')
+    await command_send_queue(f'title @a title {{"text":"イ・ﾓｰｼｮﾅﾙ・ダメージ！"}}')
     await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
     for i in range(count):
         await command_send_queue(f"bedrock tnt {per} {user}")
@@ -139,8 +139,10 @@ async def on_like_mod(event):
             k=1
             
         )[0]
-        await command_send_queue(selected[0])
+        print(selected)
+        await command_send_queue(f'{selected[0]}')
         await command_send_queue(f'title {config.player_name} title {{"text":"{selected[1]}"}}')
+        await command_send_queue(f'title @a subtitle {{"text":"{event.user.nickname}"}}')
         
         
         

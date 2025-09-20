@@ -327,11 +327,6 @@ async def LinkMicMethodEvent(event: LinkMicMethodEvent):
     # print(event.fan_ticket_type)
 
 
-
-
-
-@client.on()
-
 # 実行開始
 if __name__ == "__main__":
     try:
