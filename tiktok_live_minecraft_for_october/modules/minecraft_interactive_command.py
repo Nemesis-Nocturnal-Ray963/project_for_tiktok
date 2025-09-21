@@ -37,7 +37,7 @@ async def heart_me(user,count,minecraft_id):
     print(minecraft_id)
 
 
-async def spawn_tnt(user, count, delay,minecraft_id):
+async def spawn_tnt(user, count,delay,minecraft_id):
     await command_send_queue('title @a title {"text":"1TNT"}')
     await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
     for i in range(count):
@@ -118,12 +118,7 @@ async def coin_counting(coin,times):
     coin_counter += coin * times
     print("total coin (coin_counter):",coin_counter)
 
-
-
-
-
 #いいね関連
-
 async def on_like_mod(event,streamer_ID):
     global total_likes
     # print(event.count)
@@ -209,11 +204,9 @@ async def on_follow_mod(event,streamer_ID):
         await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{event.user.nickname}"}}')
 
 
-
 async def on_comment_mod(event,streamer_ID):
     now = datetime.now()
     print(f"{event.user.nickname} >> {event.comment} at {now.strftime('%Y-%m-%d %H:%M:%S')} form {streamer_ID}")
-
 
 async def add_time(seconds=300):
     global finish_time,coin_counter
@@ -224,7 +217,6 @@ async def add_time(seconds=300):
     else:
         # すでに残り時間がある場合は延長
         finish_time += seconds
-
     coin_counter -= 5000
 
 async def time_measurement():
@@ -238,7 +230,6 @@ async def time_measurement():
     await command_send_queue(f'bossbar set timer max {finish_time}')
     # finish_time = datetime.now() + timedelta(minutes=5)
     try:
-
         while 0 < finish_time:
             if 300 < finish_time:
                 await command_send_queue(f"bossbar set timer max {finish_time}")
@@ -258,12 +249,12 @@ async def time_measurement():
 
 async def on_gift_mod(event,streamer_ID):
     global gift_counter,coin_counter
-
     #ギフトを受け取るたびに取得する情報
     user = event.user.nickname
     name = event.gift.name
     coin = event.gift.diamond_count
     times = event.repeat_count
+
     #ログ用
     now = datetime.now()
     minecraft_id = config.tiktok_to_minecraft[streamer_ID]
@@ -303,7 +294,6 @@ async def on_gift_mod(event,streamer_ID):
     elif not event.gift.streakable:
         await gift_counting(times)
         await coin_counting(coin,times)
-
 
         if name == "Hand Hearts":
             asyncio.create_task(fill_area(user,minecraft_id))
