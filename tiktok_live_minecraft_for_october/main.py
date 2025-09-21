@@ -101,10 +101,11 @@ class TikTokLiveManager:
         finally:
             self.save_data()
 
-    def add_gift(self,name, coins):
+    async def add_gift(self,name, coins):
         if name not in self.gifts_data:  # 未登録なら追加
             self.gifts_data[name] = coins
             print(f"✅ 新しいギフトを保存しました: {name} - {coins}コイン")
+            asyncio.to_thread(self.save_data())
 
 
 
@@ -117,29 +118,30 @@ class TikTokLiveManager:
     # マイクラのプレイヤー名
     def register(self):
         from TikTokLive.events import LikeEvent,FollowEvent,CommentEvent,GiftEvent,LinkMicBattleEvent,LinkmicAnimationEvent,LinkMicAdEvent,LinkMicBattleVictoryLapEvent,LinkMicBattleVictoryLapEvent,LinkMicSignalingMethodEvent,LinkMicSignalingMethodEvent,LinkMicBattlePunishFinishEvent,LinkmicAudienceNoticeEvent,LinkMicBattleItemCardEvent,LinkmicBattleTaskEvent,LinkMicAnchorGuideEvent,LinkmicBattleNoticeEvent,LinkMicArmiesEvent,LinkMicFanTicketMethodEvent,LinkMicMethodEvent
-        
+        # streamer_ID = self.client.unique_id
     # いいねを受け取った時
         @self.client.on(LikeEvent)
         async def on_like(event: LikeEvent):
-            await m_intr_c.on_like_mod(event)
+            print("配信者ID：",self.client.unique_id)
+            await m_intr_c.on_like_mod(event,self.client.unique_id)
 
 
         # フォローを受け取った時
         @self.client.on(FollowEvent)
         async def on_follow(event: FollowEvent):
-            await m_intr_c.on_follow_mod(event)
+            await m_intr_c.on_follow_mod(event,self.client.unique_id)
             # print("thx follow ",event.user.nickname)
 
         # コメントを受け取ったとき
         @self.client.on(CommentEvent)
         async def on_comment(event: CommentEvent):
-            await m_intr_c.on_comment_mod(event)
+            await m_intr_c.on_comment_mod(event,self.client.unique_id)
 
         # ギフトを受け取ったとき
         @self.client.on(GiftEvent)
         async def on_gift(event: GiftEvent):
             for i in range(config.current_multiplier):
-                await m_intr_c.on_gift_mod(event)
+                await m_intr_c.on_gift_mod(event,self.client.unique_id)
             if event.gift.streakable and not event.streaking or not event.gift.streakable:
                 self.add_gift(event.gift.name, event.gift.diamond_count)
 
@@ -363,7 +365,12 @@ async def main():
 
     # 全員同時接続
     try:
-        await asyncio.gather(*(manager.start_client_session() for manager in managers))
+        if len(managers) == 1:
+            # 1人だけなら直接 await
+            await managers[0].start_client_session()
+        elif len(managers) > 1:
+            # 複数なら gather で並列実行
+            await asyncio.gather(*(m.start_client_session() for m in managers))
     except UserOfflineError:
         print("⚠️ 配信者がオフラインです。配信を開始してください。")
         print("\n✅ 📺配信が終了しました。お疲れさまでした…💤")

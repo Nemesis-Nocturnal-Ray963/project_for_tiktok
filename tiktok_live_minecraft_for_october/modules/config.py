@@ -165,3 +165,10 @@ panic_monsters = [
     ("blaze", 1),
     ("magma_cube", 3)
 ]
+
+tiktok_to_minecraft = {
+    "akinashikoharu": "akinashikoharu",
+    "kasum1zawa": "kasum1zawa_fps",     # ← 実際のMC名をここに入れる
+    "muzukiray963": "rey963_muzuki",
+    "kai.mirena": "mirenakai"
+}

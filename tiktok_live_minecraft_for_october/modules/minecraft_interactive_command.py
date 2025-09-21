@@ -108,7 +108,7 @@ async def coin_counting(coin,times):
 
 #いいね関連
 
-async def on_like_mod(event):
+async def on_like_mod(event,streamer_ID):
     global total_likes
     # print(event.count)
     user_id = event.user.unique_id
@@ -167,12 +167,12 @@ async def on_like_mod(event):
 # フォロー関連
 # すでに反応済みのユーザーを保持するセット
 already_triggered = set()
-async def on_follow_mod(event):
+async def on_follow_mod(event,streamer_ID):
     user_id = event.user.unique_id
     if user_id not in already_triggered:
         already_triggered.add(user_id)
         # await command_send_queue(f"bedrock tnt 3 {event.user.nickname}")
-        # await command_send_queue('title @a title {"text":"§cフォロー、ありがとう！"}')
+        await command_send_queue(f'title @a title {{"text":"§c{event.user.nickname}の試練"}}')
         for i in range(5):
             monster = random.choices(
                 config.panic_monsters,
@@ -191,7 +191,7 @@ async def on_follow_mod(event):
         await command_send_queue(f'title @a subtitle {{"text":"{event.user.nickname}"}}')
 
 
-async def on_comment_mod(event):
+async def on_comment_mod(event,streamer_ID):
     now = datetime.now()
     print(f"{event.user.nickname} >> {event.comment}"f" at {now.strftime('%Y-%m-%d %H:%M:%S')}")
 
@@ -235,7 +235,7 @@ async def time_measurement():
         config.current_multiplier = 1
         config.time_measurement_running = False
         await command_send_queue(f"bossbar remove timer")
-async def on_gift_mod(event):
+async def on_gift_mod(event,streamer_ID):
     global gift_counter,coin_counter
 
     #ギフトを受け取るたびに取得する情報
