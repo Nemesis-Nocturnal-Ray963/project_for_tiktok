@@ -69,7 +69,6 @@ async def doughnut(user,count,minecraft_id):
         await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
 
 async def genius(user,count,minecraft_id):
-    print("aaa")
     await command_send_queue(f'title {minecraft_id} title {{"text":"§c{user}からの極限試練"}}')
     for z in range(count):
         for i in range(5):
@@ -78,12 +77,12 @@ async def genius(user,count,minecraft_id):
                 weights=[m[1]for m in config.enhanced_panic_monsters],
                 k=1
             )[0]
-            # 半径4〜6の円形範囲にランダム座標生成
-            r = random.uniform(4, 6)          # 半径4〜6
-            theta = random.uniform(0, 2*math.pi)  # 角度0〜360度
+                                                    # 半径4〜6の円形範囲にランダム座標生成
+            r = random.uniform(4, 6)                # 半径4〜6
+            theta = random.uniform(0, 2*math.pi)    # 角度0〜360度
             x_offset = round(r * math.cos(theta))
             z_offset = round(r * math.sin(theta))
-            y_offset = 1  # プレイヤーの頭上1ブロック
+            y_offset = 1                            # プレイヤーの頭上1ブロック
 
             await command_send_queue(f'execute at {minecraft_id} run summon {monster} ~{x_offset} ~{y_offset} ~{z_offset} {{CustomName:"\\"{user}の試練\\""}}')
         await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
@@ -117,9 +116,17 @@ async def five_00_coin(user,count,minecraft_id):
         await command_send_queue(f"clear {minecraft_id}")
         await command_send_queue(f"give {minecraft_id} minecraft:poppy 2304")
 
-
-
-
+async def thirty_00_over_coin(user,count,minecraft_id):
+    await command_send_queue(f'title {minecraft_id} title {"text":"§cポピーーーー！！"}')
+    await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
+    for i in range(count):
+        r = random.uniform(300, 1000)                # 半径4〜6
+        theta = random.uniform(0, 2*math.pi)    # 角度0〜360度
+        x_offset = round(r * math.cos(theta))
+        z_offset = round(r * math.sin(theta))
+        y_offset = 10
+        await command_send_queue(f"clear {minecraft_id}")
+        await command_send_queue(f"/tp ~{x_offset} ~{y_offset} ~{z_offset}")
 
 async def gift_counting(gift_times):
     global gift_counter
@@ -145,6 +152,7 @@ async def on_like_mod(event,streamer_ID):
 
     user_like_count[user_id] += user_like_total_count
     print("user:",user_id,"like count... ",user_like_count[user_id])
+    
     # 全体カウント更新
     total_likes += user_like_total_count
 
@@ -302,9 +310,10 @@ async def on_gift_mod(event,streamer_ID):
         await gift_counting(times)
         await coin_counting(coin,times)
 
+        if name == "Paper Crane":
+            asyncio.create_task(blank_info(user,name,minecraft_id))
 
-
-        if name == "Hand Hearts":
+        elif name == "Hand Hearts":
             asyncio.create_task(Hand_Hearts(user,times,minecraft_id))
 
         elif name == "Paper Crane":
@@ -321,6 +330,9 @@ async def on_gift_mod(event,streamer_ID):
 
         elif str(coin) == "500":
             asyncio.create_task(five_00_coin(user,times,minecraft_id))
+
+        elif str(coin) <= "3000":
+            asyncio.create_task(thirty_00_over_coin(user,times,minecraft_id))
 
     # if 5000 <= coin_counter:
     #     while coin_counter > 5000:
