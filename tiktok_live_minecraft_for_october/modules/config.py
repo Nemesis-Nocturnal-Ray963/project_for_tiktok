@@ -166,6 +166,67 @@ panic_monsters = [
     ("magma_cube", 3)
 ]
 
+minecraft_enhanced_effects = [
+    ["execute at @a run effect give {player_name} speed 60 10", "スピードが上昇した！", 5],
+    ["execute at @a run effect give {player_name} slowness 60 10", "移動速度が低下した…", 2],
+    ["execute at @a run effect give {player_name} haste 60 10", "採掘・攻撃速度上昇", 5],
+    ["execute at @a run effect give {player_name} mining_fatigue 60 10 ", "採掘・攻撃速度が低下…", 2],
+    ["execute at @a run effect give {player_name} strength 60 10", "力が増した！", 5],
+    ["execute at @a run effect give {player_name} instant_health 3 10", "体力を即回復！", 5],
+    ["execute at @a run effect give {player_name} jump_boost 60 10", "ジャンプ力が上昇！", 4],
+    ["execute at @a run effect give {player_name} nausea 20 ", "画面がぐらぐら…", 1],
+    ["execute at @a run effect give {player_name} regeneration 60", "体力が徐々に回復！", 5],
+    ["execute at @a run effect give {player_name} resistance 60 4", "ダメージ軽減Lv5！", 4],
+    ["execute at @a run effect give {player_name} fire_resistance 60 4", "火炎耐性Lv5！", 5],
+    ["execute at @a run effect give {player_name} water_breathing 360", "水中でも息ができる！", 5],
+    ["execute at @a run effect give {player_name} invisibility 60 255 true", "透明になった！", 4],
+    ["execute at @a run effect give {player_name} blindness 180", "視界が真っ暗…", 1],
+    ["execute at @a run effect give {player_name} night_vision 360", "この目は闇を見通す！", 5],
+    ["execute at @a run effect give {player_name} hunger 15 100", "お腹が減りやすい…", 2],
+    ["execute at @a run effect give {player_name} weakness 120 10", "攻撃力が下がった…", 2],
+    ["execute at @a run effect give {player_name} poison 60", "毒状態になった…", 1],
+    ["execute at @a run effect give {player_name} wither 60", "ウィザーの呪いだ…", 1],
+    ["execute at @a run effect give {player_name} health_boost 120 255", "最大体力が増加！", 4],
+    ["execute at @a run effect give {player_name} absorption 120 255 ", "拡張体力を付与！", 5],
+    ["execute at @a run effect give {player_name} glowing 900", "白く光っているッ！！！", 3],
+    ["execute at @a run effect give {player_name} levitation 15 10", "浮遊している…", 1],
+    ["execute at @a run effect give {player_name} luck 120 10", "アイテム運が上昇！", 4],
+    ["execute at @a run effect give {player_name} unluck 60 10", "アイテム運が低下…", 1],
+    ["execute at @a run effect give {player_name} slow_falling 60", "落下速度が低下！", 4],
+    ["execute at @a run effect give {player_name} conduit_power 60 10", "水神様の加護", 5],
+    ["execute at @a run effect give {player_name} dolphins_grace 60 10", "泳ぐ速度が上昇！", 5],
+    ["execute at @a run effect give {player_name} bad_omen 60 10", "襲撃の不吉な予兆…", 0],
+    ["execute at @a run effect give {player_name} raid_omen 60 10", "襲撃が開始される…", 0],
+    ["execute at @a run effect give {player_name} trial_omen 60 10", "不吉な試練が始まった…", 0],
+    ["execute at @a run effect give {player_name} hero_of_the_village 60 10", "村人に好かれた！", 0],
+    ["execute at @a run effect give {player_name} darkness 60 10", "視界が暗くなった…", 1],
+    ["execute at @a run effect give {player_name} weaving 60 10", "敵にクモの加護…", 1],
+    ["execute at @a run effect give {player_name} wind_charged 60 10", "敵が風の力を溜めた", 2],
+    ["execute at @a run effect give {player_name} infested 60 10", "敵は石喰虫を呼ぶ気だ", 0],
+    ["execute at @a run effect give {player_name} oozing 60 10 ", "スライムの気配がする", 2]
+]
+
+enhanced_panic_monsters = [
+    ("zombie", 1),
+    ("husk", 4),
+    ("vindicator", 2),
+    ("skeleton", 1),
+    ("pillager", 2),
+    ("spider", 1),
+    ("cave_spider", 3),
+    ("slime", 3),
+    ("bogged", 3),
+    ("stray", 3),
+    ("drowned", 4),
+    ("enderman", 2),
+    ("witch", 3),
+    ("illusioner", 1),
+    ("wither_skeleton", 3),
+    ("blaze", 2),
+    ("breeze", 3),
+    ("magma_cube", 3)
+]
+
 tiktok_to_minecraft = {
     "akinashikoharu": "akinashikoharu",
     "kasum1zawa": "kasum1zawa_fps",

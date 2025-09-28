@@ -2,7 +2,7 @@ import sys
 import os
 # print("//sys.path")
 # print(sys.path)
-print(os.path.basename(__file__))
+# print(os.path.basename(__file__))
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import config
 import asyncio

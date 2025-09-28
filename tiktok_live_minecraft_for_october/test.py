@@ -21,7 +21,7 @@ from modules import command_worker_mod as cwm
 from modules import combo_system as c_sys
 
 from TikTokLive import TikTokLiveClient
-from TikTokLive.events import *
+from TikTokLive.events import LikeEvent,FollowEvent,CommentEvent,GiftEvent,LinkMicBattleEvent,LinkmicAnimationEvent,LinkMicAdEvent,LinkMicBattleVictoryLapEvent,LinkMicBattleVictoryLapEvent,LinkMicSignalingMethodEvent,LinkMicSignalingMethodEvent,LinkMicBattlePunishFinishEvent,LinkmicAudienceNoticeEvent,LinkMicBattleItemCardEvent,LinkmicBattleTaskEvent,LinkMicAnchorGuideEvent,LinkmicBattleNoticeEvent,LinkMicArmiesEvent,LinkMicFanTicketMethodEvent,LinkMicMethodEvent
 
 
 
@@ -97,6 +97,7 @@ class TikTokLiveManager:
         if name not in self.gifts_data:  # 未登録なら追加
             self.gifts_data[name] = coins
             print(f"✅ 新しいギフトを保存しました: {name} - {coins}コイン")
+            self.save_data()
 
 
     async def start_client_session(self):

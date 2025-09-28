@@ -20,6 +20,12 @@ TOTAL_LIKE_THRESHOLD = 10000
 
 finish_time = 0
 
+jump_boost_queue = asyncio.Queue()
+async def jumpboost_cooldown_worker():
+    while True:
+        command_send_queue
+
+
 async def command_send_queue(code):
     await cwm.command_queue.put(code)
 
@@ -30,84 +36,90 @@ async def blank_info(user,giftname,minecraft_id):
 
 async def heart_me(user,count,minecraft_id):
     print(f"{user} send Heart Me...")
-    await command_send_queue(f"bedrock tnt 3 {user}")
-    await command_send_queue('title @a title {"text":"§cハートミー！Thx！"}')
+    await command_send_queue(f"execute as @a run give {minecraft_id} minecraft:golden_apple 1")
+    await command_send_queue(f'title {minecraft_id} title {"text":"§cハートミー！Thx！"}')
     for i in range(count):
-        await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
-    print(minecraft_id)
+        await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
+    # print(minecraft_id)
 
-
-async def spawn_tnt(user, count,delay,minecraft_id):
-    await command_send_queue('title @a title {"text":"1TNT"}')
-    await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
+async def Finger_Heart(user,count,minecraft_id):
+    await command_send_queue(f'title {minecraft_id} title {"text":"§c原木  5個 Thx！"}')
+    await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
-        await command_send_queue(f"bedrock tnt 1 {user}")
-        await asyncio.sleep(delay)
-    print(minecraft_id)
+        await command_send_queue(f"execute as @a run give {minecraft_id} minecraft:oak_log 5")
 
-async def spawn_multi_tnt(user, count, per, delay,minecraft_id):
-    await command_send_queue(f'title @a title {{"text":"{per}TNT"}}')
-    await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
+async def Rosa(user,count,minecraft_id):
     for i in range(count):
-        await command_send_queue(f"bedrock tnt {per} {user}")
-        await asyncio.sleep(delay)
-    print(minecraft_id)
+        await command_send_queue(f"execute as @a run effect give @a minecraft:jump_boost 60 30 false")
+        await command_send_queue(f'title {minecraft_id} title {"text":"§cスーパージャンプ！"}')
+        await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
+        await asyncio.sleep(59)
 
-
-async def spawn_donuts_tnt(user, count, per, delay,minecraft_id):
-    await command_send_queue(f'title @a title {{"text":"イ・ﾓｰｼｮﾅﾙ・ダメージ！"}}')
-    await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
+async def doughnut(user,count,minecraft_id):
     for i in range(count):
-        await command_send_queue(f"bedrock tnt {per} {user}")
-        await asyncio.sleep(delay)
-    print(minecraft_id)
+        selected = random.choices(
+            config.minecraft_enhanced_effects,
+            weights=[e[2] for e in config.minecraft_enhanced_effects],
+            k=1
+        )[0]
+        print(selected)
+        command = selected[0].format(player_name=minecraft_id)
+        await command_send_queue(command)
+        await command_send_queue(f'title {minecraft_id} title {{"text":"{selected[1]}"}}')
+        await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
 
-
-async def summon_zombies(user, count,minecraft_id):
-    await command_send_queue('title @a title {"text":"ゾンビのお友達～"}')
-    await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
+async def genius(user,count,minecraft_id):
+    print("aaa")
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§c{user}からの極限試練"}}')
     for z in range(count):
+        for i in range(5):
+            monster = random.choices(
+                config.enhanced_panic_monsters,
+                weights=[m[1]for m in config.enhanced_panic_monsters],
+                k=1
+            )[0]
+            # 半径4〜6の円形範囲にランダム座標生成
+            r = random.uniform(4, 6)          # 半径4〜6
+            theta = random.uniform(0, 2*math.pi)  # 角度0〜360度
+            x_offset = round(r * math.cos(theta))
+            z_offset = round(r * math.sin(theta))
+            y_offset = 1  # プレイヤーの頭上1ブロック
+
+            await command_send_queue(f'execute at {minecraft_id} run summon {monster} ~{x_offset} ~{y_offset} ~{z_offset} {{CustomName:"\\"{user}の試練\\""}}')
+        await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
+
+async def iron_Golem(user,count,minecraft_id):
+    await command_send_queue(f'title {minecraft_id} title {"text":"§c俊敏のゴーレム召喚！！"}')
+    await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
+    for i in range(count):
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon iron_golem ~ ~ ~ {{Tags:["SpeedyGolem"],CustomName:\'{{"text":"疾走する{user}のゴーレム"}}\',CustomNameVisible:1}}')
+    await command_send_queue(f'execute as {minecraft_id} run effect give @e[type=iron_golem,tag=SpeedyGolem] speed 9999 5 true')
+
+async def Hand_Hearts(user,count,minecraft_id):
+    await command_send_queue(f'title {minecraft_id} title {"text":"§cこれで生きろ！"}')
+    await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
+    for i in range(count):
+        await command_send_queue(f'execute as @a run give {minecraft_id} minecraft:netherite_axe[minecraft:custom_name="{user}の斧"] 1')
+
+async def corgi(user,count,minecraft_id):
+    await command_send_queue(f'title {minecraft_id} title {"text":"§cヒツジの進軍！！"}')
+    await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
+    for x in range(count):
         for i in range(15):
-            await command_send_queue(f'execute at @a run summon zombie ~ ~3 ~ {{IsBaby:0,ArmorItems:[{{}},{{}},{{}},{{id:"minecraft:carved_pumpkin",Count:1}}],ArmorDropChances:[0F,0F,0F,0F],CustomName:"{user}の分身",CustomNameVisible:1}}')
-            await asyncio.sleep(0.05)
-    print(minecraft_id)
+            # await command_send_queue(f'execute as {minecraft_id} summon minecraft:sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{id:"generic.movement_speed",base:0.5},{id:"generic.scale",base:2.0}],Passengers:[{id:"silverfish",Silent:1b,NoAI:0b,Fire:0, DeathLootTable:"minecraft:empty",CustomName:"\"mirena\"",attributes:[{id:"generic.scale",base:2.0}],Tags:["sheep_rider0"]}]}}')
+            await command_send_queue(f'execute as {minecraft_id} run summon minecraft:sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,Fire:0,DeathLootTable:"minecraft:empty",CustomName:"\"怨念\"",attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
+    await command_send_queue('effect give @e[tag=sheep_rider] invisibility infinite 1 true')
 
-async def levitation_effect(user,count,delay,minecraft_id):
-    await command_send_queue('title @a title {"text":"浮遊"}')
-    await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
+async def five_00_coin(user,count,minecraft_id):
+    await command_send_queue(f'title {minecraft_id} title {"text":"§cポピーーーー！！"}')
+    await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
-        await command_send_queue(f"execute at {minecraft_id} run effect give {minecraft_id} minecraft:levitation {delay} 2")
-        await asyncio.sleep(delay)
-    print(minecraft_id)
+        await command_send_queue(f"clear {minecraft_id}")
+        await command_send_queue(f"give {minecraft_id} minecraft:poppy 2304")
 
-async def fill_blocks(user,count,minecraft_id):
-    await command_send_queue('title @a title {"text":"§c400ブロック埋めたて"}')
-    await command_send_queue(f'title @a subtitle {{"text":"ありがとう、{user}"}}')
-    for i in range(count):
-        await command_send_queue("bedrock fillblock 200")
-    await asyncio.sleep(1)
-    print(minecraft_id)
 
-async def fill_area(user,minecraft_id):
-    await command_send_queue('title @a title {"text":"§c埋立完了!"}')
-    await command_send_queue(f'title @a subtitle {{"text":"ありがとう! {user}"}}')
-    await command_send_queue("bedrock fill")
-    await asyncio.sleep(1)
-    print(minecraft_id)
 
-async def corgi_messege(user,minecraft_id):
-    await command_send_queue('title @a title {"text":"とにかく荒らせ!"}')
-    await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
-    print(minecraft_id)
 
-async def mishka_storm(user,minecraft_id):
-    await command_send_queue('title @a title {"text":"§cTNTの嵐"}')
-    await command_send_queue(f'title @a subtitle {{"text":"{user}"}}')
-    await asyncio.sleep(3.20)
-    for i in range(165):
-        await command_send_queue("bedrock tnt 2")
-        await asyncio.sleep(0.05)
-    print(minecraft_id)
 
 async def gift_counting(gift_times):
     global gift_counter
@@ -260,47 +272,57 @@ async def on_gift_mod(event,streamer_ID):
         await coin_counting(coin,times)
 
         print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S {minecraft_id}')}")
+
         if name == "Heart Me":
             asyncio.create_task(heart_me(user,times,minecraft_id))
 
-        elif name == "Rose":
-            asyncio.create_task(spawn_tnt(user, times,0.1,minecraft_id))
+        # elif name == "Rose":
+            # asyncio.create_task(spawn_tnt(user, times,0.1,minecraft_id))
 
         elif name == "Finger Heart":
-            asyncio.create_task(spawn_multi_tnt(user, times, 5,0.1,minecraft_id))
+            asyncio.create_task(Finger_Heart(user, times,minecraft_id))
 
         elif name == "Rosa":
-            asyncio.create_task(levitation_effect(user,times,15,minecraft_id))
+            asyncio.create_task(Rosa(user,times,minecraft_id))
 
-        elif name == "BFF Necklace":
-            asyncio.create_task(summon_zombies(user, times,minecraft_id))
+        # elif name == "BFF Necklace":
+        #     asyncio.create_task(summon_zombies(user, times,minecraft_id))
 
         elif name == "Perfume":
-            asyncio.create_task(fill_blocks(user,times,minecraft_id))
+            asyncio.create_task(iron_Golem(user,times,minecraft_id))
 
         elif name == "Doughnut":
-            asyncio.create_task(spawn_donuts_tnt(user, 2 * times, 20, 2,minecraft_id))
+            asyncio.create_task(doughnut(user,times,minecraft_id))
 
-        elif name == "Paper Crane":
-            asyncio.create_task(blank_info(user,name,minecraft_id))
+        elif name == "Genius":
+            asyncio.create_task(genius(user,times,minecraft_id))
+
 
     elif not event.gift.streakable:
         await gift_counting(times)
         await coin_counting(coin,times)
 
+
+
         if name == "Hand Hearts":
-            asyncio.create_task(fill_area(user,minecraft_id))
+            asyncio.create_task(Hand_Hearts(user,times,minecraft_id))
 
-        elif name == "Mishka Bear":
-            asyncio.create_task(mishka_storm(user,minecraft_id))
-
-        elif name == "Corgi":
-            asyncio.create_task(corgi_messege(user,minecraft_id))
-
-        elif name == "Galaxy":
+        elif name == "Paper Crane":
             asyncio.create_task(blank_info(user,name,minecraft_id))
 
-    if 5000 <= coin_counter:
-        while coin_counter > 5000:
-            await add_time()
-        asyncio.create_task(time_measurement())
+        # elif name == "Mishka Bear":
+        #     asyncio.create_task(mishka_storm(user,times,minecraft_id))
+
+        elif name == "Corgi":
+            asyncio.create_task(corgi(user,times,minecraft_id))
+
+        elif name == "Galaxy":
+            asyncio.create_task(blank_info(user,times,minecraft_id))
+
+        elif str(coin) == "500":
+            asyncio.create_task(five_00_coin(user,times,minecraft_id))
+
+    # if 5000 <= coin_counter:
+    #     while coin_counter > 5000:
+    #         await add_time()
+    #     asyncio.create_task(time_measurement())
