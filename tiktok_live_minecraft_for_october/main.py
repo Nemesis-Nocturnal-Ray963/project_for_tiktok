@@ -121,7 +121,7 @@ class TikTokLiveManager:
     # いいねを受け取った時
         @self.client.on(LikeEvent)
         async def on_like(event: LikeEvent):
-            print("配信者ID：",self.client.unique_id)
+            # print("配信者ID：",self.client.unique_id)
             await m_intr_c.on_like_mod(event,self.client.unique_id)
 
 
@@ -142,7 +142,7 @@ class TikTokLiveManager:
             for i in range(config.current_multiplier):
                 await m_intr_c.on_gift_mod(event,self.client.unique_id)
             if event.gift.streakable and not event.streaking or not event.gift.streakable:
-                self.add_gift(event.gift.name, event.gift.diamond_count)
+                await self.add_gift(event.gift.name, event.gift.diamond_count)
 
 
 

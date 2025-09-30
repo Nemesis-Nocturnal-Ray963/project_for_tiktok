@@ -37,13 +37,13 @@ async def blank_info(user,giftname,minecraft_id):
 async def heart_me(user,count,minecraft_id):
     print(f"{user} send Heart Me...")
     await command_send_queue(f"execute as @a run give {minecraft_id} minecraft:golden_apple 1")
-    await command_send_queue(f'title {minecraft_id} title {"text":"§cハートミー！Thx！"}')
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§cハートミー！Thx！"}}')
     for i in range(count):
         await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     # print(minecraft_id)
 
 async def Finger_Heart(user,count,minecraft_id):
-    await command_send_queue(f'title {minecraft_id} title {"text":"§c原木  5個 Thx！"}')
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§c原木  5個 Thx！"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
         await command_send_queue(f"execute as @a run give {minecraft_id} minecraft:oak_log 5")
@@ -51,9 +51,8 @@ async def Finger_Heart(user,count,minecraft_id):
 async def Rosa(user,count,minecraft_id):
     for i in range(count):
         await command_send_queue(f"execute as @a run effect give @a minecraft:jump_boost 60 30 false")
-        await command_send_queue(f'title {minecraft_id} title {"text":"§cスーパージャンプ！"}')
+        await command_send_queue(f'title {minecraft_id} title {{"text":"§cスーパージャンプ！"}}')
         await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
-        await asyncio.sleep(59)
 
 async def doughnut(user,count,minecraft_id):
     for i in range(count):
@@ -88,20 +87,25 @@ async def genius(user,count,minecraft_id):
         await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
 
 async def iron_Golem(user,count,minecraft_id):
-    await command_send_queue(f'title {minecraft_id} title {"text":"§c俊敏のゴーレム召喚！！"}')
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§c俊敏のゴーレム召喚！！"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
         await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon iron_golem ~ ~ ~ {{Tags:["SpeedyGolem"],CustomName:\'{{"text":"疾走する{user}のゴーレム"}}\',CustomNameVisible:1}}')
     await command_send_queue(f'execute as {minecraft_id} run effect give @e[type=iron_golem,tag=SpeedyGolem] speed 9999 5 true')
 
 async def Hand_Hearts(user,count,minecraft_id):
-    await command_send_queue(f'title {minecraft_id} title {"text":"§cこれで生きろ！"}')
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§cこれで生きろ！"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
         await command_send_queue(f'execute as @a run give {minecraft_id} minecraft:netherite_axe[minecraft:custom_name="{user}の斧"] 1')
+        await command_send_queue(f'execute as @a run effect give {minecraft_id} haste 30 5')
+        await command_send_queue(f'execute as @a run effect give {minecraft_id} instant_health 30 5')
+        await command_send_queue(f'execute as @a run effect give {minecraft_id} darkness 30')
+        await command_send_queue(f'execute as @a run effect give {minecraft_id} speed 30 3')
+        await command_send_queue(f'execute as @a run effect give {minecraft_id} jump_boost 30')
 
 async def corgi(user,count,minecraft_id):
-    await command_send_queue(f'title {minecraft_id} title {"text":"§cヒツジの進軍！！"}')
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§cヒツジの進軍！！"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for x in range(count):
         for i in range(15):
@@ -110,14 +114,14 @@ async def corgi(user,count,minecraft_id):
     await command_send_queue('effect give @e[tag=sheep_rider] invisibility infinite 1 true')
 
 async def five_00_coin(user,count,minecraft_id):
-    await command_send_queue(f'title {minecraft_id} title {"text":"§cポピーーーー！！"}')
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§cポピーーーー！！"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
         await command_send_queue(f"clear {minecraft_id}")
         await command_send_queue(f"give {minecraft_id} minecraft:poppy 2304")
 
 async def thirty_00_over_coin(user,count,minecraft_id):
-    await command_send_queue(f'title {minecraft_id} title {"text":"§cポピーーーー！！"}')
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§cポピーーーー！！"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
         r = random.uniform(300, 1000)                # 半径4〜6
@@ -143,7 +147,7 @@ async def on_like_mod(event,streamer_ID):
     # print(event.count)
     user_id = event.user.unique_id
     user_like_total_count = event.count
-    minecraft_id = config.re_mcid(streamer_ID)
+    minecraft_id = await config.re_mcid(streamer_ID)
 
     # print("user:",user_id,"like count... ",user_like_total_count)
     # 個別カウント更新
@@ -152,7 +156,7 @@ async def on_like_mod(event,streamer_ID):
 
     user_like_count[user_id] += user_like_total_count
     print("user:",user_id,"like count... ",user_like_count[user_id])
-    
+
     # 全体カウント更新
     total_likes += user_like_total_count
 
@@ -198,7 +202,7 @@ async def on_like_mod(event,streamer_ID):
 already_triggered = set()
 async def on_follow_mod(event,streamer_ID):
     user_id = event.user.unique_id
-    minecraft_id = config.re_mcid(streamer_ID)
+    minecraft_id = await config.re_mcid(streamer_ID)
     if user_id not in already_triggered:
         already_triggered.add(user_id)
         # await command_send_queue(f"bedrock tnt 3 {event.user.nickname}")
@@ -271,7 +275,7 @@ async def on_gift_mod(event,streamer_ID):
 
     #ログ用
     now = datetime.now()
-    minecraft_id = config.re_mcid(streamer_ID)
+    minecraft_id = await config.re_mcid(streamer_ID)
 
     print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')}")
     # streak 終了時のみ処理
@@ -279,7 +283,7 @@ async def on_gift_mod(event,streamer_ID):
         await gift_counting(times)
         await coin_counting(coin,times)
 
-        print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S {minecraft_id}')}")
+        print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')} to {minecraft_id}")
 
         if name == "Heart Me":
             asyncio.create_task(heart_me(user,times,minecraft_id))
