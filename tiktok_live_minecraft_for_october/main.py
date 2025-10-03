@@ -149,140 +149,140 @@ class TikTokLiveManager:
 
 
 
-        @self.client.on(LinkMicBattleEvent)
-        async def on_battle(event: LinkMicBattleEvent):
-            print("バトルについて")
-            print(event.base_message)
-            print(event.battle_id)
-            print(event.battle_setting)
-            print(event.action)
-            print(event.battle_result)
-            print(event.m_battle_display_config)
-            # print(event.invitee_gift_permission_type)　必ず存在するわけではないらしい。最後に見たときに記載があったのはLinkmicBattleNoticeEvent 2025-09-19 03:25:44
-            print(event.armies)
-            print(event.anchor_info)
-            print(event.bubble_text)
-            print(event.supported_actions)
-            print(event.battle_combos)
-            print(event.team_users)
-            print(event.invitee_gift_permission_types)
-            print(event.action_by_user_id)
-            print(event.team_battle_result)
-            print(event.team_armies)
-            print(event.abtest_settings)
-            print(event.team_match_campaign)
-            print(event.fuzzy_display_config_v2)
-            # バトル開始時と終了時
+        # @self.client.on(LinkMicBattleEvent)
+        # async def on_battle(event: LinkMicBattleEvent):
+        #     print("バトルについて")
+        #     print(event.base_message)
+        #     print(event.battle_id)
+        #     print(event.battle_setting)
+        #     print(event.action)
+        #     print(event.battle_result)
+        #     print(event.m_battle_display_config)
+        #     # print(event.invitee_gift_permission_type)　必ず存在するわけではないらしい。最後に見たときに記載があったのはLinkmicBattleNoticeEvent 2025-09-19 03:25:44
+        #     print(event.armies)
+        #     print(event.anchor_info)
+        #     print(event.bubble_text)
+        #     print(event.supported_actions)
+        #     print(event.battle_combos)
+        #     print(event.team_users)
+        #     print(event.invitee_gift_permission_types)
+        #     print(event.action_by_user_id)
+        #     print(event.team_battle_result)
+        #     print(event.team_armies)
+        #     print(event.abtest_settings)
+        #     print(event.team_match_campaign)
+        #     print(event.fuzzy_display_config_v2)
+        #     # バトル開始時と終了時
 
-        @self.client.on(LinkmicAnimationEvent)
-        async def Linkmic_Animation_Event(event: LinkmicAnimationEvent):
-            now = datetime.now()
-            print(f"LinkmicAnimationEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            # print(event)
+        # @self.client.on(LinkmicAnimationEvent)
+        # async def Linkmic_Animation_Event(event: LinkmicAnimationEvent):
+        #     now = datetime.now()
+        #     print(f"LinkmicAnimationEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     # print(event)
 
-        @self.client.on(LinkMicAdEvent)
-        async def LinkMic_Ad_Event(event: LinkMicAdEvent):
-            now = datetime.now()
-            print(f"LinkMicAdEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            # print(event)
-        @self.client.on(LinkMicBattleVictoryLapEvent)
-        async def LinkMic_Battle_Victory_LapEvent(event: LinkMicBattleVictoryLapEvent):
-            now = datetime.now()
-            print(f"LinkMicBattleVictoryLapEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            print(f"勝利の時間ってやつ？")
-            # print(event)
+        # @self.client.on(LinkMicAdEvent)
+        # async def LinkMic_Ad_Event(event: LinkMicAdEvent):
+        #     now = datetime.now()
+        #     print(f"LinkMicAdEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     # print(event)
+        # @self.client.on(LinkMicBattleVictoryLapEvent)
+        # async def LinkMic_Battle_Victory_LapEvent(event: LinkMicBattleVictoryLapEvent):
+        #     now = datetime.now()
+        #     print(f"LinkMicBattleVictoryLapEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     print(f"勝利の時間ってやつ？")
+        #     # print(event)
 
-        @self.client.on(LinkMicSignalingMethodEvent)
-        async def LinkMic_Signaling_Method_Event(event: LinkMicSignalingMethodEvent):
-            now = datetime.now()
-            print(f"LinkMicSignalingMethodEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            # print(event)
+        # @self.client.on(LinkMicSignalingMethodEvent)
+        # async def LinkMic_Signaling_Method_Event(event: LinkMicSignalingMethodEvent):
+        #     now = datetime.now()
+        #     print(f"LinkMicSignalingMethodEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     # print(event)
 
-        @self.client.on(LinkMicBattlePunishFinishEvent)
-        async def LinkMic_Battle_PunishFinish_Event(event: LinkMicBattlePunishFinishEvent):
-            now = datetime.now()
-            print(f"LinkMicBattlePunishFinishEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            print(f"バトルで負けたとき？")
-            # print(event)
+        # @self.client.on(LinkMicBattlePunishFinishEvent)
+        # async def LinkMic_Battle_PunishFinish_Event(event: LinkMicBattlePunishFinishEvent):
+        #     now = datetime.now()
+        #     print(f"LinkMicBattlePunishFinishEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     print(f"バトルで負けたとき？")
+        #     # print(event)
 
-        @self.client.on(LinkmicAudienceNoticeEvent)
-        async def Linkmic_Audience_NoticeEvent(event: LinkmicAudienceNoticeEvent):
-            now = datetime.now()
-            print(f"LinkmicAudienceNoticeEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            # print(event)
+        # @self.client.on(LinkmicAudienceNoticeEvent)
+        # async def Linkmic_Audience_NoticeEvent(event: LinkmicAudienceNoticeEvent):
+        #     now = datetime.now()
+        #     print(f"LinkmicAudienceNoticeEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     # print(event)
 
-        @self.client.on(LinkMicBattleItemCardEvent)
-        async def LinkMic_Battle_ItemCard_Event(event: LinkMicBattleItemCardEvent):
-            now = datetime.now()
-            print(f"LinkMicBattleItemCardEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            # print(event)
+        # @self.client.on(LinkMicBattleItemCardEvent)
+        # async def LinkMic_Battle_ItemCard_Event(event: LinkMicBattleItemCardEvent):
+        #     now = datetime.now()
+        #     print(f"LinkMicBattleItemCardEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     # print(event)
 
-        @self.client.on(LinkmicBattleTaskEvent)
-        async def LinkMic_Battle_Task_Event(event: LinkmicBattleTaskEvent):
-            now = datetime.now()
-            print(f"LinkmicBattleTaskEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            print(f"スピードチャレンジについて")
-            print(event.base_message)
-            print(event.battle_task_message_type)
-            print(event.task_start)
-            print(event.task_update)
-            print(event.task_settle)
-            print(event.reward_settle)
-            print(event.battle_id)
-            # print(event)
-            # 開始時と終了時に、発火
-            # スピードチャレンジタスク開始時、解決時、未解決時、スピードチャレンジ開始時、終了時
-        @self.client.on(LinkMicAnchorGuideEvent)
-        async def LinkMic_Anchor_Guide_Event(event: LinkMicAnchorGuideEvent):
-            now = datetime.now()
-            print(f"LinkMicAnchorGuideEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            print(f"ラスト10秒？")
-            print(f"ユーザー：{event.user.nickname}…多分")
-            # print(event)
+        # @self.client.on(LinkmicBattleTaskEvent)
+        # async def LinkMic_Battle_Task_Event(event: LinkmicBattleTaskEvent):
+        #     now = datetime.now()
+        #     print(f"LinkmicBattleTaskEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     print(f"スピードチャレンジについて")
+        #     print(event.base_message)
+        #     print(event.battle_task_message_type)
+        #     print(event.task_start)
+        #     print(event.task_update)
+        #     print(event.task_settle)
+        #     print(event.reward_settle)
+        #     print(event.battle_id)
+        #     # print(event)
+        #     # 開始時と終了時に、発火
+        #     # スピードチャレンジタスク開始時、解決時、未解決時、スピードチャレンジ開始時、終了時
+        # @self.client.on(LinkMicAnchorGuideEvent)
+        # async def LinkMic_Anchor_Guide_Event(event: LinkMicAnchorGuideEvent):
+        #     now = datetime.now()
+        #     print(f"LinkMicAnchorGuideEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     print(f"ラスト10秒？")
+        #     print(f"ユーザー：{event.user.nickname}…多分")
+        #     # print(event)
 
-        @self.client.on(LinkmicBattleNoticeEvent)
-        async def Linkmic_Battle_Notice_Event(event: LinkmicBattleNoticeEvent):
-            now = datetime.now()
-            print(f"LinkmicBattleNoticeEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            # print(event)
-            # バトル開始時
-        @self.client.on(LinkMicArmiesEvent)
-        async def LinkMic_Armies_Event(event: LinkMicArmiesEvent):
-            now = datetime.now()
-            # print(f"LinkMicArmiesEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            # print(event.base_message)
-            # print(event.battle_id)
-            # print(event.armies)
-            # print(event.channel_id)
-            # print(event.gift_sent_time)
-            # print(event.score_update_time)
-            # print(event.trigger_reason)
-            # print(event.from_user_id)
-            # print(event.gift_id)
-            # print(event.gift_count)
-            # print(event.gif_icon_image)
-            # print(event.total_diamond_count)
-            # print(event.repeat_count)
-            # print(event.team_armies)
-            # print(event.trigger_critical_strike)
-            # print(event.has_team_match_mvp_sfx)
-            # print(event.log_id)
-            # print(event.battle_settings)
-            # print(event.fuzzy_display_config_v2)
-        # 配信にいてバトルに参加している人の情報、画像やらギフトやら、うまく使えば、バトル終了時に、貢献者１位２位３位とか表示できるかも？
-        # バトルしてる配信に入っただけで、強制的に反応しそう？どのタイミングで反応するんだろうか？trigger_reason...トリガー理由…
-        @self.client.on(LinkMicFanTicketMethodEvent)
-        async def LinkMic_FanTicket_Method_Event(event: LinkMicFanTicketMethodEvent):
-            now = datetime.now()
-            print(f"LinkMicFanTicketMethodEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
-            # print(event)
-            # ギフトが投げられたとき、反応した
-            # 特殊ギフトが投げられたとき。例えば、ハートミー。ファンクラブ系統のギフトが投げられると反応する。
+        # @self.client.on(LinkmicBattleNoticeEvent)
+        # async def Linkmic_Battle_Notice_Event(event: LinkmicBattleNoticeEvent):
+        #     now = datetime.now()
+        #     print(f"LinkmicBattleNoticeEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     # print(event)
+        #     # バトル開始時
+        # @self.client.on(LinkMicArmiesEvent)
+        # async def LinkMic_Armies_Event(event: LinkMicArmiesEvent):
+        #     now = datetime.now()
+        #     # print(f"LinkMicArmiesEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     # print(event.base_message)
+        #     # print(event.battle_id)
+        #     # print(event.armies)
+        #     # print(event.channel_id)
+        #     # print(event.gift_sent_time)
+        #     # print(event.score_update_time)
+        #     # print(event.trigger_reason)
+        #     # print(event.from_user_id)
+        #     # print(event.gift_id)
+        #     # print(event.gift_count)
+        #     # print(event.gif_icon_image)
+        #     # print(event.total_diamond_count)
+        #     # print(event.repeat_count)
+        #     # print(event.team_armies)
+        #     # print(event.trigger_critical_strike)
+        #     # print(event.has_team_match_mvp_sfx)
+        #     # print(event.log_id)
+        #     # print(event.battle_settings)
+        #     # print(event.fuzzy_display_config_v2)
+        # # 配信にいてバトルに参加している人の情報、画像やらギフトやら、うまく使えば、バトル終了時に、貢献者１位２位３位とか表示できるかも？
+        # # バトルしてる配信に入っただけで、強制的に反応しそう？どのタイミングで反応するんだろうか？trigger_reason...トリガー理由…
+        # @self.client.on(LinkMicFanTicketMethodEvent)
+        # async def LinkMic_FanTicket_Method_Event(event: LinkMicFanTicketMethodEvent):
+        #     now = datetime.now()
+        #     print(f"LinkMicFanTicketMethodEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        #     # print(event)
+        #     # ギフトが投げられたとき、反応した
+        #     # 特殊ギフトが投げられたとき。例えば、ハートミー。ファンクラブ系統のギフトが投げられると反応する。
 
-        @self.client.on(LinkMicMethodEvent)
-        async def LinkMicMethodEvent(event: LinkMicMethodEvent):
-            now = datetime.now()
-            print(f"LinkMicMethodEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
+        # @self.client.on(LinkMicMethodEvent)
+        # async def LinkMicMethodEvent(event: LinkMicMethodEvent):
+        #     now = datetime.now()
+        #     print(f"LinkMicMethodEvent {now.strftime('%Y-%m-%d %H:%M:%S')}")
             # print(event)
             # ギフトが投げられたとき、反応した
             # for attr in [

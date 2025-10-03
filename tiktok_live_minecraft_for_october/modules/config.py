@@ -229,7 +229,7 @@ enhanced_panic_monsters = [
 
 tiktok_to_minecraft = {
     "akinashikoharu": "akinashikoharu",
-    "kasum1zawa": "kasum1zawa_fps",
+    "kasum1zawa": "kasumizawa_fps",
     "muzukiray963": "rey963_muzuki",
     "kai.mirena": "mirenakai"
 }
