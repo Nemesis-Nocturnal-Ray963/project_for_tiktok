@@ -20,12 +20,6 @@ TOTAL_LIKE_THRESHOLD = 10000
 
 finish_time = 0
 
-jump_boost_queue = asyncio.Queue()
-async def jumpboost_cooldown_worker():
-    while True:
-        command_send_queue
-
-
 async def command_send_queue(code):
     await cwm.command_queue.put(code)
 
@@ -36,10 +30,11 @@ async def blank_info(user,giftname,minecraft_id):
 
 async def heart_me(user,count,minecraft_id):
     print(f"{user} send Heart Me...")
-    await command_send_queue(f"execute as {minecraft_id} run give {minecraft_id} minecraft:golden_apple 1")
     await command_send_queue(f'title {minecraft_id} title {{"text":"§cハートミー！Thx！"}}')
+    await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
-        await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
+        await command_send_queue(f"execute as {minecraft_id} run give {minecraft_id} minecraft:golden_apple 1")
+        
     # print(minecraft_id)
 
 async def Finger_Heart(user,count,minecraft_id):
@@ -114,15 +109,15 @@ async def corgi(user,count,minecraft_id):
         await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,Fire:0,DeathLootTable:"minecraft:empty",CustomName:"\"怨念\"",attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
     await command_send_queue('effect give @e[tag=sheep_rider] invisibility infinite 1 true')
 
-async def five_00_coin(user,count,minecraft_id):
+async def Star_Map_Polaris(user,count,minecraft_id):
     await command_send_queue(f'title {minecraft_id} title {{"text":"§cポピーーーー！！"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
-        await command_send_queue(f"clear {minecraft_id}")
-        await command_send_queue(f"give {minecraft_id} minecraft:poppy 2304")
+        await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run clear {minecraft_id}")
+        await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run give {minecraft_id} minecraft:poppy 2304")
 
-async def thirty_00_over_coin(user,count,minecraft_id):
-    await command_send_queue(f'title {minecraft_id} title {{"text":"§cポピーーーー！！"}}')
+async def Meteor_Shower(user,count,minecraft_id):
+    await command_send_queue(f'title {minecraft_id} title {{"text":"§cこの世界のどこかへ"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
         r = random.uniform(300, 1000)                # 半径4〜6
@@ -130,8 +125,8 @@ async def thirty_00_over_coin(user,count,minecraft_id):
         x_offset = round(r * math.cos(theta))
         z_offset = round(r * math.sin(theta))
         y_offset = 10
-        await command_send_queue(f"clear {minecraft_id}")
-        await command_send_queue(f"tp ~{x_offset} ~{y_offset} ~{z_offset}")
+        await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run clear {minecraft_id}")
+        await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run tp ~{x_offset} ~{y_offset} ~{z_offset}")
 
 async def gift_counting(gift_times):
     global gift_counter
@@ -270,9 +265,11 @@ async def on_gift_mod(event,streamer_ID):
     global gift_counter,coin_counter
     #ギフトを受け取るたびに取得する情報
     user = event.user.nickname
+    print(user)
     name = event.gift.name
+    print(name)
     coin = event.gift.diamond_count
-    times = event.repeat_count
+    times = int(event.repeat_count)
 
     #ログ用
     now = datetime.now()
@@ -280,9 +277,12 @@ async def on_gift_mod(event,streamer_ID):
 
     print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')}")
     # streak 終了時のみ処理
-    if event.gift.streakable and not event.streaking or not event.gift.streakable:
-        await gift_counting(times)
-        await coin_counting(coin,times)
+    print("event.gift.streakable:",event.gift.streakable)
+    print("event.streaking:",event.streaking)
+
+    if event.gift.streakable and not event.streaking:
+        asyncio.create_task(gift_counting(times))
+        asyncio.create_task(coin_counting(coin,times))
 
         print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')} to {minecraft_id}")
 
@@ -311,19 +311,16 @@ async def on_gift_mod(event,streamer_ID):
             asyncio.create_task(genius(user,times,minecraft_id))
 
 
-    elif not event.gift.streakable:
-        await gift_counting(times)
-        await coin_counting(coin,times)
+    elif not event.gift.streakable and not event.streaking:
+        asyncio.create_task(gift_counting(times))
+        asyncio.create_task(coin_counting(coin,times))
 
         if name == "Paper Crane":
-            asyncio.create_task(blank_info(user,name,minecraft_id))
+            # asyncio.create_task(blank_info(user,times,minecraft_id))
+            print("notting intreactive...")
 
         elif name == "Hand Hearts":
             asyncio.create_task(Hand_Hearts(user,times,minecraft_id))
-
-        elif name == "Paper Crane":
-            asyncio.create_task(blank_info(user,name,minecraft_id))
-
         # elif name == "Mishka Bear":
         #     asyncio.create_task(mishka_storm(user,times,minecraft_id))
 
@@ -334,10 +331,11 @@ async def on_gift_mod(event,streamer_ID):
             asyncio.create_task(blank_info(user,times,minecraft_id))
 
         elif name == "Star Map Polaris":
-            asyncio.create_task(five_00_coin(user,times,minecraft_id))
+            print("DEBUG: Star_Map_Polaris called", user, times, minecraft_id)
+            await Star_Map_Polaris(user,times,minecraft_id)
 
         elif name == "Meteor Shower":
-            asyncio.create_task(thirty_00_over_coin(user,times,minecraft_id))
+            asyncio.create_task(Meteor_Shower(user,times,minecraft_id))
 
     # if 5000 <= coin_counter:
     #     while coin_counter > 5000:
