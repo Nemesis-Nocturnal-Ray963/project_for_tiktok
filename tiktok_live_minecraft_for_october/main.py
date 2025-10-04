@@ -8,35 +8,17 @@
 # This file is part of software distributed under the MIT License.
 # See the LICENSE file in the project root for full license information.
 
-
-
-import sys
-import os
-# print("//sys.path")
-# print(sys.path)
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from modules import config,setup,combo_system
+import sys, os, asyncio, json, csv
+from datetime import datetime, date
+from TikTokLive import TikTokLiveClient
+from TikTokLive.events import *
+from TikTokLive.client.errors import UserOfflineError
+from modules import config, setup
 from modules import minecraft_interactive_command as m_intr_c
 from modules import command_worker_mod as cwm
 from modules import combo_system as c_sys
-
-from TikTokLive import TikTokLiveClient
-from TikTokLive.events import *
-
-
-
-
-
-# CommentEvent, GiftEvent, FollowEvent, LikeEvent
-from TikTokLive.client.errors import UserOfflineError
-from datetime import datetime
-from mcrcon import MCRcon
-import random
-import asyncio
-import time
 import obsws_python as obs
-import colorsys
-import json
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
 #--------------------------------------------------
@@ -47,14 +29,16 @@ import json
 #グローバルサーバーに対応予定
 #受け取ったギフト情報を使ってマインクラフトサーバーにコマンドを送信
 #--------------------------------------------------
-combo_counter = 0
-last_update_time = 0
+# combo_counter = 0
+# last_update_time = 0
 #--------------------------------------------------
 
+
+# ==========================================================
 # バックグラウンドで動くコマンドワーカー
+# ==========================================================
 async def command_worker():
     await cwm.command_worker_mod()
-
 
 async def combo_system():
     await c_sys.combo_system_mod()
@@ -62,41 +46,54 @@ async def combo_system():
 
 
 
-
+# ==========================================================
+# TikTok クライアント管理クラス
+# ==========================================================
 class TikTokLiveManager:
-    def __init__(self,tiktok_user_id):
+    def __init__(self,tiktok_user_id,base_dir="logs"):
         self.client = TikTokLiveClient(unique_id=tiktok_user_id)
-        # 日付文字列を作成
-        date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-        # ファイル名を作成
-        self.DATA_FILE = f"data_{tiktok_user_id}_{date_str}.json"
-        self.gifts_data = {}
+        self.base_dir = base_dir
+        os.makedirs(base_dir, exist_ok=True)
+        today = date.today()
+        self.filename = os.path.join(base_dir, f"{tiktok_user_id}_{today.year}-{today.month:02d}.csv")
+        # メモリ上にデータを保持
+        self.data = []
+
+        # ファイルがあればロード
+        if os.path.exists(self.filename):
+            with open(self.filename, "r", newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                self.data = list(reader)
+        else:
+            # 新規ファイルならヘッダー作成
+            with open(self.filename, "w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=["日付", "ユーザー", "ギフト名","合計コイン数"])
+                writer.writeheader()
+
+        # キューとワーカー
+        self.queue = asyncio.Queue()
+        asyncio.create_task(self._log_save_worker())  # バックグラウンドで保存
+
         self.register()
 
-    def load_data(self):
-        if os.path.exists(self.DATA_FILE):
-            with open(self.DATA_FILE, "r", encoding="utf-8") as f:
-                self.gifts_data = json.load(f)
-            print("💾 データをロードしました")
-        else:
-            self.gifts_data = {}
+    async def _log_save_worker(self):
+        """キューに入ったログを逐次CSVに追記"""
+        print("boot _log_save_worker...")
+        while True:
+            item = await self.queue.get()
+            with open(self.filename, "a", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=["日付", "ユーザー", "ギフト名","合計コイン数"])
+                writer.writerow(item)
+            print("sava now...")
+    def log(self, user_name,gift_name,total_coin):
+        today = date.today()
+        item = ({"日付": str(today), "ユーザー": user_name,"ギフト名":gift_name,"合計コイン数":total_coin})
+        self.data.append(item)
+        # キューに追加
+
+        self.queue.put_nowait(item)
 
 
-
-    def save_data(self):
-        sorted_data = dict(sorted(self.gifts_data.items(), key=lambda x: x[1], reverse=False))  # 昇順
-        with open(self.DATA_FILE, "w", encoding="utf-8") as f:
-            json.dump(sorted_data, f, ensure_ascii=False, indent=2)
-        print("💾 データを保存しました")
-
-
-
-
-
-    async def add_gift(self,name, coins):
-        if name not in self.gifts_data:  # 未登録なら追加
-            self.gifts_data[name] = coins
-            print(f"✅ 新しいギフトを保存しました: {name} - {coins}コイン")
 
 
     async def start_client_session(self):
@@ -107,7 +104,7 @@ class TikTokLiveManager:
         except UserOfflineError:
             print("⚠️ 配信者がオフラインです。")
         finally:
-            self.save_data()
+            print('FINI')
 
 
     # TikTokのユーザー名
@@ -116,7 +113,16 @@ class TikTokLiveManager:
     # print(name)
     # マイクラのプレイヤー名
     def register(self):
-        from TikTokLive.events import LikeEvent,FollowEvent,CommentEvent,GiftEvent,LinkMicBattleEvent,LinkmicAnimationEvent,LinkMicAdEvent,LinkMicBattleVictoryLapEvent,LinkMicBattleVictoryLapEvent,LinkMicSignalingMethodEvent,LinkMicSignalingMethodEvent,LinkMicBattlePunishFinishEvent,LinkmicAudienceNoticeEvent,LinkMicBattleItemCardEvent,LinkmicBattleTaskEvent,LinkMicAnchorGuideEvent,LinkmicBattleNoticeEvent,LinkMicArmiesEvent,LinkMicFanTicketMethodEvent,LinkMicMethodEvent
+        # from TikTokLive.events import LikeEvent,FollowEvent,CommentEvent,GiftEvent,LinkMicBattleEvent,LinkmicAnimationEvent,LinkMicAdEvent,LinkMicBattleVictoryLapEvent,LinkMicBattleVictoryLapEvent,LinkMicSignalingMethodEvent,LinkMicSignalingMethodEvent,LinkMicBattlePunishFinishEvent,LinkmicAudienceNoticeEvent,LinkMicBattleItemCardEvent,LinkmicBattleTaskEvent,LinkMicAnchorGuideEvent,LinkmicBattleNoticeEvent,LinkMicArmiesEvent,LinkMicFanTicketMethodEvent,LinkMicMethodEvent
+        from TikTokLive.events import (
+            LikeEvent, FollowEvent, CommentEvent, GiftEvent,
+            LinkMicBattleEvent, LinkmicAnimationEvent, LinkMicAdEvent,
+            LinkMicBattleVictoryLapEvent, LinkMicSignalingMethodEvent,
+            LinkMicBattlePunishFinishEvent, LinkmicAudienceNoticeEvent,
+            LinkMicBattleItemCardEvent, LinkmicBattleTaskEvent,
+            LinkMicAnchorGuideEvent, LinkmicBattleNoticeEvent,
+            LinkMicArmiesEvent, LinkMicFanTicketMethodEvent, LinkMicMethodEvent
+        )
         # streamer_ID = self.client.unique_id
     # いいねを受け取った時
         @self.client.on(LikeEvent)
@@ -139,10 +145,12 @@ class TikTokLiveManager:
         # ギフトを受け取ったとき
         @self.client.on(GiftEvent)
         async def on_gift(event: GiftEvent):
-            for i in range(config.current_multiplier):
+            for _ in range(config.current_multiplier):
                 await m_intr_c.on_gift_mod(event,self.client.unique_id)
-            if event.gift.streakable and not event.streaking or not event.gift.streakable:
-                await self.add_gift(event.gift.name, event.gift.diamond_count)
+            # ログ追記
+            if (event.gift.streakable and not event.streaking) or (not event.gift.streakable):
+                total_coin = event.gift.diamond_count * int(event.repeat_count)
+                self.log(event.user.nickname, event.gift.name, total_coin, int(event.repeat_count))
 
 
 
