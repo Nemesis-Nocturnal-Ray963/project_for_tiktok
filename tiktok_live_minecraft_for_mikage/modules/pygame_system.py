@@ -4,7 +4,7 @@ import queue
 import sys
 import random
 
-command_queue = queue.Queue()
+pygame_queue = queue.Queue()
 _running = False
 _objects = []  # 描画オブジェクトを保持
 
@@ -25,10 +25,11 @@ class GiftSprite:
         screen.blit(self.image, self.rect)
 
 
-def start(width=1280, height=720, title="Gift Effect"):
+def start(width=1080, height=1920, title="Gift Effect"):
     global _running
     pygame.init()
-    screen = pygame.display.set_mode((width, height))
+    screen = pygame.display.set_mode((width / 2, height / 2))
+    render_surface = pygame.Surface((width, height))
     pygame.display.set_caption(title)
     clock = pygame.time.Clock()
     _running = True
@@ -39,21 +40,26 @@ def start(width=1280, height=720, title="Gift Effect"):
                 stop()
 
         # コマンド処理
-        while not command_queue.empty():
-            cmd, args = command_queue.get()
+        while not pygame_queue.empty():
+            cmd, args = pygame_queue.get()
             if cmd == "spawn_gift":
                 image_path = args[0]
                 x = random.randint(100, width - 100)
-                y = height - 50
+                y = height / 2
                 _objects.append(GiftSprite(image_path, x, y))
 
         # 更新と描画
-        screen.fill((20, 20, 20))
+        CHROMA_KEY_COLOR = (0, 255, 0)
+        render_surface.fill(CHROMA_KEY_COLOR)
         for obj in list(_objects):
             obj.update()
-            obj.draw(screen)
+            obj.draw(render_surface)
             if obj.rect.y > height:  # 画面外で削除
                 _objects.remove(obj)
+
+        # 縮小転送（滑らかな補間）
+        scaled = pygame.transform.smoothscale(render_surface, screen.get_size())
+        screen.blit(scaled, (0, 0))
 
         pygame.display.flip()
         clock.tick(60)
@@ -74,4 +80,4 @@ def run_async():
 
 def spawn_gift(image_path):
     """TikTokイベントから呼び出される"""
-    command_queue.put(("spawn_gift", (image_path,)))
+    pygame_queue.put(("spawn_gift", (image_path,)))

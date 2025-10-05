@@ -9,7 +9,7 @@ set PYTHON=%PYTHON_DIR%\python.exe
 
 REM --- アプリ起動 ---
 echo ==== アプリを起動します... ====
-%PYTHON% test.py
+%PYTHON% main_test.py
 
 pause
 endlocal
