@@ -295,14 +295,20 @@ async def on_gift_mod(event,streamer_ID):
         if name == "Heart Me":
             asyncio.create_task(heart_me(user,times,minecraft_id))
             asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/heart_me.png"])))
-        # elif name == "Rose":
+        elif name == "Rose":
             # asyncio.create_task(spawn_tnt(user, times,0.1,minecraft_id))
-
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/rose.png"])))
+            
+        elif name == "Go Popular":
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/go_popular.png"])))
+        
         elif name == "Finger Heart":
             asyncio.create_task(Finger_Heart(user, times,minecraft_id))
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/finger_heart.png"])))
 
         elif name == "Rosa":
             asyncio.create_task(Rosa(user,times,minecraft_id))
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/rosa.png"])))
 
         # elif name == "BFF Necklace":
         #     asyncio.create_task(summon_zombies(user, times,minecraft_id))
@@ -312,6 +318,7 @@ async def on_gift_mod(event,streamer_ID):
 
         elif name == "Doughnut":
             asyncio.create_task(doughnut(user,times,minecraft_id))
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/doughnut.png"])))
 
         elif name == "Genius":
             asyncio.create_task(genius(user,times,minecraft_id))
@@ -324,18 +331,34 @@ async def on_gift_mod(event,streamer_ID):
         if name == "Paper Crane":
             # asyncio.create_task(blank_info(user,times,minecraft_id))
             print("notting intreactive...")
-
+        elif name == "Hat and Mustache":
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/hat_and_mustache.png"])))
         elif name == "Hand Hearts":
             asyncio.create_task(Hand_Hearts(user,times,minecraft_id))
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/hand_hearts.png"])))
         # elif name == "Mishka Bear":
         #     asyncio.create_task(mishka_storm(user,times,minecraft_id))
+        elif name == "Breakthrough Star":
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/angel_ran.png"])))
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/devil_ran.png"])))
+            
+        elif name == "hearts":
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/hearts.png"])))
 
         elif name == "Corgi":
             asyncio.create_task(corgi(user,times,minecraft_id))
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/corgi.png"])))
+            
+        elif name == "DJ Glasses":
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/dj_glasses.png"])))
+        elif name == "Money Gun":
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/money_gun.png"])))
 
         elif name == "Galaxy":
             asyncio.create_task(blank_info(user,times,minecraft_id))
-
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/go_popular.png"])))
+        elif name == "Whale Diving":
+            asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/whale_diving.png"])))
         elif name == "Star Map Polaris":
             print("DEBUG: Star_Map_Polaris called", user, times, minecraft_id)
             await Star_Map_Polaris(user,times,minecraft_id)
