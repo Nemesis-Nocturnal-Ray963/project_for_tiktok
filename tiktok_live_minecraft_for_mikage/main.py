@@ -46,7 +46,7 @@ async def combo_system():
 class TikTokLiveManager:
     def __init__(self,tiktok_user_id,base_dir="logs"):
         self.client = TikTokLiveClient(unique_id=tiktok_user_id)
-        self.enable_visuals = (tiktok_user_id == "muzukiray963")  # ←特定のIDのみ演出ON
+        self.enable_visuals = tiktok_user_id in config.VISUAL_ENABLED_USERS  # ←特定のIDのみ演出ON
         if self.enable_visuals:
             pygame_system.run_async()
         self.base_dir = base_dir
@@ -147,7 +147,7 @@ class TikTokLiveManager:
             # ログ追記
             if (event.gift.streakable and not event.streaking) or (not event.gift.streakable):
                 total_coin = event.gift.diamond_count * int(event.repeat_count)
-                self.log(event.user.nickname, event.gift.name, total_coin, int(event.repeat_count))
+                self.log(event.user.nickname, event.gift.name, total_coin)
 
 
 
@@ -272,7 +272,7 @@ async def main():
     is_test = input("test mode? (y/n)").lower() == "y"
     is_use_obs = input("OBSを使いますか？ (y/n): ").lower() == "y"
     is_use_minecraft = input("Minecraftを使いますか？ (y/n): ").lower() == "y"
-
+    config.is_test = is_test
     if is_use_obs:
         config.obs_client = obs.ReqClient(config.HOST, config.PORT, config.PASSWORD)
         await setup.setup_scene_and_source(config.obs_client, config.SCENE_NAME, config.SOURCES_NAMES)

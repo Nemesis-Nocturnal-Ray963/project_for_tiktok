@@ -16,6 +16,7 @@ usernames = []
 
 
 is_test_now = False
+is_test = False
 gift_counter = 0
 combo_counter = 0
 last_update_time = 0
@@ -233,6 +234,8 @@ tiktok_to_minecraft = {
     "muzukiray963": "rey963_muzuki",
     "kai.mirena": "mirenakai"
 }
+
+VISUAL_ENABLED_USERS = ["muzukiray963", "mkg_ran", "another_user","lucir_otodoke","jps_aka"]
 
 async def re_mcid(tiktok_id):
     mc_id = tiktok_to_minecraft.get(tiktok_id,"@a")

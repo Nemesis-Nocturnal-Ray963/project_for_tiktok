@@ -128,6 +128,49 @@ async def Meteor_Shower(user,count,minecraft_id):
         await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run clear {minecraft_id}")
         await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run tp ~{x_offset} ~{y_offset} ~{z_offset}")
 
+
+def get_random_escapee(minecraft_id: str) -> str | None:
+    if minecraft_id in ("kasumizawa_fps", "akinashikoharu"):
+        return random.choice(["rey963_muzuki", "mirenakai"])
+    elif minecraft_id in ("rey963_muzuki", "mirenakai"):
+        return random.choice(["kasumizawa_fps", "akinashikoharu"])
+    else:
+        return None
+
+async def summon_glass_prison_near(escape_player: str, pursuance_player: str, radius=100, size=5, duration=5):
+    """
+    逃走者(escape_player)の半径radiusブロック内にガラス檻を生成し、
+    追跡者(pursuance_player)をその中に閉じ込める。
+    duration秒後に檻は自動消滅。
+    """
+
+    # === 1. 逃走者の座標取得 ===
+    resp = config.minecraft_rcon_setup_info.command(f"data get entity {escape_player} Pos")
+    coords = [float(x.replace("d", "")) for x in resp.split('[')[1].split(']')[0].split(',')]
+    cx, cy, cz = coords
+
+    # === 2. ランダムな方向・距離を決定 ===
+    theta = random.uniform(0, 2 * math.pi)
+    r = random.uniform(radius * 0.8, radius)
+    x = round(cx + r * math.cos(theta))
+    z = round(cz + r * math.sin(theta))
+    y = round(cy)
+    half = size // 2
+
+    # === 3. 檻生成 ===
+    await command_send_queue(f"fill {x-half} {y} {z-half} {x+half} {y+size-1} {z+half} air")
+    await command_send_queue(f"fill {x-half} {y} {z-half} {x+half} {y+size-1} {z+half} glass hollow")
+    await command_send_queue(f"fill {x-half+1} {y-1} {z-half+1} {x+half-1} {y-1} {z+half-1} glass")
+
+    # === 4. 追跡者を檻の中央にテレポート ===
+    await command_send_queue(f"tp {pursuance_player} {x} {y+1} {z}")
+
+    # === 5. 一定時間後に檻削除 ===
+    await asyncio.sleep(duration)
+
+
+
+# 以上ギフト妨害演出
 async def gift_counting(gift_times):
     global gift_counter
     gift_counter += gift_times
@@ -338,6 +381,13 @@ async def on_gift_mod(event,streamer_ID):
         elif name == "Meteor Shower":
             asyncio.create_task(Meteor_Shower(user,times,minecraft_id))
 
+        elif name == "test":
+            print("this is test...")
+            escape_player = get_random_escapee(minecraft_id)
+            if escape_player:  # None対策
+                asyncio.create_task(
+                    summon_glass_prison_near(escape_player, minecraft_id)
+                )
     # if 5000 <= coin_counter:
     #     while coin_counter > 5000:
     #         await add_time()

@@ -169,11 +169,6 @@ class TikTokLiveManager:
             if not event.gift.streakable:
                 self.log(event.user.nickname,event.gift.name,event.gift.diamond_count*event.repeat_count)
 
-
-
-
-
-
         @self.client.on(LinkMicBattleEvent)
         async def on_battle(event: LinkMicBattleEvent):
             print("バトルについて")

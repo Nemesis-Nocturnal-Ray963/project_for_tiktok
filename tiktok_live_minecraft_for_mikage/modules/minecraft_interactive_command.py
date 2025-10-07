@@ -271,9 +271,7 @@ async def on_gift_mod(event,streamer_ID):
 	global gift_counter,coin_counter
 	#ギフトを受け取るたびに取得する情報
 	user = event.user.nickname
-	print(user)
 	name = event.gift.name
-	print(name)
 	coin = event.gift.diamond_count
 	times = int(event.repeat_count)
 	count = times
@@ -281,10 +279,14 @@ async def on_gift_mod(event,streamer_ID):
 	now = datetime.now()
 	minecraft_id = await config.re_mcid(streamer_ID)
 
-	print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')}")
-	# streak 終了時のみ処理
-	print("event.gift.streakable:",event.gift.streakable)
-	print("event.streaking:",event.streaking)
+	if config.is_test:
+		print(user)
+		print(name)
+		
+		print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')}")
+		# streak 終了時のみ処理
+		print("event.gift.streakable:",event.gift.streakable)
+		print("event.streaking:",event.streaking)
 
 	if event.gift.streakable and not event.streaking:
 		asyncio.create_task(gift_counting(times))
