@@ -18,7 +18,7 @@ from modules import config, setup
 from modules import minecraft_interactive_command as m_intr_c
 from modules import command_worker_mod as cwm
 from modules import combo_system as c_sys
-from modules import pygame_system
+# from modules import pygame_system
 import obsws_python as obs
 
 
@@ -216,7 +216,7 @@ class TestSystem:
         self.streaking = CheckStraking(False)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
-        pygame_system.run_async()
+        # pygame_system.run_async()
     async def change_gift(self,gift_name,coin,streakings):
         self.gift = Gift(gift_name,coin,streakings)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)

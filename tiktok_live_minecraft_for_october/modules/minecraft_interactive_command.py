@@ -106,7 +106,7 @@ async def corgi(user,count,minecraft_id):
     # for x in range(count):
     for i in range(15):
         # await command_send_queue(f'execute as {minecraft_id} summon minecraft:sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{id:"generic.movement_speed",base:0.5},{id:"generic.scale",base:2.0}],Passengers:[{id:"silverfish",Silent:1b,NoAI:0b,Fire:0, DeathLootTable:"minecraft:empty",CustomName:"\"mirena\"",attributes:[{id:"generic.scale",base:2.0}],Tags:["sheep_rider0"]}]}}')
-        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,Fire:0,DeathLootTable:"minecraft:empty",CustomName:"\"怨念\"",attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon sheep ~ ~ ~ {{NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,Fire:0,DeathLootTable:"minecraft:empty",CustomName:"\"怨念\"",attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
     await command_send_queue('effect give @e[tag=sheep_rider] invisibility infinite 1 true')
 
 async def Star_Map_Polaris(user,count,minecraft_id):
@@ -158,17 +158,73 @@ async def summon_glass_prison_near(escape_player: str, pursuance_player: str, ra
     half = size // 2
 
     # === 3. 檻生成 ===
-    await command_send_queue(f"fill {x-half} {y} {z-half} {x+half} {y+size-1} {z+half} air")
+    await command_send_queue(f"fill {x-half} {y} {z-half} {x+half} {y+size-1} {z+half} air destroy")
     await command_send_queue(f"fill {x-half} {y} {z-half} {x+half} {y+size-1} {z+half} glass hollow")
     await command_send_queue(f"fill {x-half+1} {y-1} {z-half+1} {x+half-1} {y-1} {z+half-1} glass")
 
     # === 4. 追跡者を檻の中央にテレポート ===
-    await command_send_queue(f"tp {pursuance_player} {x} {y+1} {z}")
+    await command_send_queue(f"execute as {pursuance_player} at {pursuance_player} tp {pursuance_player} {x} {y+1} {z}")
 
     # === 5. 一定時間後に檻削除 ===
     await asyncio.sleep(duration)
 
+def get_player_pos(player: str):
+    """RCONからプレイヤー座標を取得"""
+    resp = config.minecraft_rcon_setup_info.command(f"data get entity {player} Pos")
+    coords = [float(x.replace("d", "")) for x in resp.split('[')[1].split(']')[0].split(',')]
+    return coords  # [x, y, z]
 
+async def light_teleport_toward(escape_player: str, pursuance_player: str, distance: float = 20):
+    """
+    追跡者(pursuance_player)を逃走者(escape_player)の方向にdistanceブロック分テレポート
+    """
+    # 位置取得
+    pos_a = get_player_pos(escape_player)
+    pos_b = get_player_pos(pursuance_player)
+
+    ax, ay, az = pos_a
+    bx, by, bz = pos_b
+
+    # A→B の方向ベクトル
+    dx, dy, dz = bx - ax, by - ay, bz - az
+    length = math.sqrt(dx**2 + dy**2 + dz**2)
+    if length == 0:
+        return  # 同座標なら処理なし
+
+    # 正規化して距離20延長
+    ux, uy, uz = dx / length, dy / length, dz / length
+    new_x = bx + ux * distance
+    new_y = by + uy * distance
+    new_z = bz + uz * distance
+
+    # テレポート実行
+    await command_send_queue(f"tp {pursuance_player} {new_x:.2f} {new_y:.2f} {new_z:.2f}")
+
+async def light_teleport_away(escape_player: str, pursuance_player: str, distance: float = 20):
+    """
+    追跡者(pursuance_player)を逃走者(escape_player)からdistanceブロック分「離す」テレポート
+    """
+    # 位置取得
+    pos_a = get_player_pos(escape_player)
+    pos_b = get_player_pos(pursuance_player)
+
+    ax, ay, az = pos_a
+    bx, by, bz = pos_b
+
+    # A→B の方向ベクトル
+    dx, dy, dz = bx - ax, by - ay, bz - az
+    length = math.sqrt(dx**2 + dy**2 + dz**2)
+    if length == 0:
+        return  # 同座標なら無視
+
+    # 正規化して「逆方向」に延長
+    ux, uy, uz = dx / length, dy / length, dz / length
+    new_x = bx + (-ux) * distance   # ←符号を反転
+    new_y = by + (-uy) * distance
+    new_z = bz + (-uz) * distance
+
+    # テレポート実行
+    await command_send_queue(f"tp {pursuance_player} {new_x:.2f} {new_y:.2f} {new_z:.2f}")
 
 # 以上ギフト妨害演出
 async def gift_counting(gift_times):
@@ -382,12 +438,32 @@ async def on_gift_mod(event,streamer_ID):
             asyncio.create_task(Meteor_Shower(user,times,minecraft_id))
 
         elif name == "test":
-            print("this is test...")
+            print("Teleport 100 meters from the escapee")
             escape_player = get_random_escapee(minecraft_id)
             if escape_player:  # None対策
-                asyncio.create_task(
-                    summon_glass_prison_near(escape_player, minecraft_id)
-                )
+                asyncio.create_task(summon_glass_prison_near(escape_player, minecraft_id))
+            
+        elif name == "test1":
+            print("a cobweb is placed")
+            await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run fill ~-1 ~ ~-1 ~1 ~2 ~1 cobweb")
+            
+        elif name == "test2":
+            print("Blindness effect for 40 seconds")
+            await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} effect give {minecraft_id} blindness 40")
+            
+        elif name == "test3":
+            print("A 9×9×9 area was filled with glass blocks.")
+            await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run fill ~-4 ~-4 ~-4 ~4 ~4 ~4 glass destroy")
+
+        elif name == "test4":
+            print("Got 20 meters closer.")
+            escape_player = get_random_escapee(minecraft_id)
+            await light_teleport_toward(escape_player, minecraft_id, distance=20)
+            
+        elif name == "test5":
+            print("Got 20 meters away.")
+            escape_player = get_random_escapee(minecraft_id)
+            await light_teleport_away(escape_player, minecraft_id, distance=20)
     # if 5000 <= coin_counter:
     #     while coin_counter > 5000:
     #         await add_time()
