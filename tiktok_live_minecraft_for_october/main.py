@@ -209,7 +209,7 @@ class CheckStraking:
 
 class TestSystem:
     def __init__(self):
-        self.client = Tiktok_Client("muzukiray963")
+        self.client = Tiktok_Client("kai.mirena")
         self.user = User("test_user_3699")
         self.gift = Gift("Heart Me", 9,True)
         self.repeat_count = RepeatCount(1)

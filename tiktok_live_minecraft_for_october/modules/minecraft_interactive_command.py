@@ -92,12 +92,12 @@ async def Hand_Hearts(user,count,minecraft_id):
     await command_send_queue(f'title {minecraft_id} title {{"text":"§cこれで生きろ！"}}')
     await command_send_queue(f'title {minecraft_id} subtitle {{"text":"{user}"}}')
     for i in range(count):
-        await command_send_queue(f'execute as {minecraft_id} run effect give {minecraft_id} haste 30 5')
-        await command_send_queue(f'execute as {minecraft_id} run effect give {minecraft_id} instant_health 30 5')
-        await command_send_queue(f'execute as {minecraft_id} run effect give {minecraft_id} darkness 30')
-        await command_send_queue(f'execute as {minecraft_id} run effect give {minecraft_id} speed 30 3')
-        await command_send_queue(f'execute as {minecraft_id} run effect give {minecraft_id} jump_boost 30')
-        await command_send_queue(f'execute as {minecraft_id} run give {minecraft_id} minecraft:netherite_axe[minecraft:custom_name="{user}の斧"] 1')
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run effect give {minecraft_id} haste 30 5')
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run effect give {minecraft_id} instant_health 30 5')
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run effect give {minecraft_id} darkness 30')
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run effect give {minecraft_id} speed 30 3')
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run effect give {minecraft_id} jump_boost 30')
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run give {minecraft_id} minecraft:netherite_axe[minecraft:custom_name="{user}の斧"] 1')
 
 
 async def corgi(user,count,minecraft_id):
@@ -106,7 +106,7 @@ async def corgi(user,count,minecraft_id):
     # for x in range(count):
     for i in range(15):
         # await command_send_queue(f'execute as {minecraft_id} summon minecraft:sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{id:"generic.movement_speed",base:0.5},{id:"generic.scale",base:2.0}],Passengers:[{id:"silverfish",Silent:1b,NoAI:0b,Fire:0, DeathLootTable:"minecraft:empty",CustomName:"\"mirena\"",attributes:[{id:"generic.scale",base:2.0}],Tags:["sheep_rider0"]}]}}')
-        await command_send_queue(f'execute as {minecraft_id} at @p run summon sheep ~ ~ ~ {{NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
+        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon sheep ~ ~ ~ {{NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
     await command_send_queue('effect give @e[tag=sheep_rider] invisibility infinite 1 false')
 
 async def Star_Map_Polaris(user,count,minecraft_id):
@@ -182,7 +182,10 @@ def get_player_pos(player: str):
     """RCONからプレイヤー座標を取得"""
     with MCRcon("127.0.0.1", "3699", port=25575) as mcr:
         resp = mcr.command(f"data get entity {player} Pos")
+    print(resp)
     coords = [float(x.replace("d", "")) for x in resp.split('[')[1].split(']')[0].split(',')]
+
+    print(coords)
     return coords  # [x, y, z]
 
 async def light_teleport_toward(escape_player: str, pursuance_player: str, distance: float = 20):
@@ -409,6 +412,9 @@ async def on_gift_mod(event,streamer_ID):
         elif name == "Rosa":
             asyncio.create_task(Rosa(user,times,minecraft_id))
 
+        elif name == "Minecraft":
+            print("a cobweb is placed")
+            await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run fill ~-1 ~ ~-1 ~1 ~2 ~1 cobweb")
         # elif name == "BFF Necklace":
         #     asyncio.create_task(summon_zombies(user, times,minecraft_id))
 
@@ -426,15 +432,38 @@ async def on_gift_mod(event,streamer_ID):
         asyncio.create_task(gift_counting(times))
         asyncio.create_task(coin_counting(coin,times))
 
-        if name == "Paper Crane":
-            # asyncio.create_task(blank_info(user,times,minecraft_id))
-            print("notting intreactive...")
 
+        if name == "Hat and Mustache":
+            print("Got 20 meters closer.")
+            escape_player = get_random_escapee(minecraft_id)
+            await light_teleport_toward(escape_player, minecraft_id, distance=20)
+
+        elif name == "Paper Crane":
+            print("Got 20 meters away.")
+            escape_player = get_random_escapee(minecraft_id)
+            await light_teleport_away(escape_player, minecraft_id, distance=20)
+            # asyncio.create_task(blank_info(user,times,minecraft_id))
+        elif name == "Breakthrough Star":
+            print("Blindness effect for 40 seconds")
+            await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run effect give {minecraft_id} blindness 40")
         elif name == "Hand Hearts":
-            asyncio.create_task(Hand_Hearts(user,times,minecraft_id))
+            print("A 9x9x9 area was filled with glass blocks.")
+            await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run fill ~-4 ~-4 ~-4 ~4 ~4 ~4 glass destroy")
+            # asyncio.create_task(Hand_Hearts(user,times,minecraft_id))
         # elif name == "Mishka Bear":
         #     asyncio.create_task(mishka_storm(user,times,minecraft_id))
+        elif name == "Minecraft Bee":
+            print("Teleport 100 meters from the escapee")
+            escape_player = get_random_escapee(minecraft_id)
+            if escape_player:  # None対策
+                asyncio.create_task(summon_glass_prison_near(escape_player, minecraft_id))
 
+
+        elif name == "Full moon":
+            print("Teleport 100 meters from the escapee")
+            escape_player = get_random_escapee(minecraft_id)
+            if escape_player:  # None対策
+                asyncio.create_task(summon_glass_prison_near(escape_player, minecraft_id))
         elif name == "Corgi":
             asyncio.create_task(corgi(user,times,minecraft_id))
 
@@ -460,7 +489,7 @@ async def on_gift_mod(event,streamer_ID):
             
         elif name == "test2":
             print("Blindness effect for 40 seconds")
-            await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} effect give {minecraft_id} blindness 40")
+            await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run effect give {minecraft_id} blindness 40")
             
         elif name == "test3":
             print("A 9x9x9 area was filled with glass blocks.")
