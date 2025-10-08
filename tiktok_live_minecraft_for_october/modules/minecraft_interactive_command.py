@@ -4,7 +4,7 @@ import asyncio
 from datetime import datetime
 import random
 import math
-
+from mcrcon import MCRcon
 # その配信でのコインの総量
 coin_counter = 0
 # コンボカウンター
@@ -106,8 +106,8 @@ async def corgi(user,count,minecraft_id):
     # for x in range(count):
     for i in range(15):
         # await command_send_queue(f'execute as {minecraft_id} summon minecraft:sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{id:"generic.movement_speed",base:0.5},{id:"generic.scale",base:2.0}],Passengers:[{id:"silverfish",Silent:1b,NoAI:0b,Fire:0, DeathLootTable:"minecraft:empty",CustomName:"\"mirena\"",attributes:[{id:"generic.scale",base:2.0}],Tags:["sheep_rider0"]}]}}')
-        await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon sheep ~ ~ ~ {{NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,Fire:0,DeathLootTable:"minecraft:empty",CustomName:"\"怨念\"",attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
-    await command_send_queue('effect give @e[tag=sheep_rider] invisibility infinite 1 true')
+        await command_send_queue(f'execute as {minecraft_id} at @p run summon sheep ~ ~ ~ {{NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
+    await command_send_queue('effect give @e[tag=sheep_rider] invisibility infinite 1 false')
 
 async def Star_Map_Polaris(user,count,minecraft_id):
     await command_send_queue(f'title {minecraft_id} title {{"text":"§cポピーーーー！！"}}')
@@ -130,10 +130,10 @@ async def Meteor_Shower(user,count,minecraft_id):
 
 
 def get_random_escapee(minecraft_id: str) -> str | None:
-    if minecraft_id in ("kasumizawa_fps", "akinashikoharu"):
-        return random.choice(["rey963_muzuki", "mirenakai"])
-    elif minecraft_id in ("rey963_muzuki", "mirenakai"):
-        return random.choice(["kasumizawa_fps", "akinashikoharu"])
+    if minecraft_id in ("kasumizawa_fps","mirenakai"):
+        return random.choice(["rey963_muzuki", "akinashikoharu"])
+    elif minecraft_id in ("rey963_muzuki", "akinashikoharu"):
+        return random.choice(["kasumizawa_fps","mirenakai"])
     else:
         return None
 
@@ -145,8 +145,10 @@ async def summon_glass_prison_near(escape_player: str, pursuance_player: str, ra
     """
 
     # === 1. 逃走者の座標取得 ===
-    resp = config.minecraft_rcon_setup_info.command(f"data get entity {escape_player} Pos")
+    with MCRcon("127.0.0.1", "3699", port=25575) as mcr:
+        resp = mcr.command(f"data get entity {escape_player} Pos")
     coords = [float(x.replace("d", "")) for x in resp.split('[')[1].split(']')[0].split(',')]
+    # print(resp)
     cx, cy, cz = coords
 
     # === 2. ランダムな方向・距離を決定 ===
@@ -158,19 +160,28 @@ async def summon_glass_prison_near(escape_player: str, pursuance_player: str, ra
     half = size // 2
 
     # === 3. 檻生成 ===
+    print(f"fill {x-half} {y} {z-half} {x+half} {y+size-1} {z+half} air destroy")
     await command_send_queue(f"fill {x-half} {y} {z-half} {x+half} {y+size-1} {z+half} air destroy")
+    await asyncio.sleep(0.1)
     await command_send_queue(f"fill {x-half} {y} {z-half} {x+half} {y+size-1} {z+half} glass hollow")
+    await asyncio.sleep(0.1)
     await command_send_queue(f"fill {x-half+1} {y-1} {z-half+1} {x+half-1} {y-1} {z+half-1} glass")
-
+    await asyncio.sleep(0.1)
+    print(pursuance_player)
     # === 4. 追跡者を檻の中央にテレポート ===
-    await command_send_queue(f"execute as {pursuance_player} at {pursuance_player} tp {pursuance_player} {x} {y+1} {z}")
-
+    # print(f"execute as {pursuance_player} at {pursuance_player} tp {pursuance_player} {x} {y+1} {z}")
+    await command_send_queue(f"execute as {pursuance_player} at {pursuance_player} run tp {pursuance_player} {x} {y+1} {z}")
+    await command_send_queue(f"execute at @a run effect give {pursuance_player} haste 30 4")
+    await command_send_queue(f"execute at @a run effect give {pursuance_player} glowing 60")
+    await command_send_queue(f"execute at @a run effect give {pursuance_player} resistance 20 255")
     # === 5. 一定時間後に檻削除 ===
     await asyncio.sleep(duration)
+    
 
 def get_player_pos(player: str):
     """RCONからプレイヤー座標を取得"""
-    resp = config.minecraft_rcon_setup_info.command(f"data get entity {player} Pos")
+    with MCRcon("127.0.0.1", "3699", port=25575) as mcr:
+        resp = mcr.command(f"data get entity {player} Pos")
     coords = [float(x.replace("d", "")) for x in resp.split('[')[1].split(']')[0].split(',')]
     return coords  # [x, y, z]
 
@@ -198,7 +209,7 @@ async def light_teleport_toward(escape_player: str, pursuance_player: str, dista
     new_z = bz + uz * distance
 
     # テレポート実行
-    await command_send_queue(f"tp {pursuance_player} {new_x:.2f} {new_y:.2f} {new_z:.2f}")
+    await command_send_queue(f"execute as {pursuance_player} at {pursuance_player} run tp {pursuance_player} {new_x:.2f} {new_y:.2f} {new_z:.2f}")
 
 async def light_teleport_away(escape_player: str, pursuance_player: str, distance: float = 20):
     """
@@ -224,7 +235,7 @@ async def light_teleport_away(escape_player: str, pursuance_player: str, distanc
     new_z = bz + (-uz) * distance
 
     # テレポート実行
-    await command_send_queue(f"tp {pursuance_player} {new_x:.2f} {new_y:.2f} {new_z:.2f}")
+    await command_send_queue(f"execute as {pursuance_player} at {pursuance_player} run tp {pursuance_player} {new_x:.2f} {new_y:.2f} {new_z:.2f}")
 
 # 以上ギフト妨害演出
 async def gift_counting(gift_times):
@@ -452,7 +463,7 @@ async def on_gift_mod(event,streamer_ID):
             await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} effect give {minecraft_id} blindness 40")
             
         elif name == "test3":
-            print("A 9×9×9 area was filled with glass blocks.")
+            print("A 9x9x9 area was filled with glass blocks.")
             await command_send_queue(f"execute as {minecraft_id} at {minecraft_id} run fill ~-4 ~-4 ~-4 ~4 ~4 ~4 glass destroy")
 
         elif name == "test4":
@@ -464,6 +475,9 @@ async def on_gift_mod(event,streamer_ID):
             print("Got 20 meters away.")
             escape_player = get_random_escapee(minecraft_id)
             await light_teleport_away(escape_player, minecraft_id, distance=20)
+        # elif name == "test6":
+        #     print("blindless 20 second...")
+        #     await command_send_queue()
     # if 5000 <= coin_counter:
     #     while coin_counter > 5000:
     #         await add_time()

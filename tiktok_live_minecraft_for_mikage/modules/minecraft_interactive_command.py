@@ -112,6 +112,7 @@ async def corgi(user,count,minecraft_id):
 	for i in range(15):
 		# await command_send_queue(f'execute as {minecraft_id} summon minecraft:sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{id:"generic.movement_speed",base:0.5},{id:"generic.scale",base:2.0}],Passengers:[{id:"silverfish",Silent:1b,NoAI:0b,Fire:0, DeathLootTable:"minecraft:empty",CustomName:"\"mirena\"",attributes:[{id:"generic.scale",base:2.0}],Tags:["sheep_rider0"]}]}}')
 		await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon sheep ~ ~ ~ {{CustomName:"御影蘭",NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,Fire:0,DeathLootTable:"minecraft:empty",CustomName:"\"怨念\"",attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
+		await command_send_queue(f'execute as {minecraft_id} at {minecraft_id} run summon sheep ~ ~ ~ {{NoAI:0b,attributes:[{{id:"generic.movement_speed",base:0.5}},{{id:"generic.scale",base:2.0}}],Passengers:[{{id:"silverfish",Silent:1b,NoAI:0b,Fire:0,DeathLootTable:"minecraft:empty",attributes:[{{id:"generic.scale",base:2.0}}],Tags:["sheep_rider"]}}]}}')
 	await command_send_queue('effect give @e[tag=sheep_rider] invisibility infinite 1 true')
 
 async def Star_Map_Polaris(user,count,minecraft_id):
@@ -361,7 +362,7 @@ async def on_gift_mod(event,streamer_ID):
 				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/angel_ran.png"])))
 				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/devil_ran.png"])))
 				await asyncio.sleep(0.1)
-		elif name == "hearts":
+		elif name == "Hearts":
 			for _ in range(count):
 				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/hearts.png"])))
 				await asyncio.sleep(0.1)
