@@ -95,7 +95,7 @@ class TikTokLiveManager:
 
     async def start_client_session(self):
         """クラス内の main 的なメソッド"""
-        self.load_data()              # データロード
+        # self.load_data()              # データロード
         try:
             await self.client.connect()  # TikTok に接続（非同期）
         except UserOfflineError:

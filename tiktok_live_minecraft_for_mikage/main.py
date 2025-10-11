@@ -18,7 +18,7 @@ from modules import config, setup
 from modules import minecraft_interactive_command as m_intr_c
 from modules import command_worker_mod as cwm
 from modules import combo_system as c_sys
-from modules import pygame_system
+from modules import arcade_system_alpha
 import obsws_python as obs
 
 
@@ -48,7 +48,7 @@ class TikTokLiveManager:
         self.client = TikTokLiveClient(unique_id=tiktok_user_id)
         self.enable_visuals = tiktok_user_id in config.VISUAL_ENABLED_USERS  # ←特定のIDのみ演出ON
         if self.enable_visuals:
-            pygame_system.run_async()
+            arcade_system_alpha.run_async()
         self.base_dir = base_dir
         os.makedirs(base_dir, exist_ok=True)
         today = date.today()
@@ -216,7 +216,7 @@ class TestSystem:
         self.streaking = CheckStraking(False)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
-        pygame_system.run_async()
+        arcade_system_alpha.run_async()
     async def change_gift(self,gift_name,coin,streakings):
         self.gift = Gift(gift_name,coin,streakings)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
