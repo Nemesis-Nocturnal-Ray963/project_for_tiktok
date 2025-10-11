@@ -1,4 +1,4 @@
-import arcade, pyglet, threading, queue, random
+import arcade, threading, queue, random
 import ctypes
 arcade_queue = queue.Queue()
 sprites = []
@@ -20,20 +20,49 @@ class GiftSprite(arcade.Sprite):
 
 class GiftWindow(arcade.Window):
     def __init__(self, width=540, height=960, title="Gift Effect"):
-        # config = pyglet.gl.Config(double_buffer=True, alpha_size=8)
-        # super().__init__(width, height, title, config=config, style="none", resizable=False)
         super().__init__(width, height, title, resizable=False)
         self.set_location(100, 100)
-        arcade.set_background_color((0, 0, 0, 0)) # 背景を透明に
+        transparent_color = arcade.color.TRANSPARENT_BLACK
+        self.background_color = transparent_color
+        arcade.set_background_color(transparent_color)
         self.sprite_list = arcade.SpriteList()
         arcade.schedule(self.check_queue, 1/30)
-
-        hwnd = self._window_handle
-        # hwnd = self.get_system_handle()
+        hwnd = self._resolve_window_handle()
         style = ctypes.windll.user32.GetWindowLongW(hwnd, -20)
         ctypes.windll.user32.SetWindowLongW(hwnd, -20, style | 0x80000 | 0x20)
         ctypes.windll.user32.SetLayeredWindowAttributes(hwnd, 0, 255, 2)
 
+    def _resolve_window_handle(self):
+        """Return the native HWND for the underlying Pyglet window."""
+        if hasattr(self, "_window_handle"):
+            return self._window_handle
+
+        handle_getters = (
+            getattr(self, "get_system_handle", None),
+            getattr(self, "_hwnd", None),
+        )
+
+        for getter in handle_getters:
+            if getter is None:
+                continue
+            try:
+                return getter() if callable(getter) else getter
+            except Exception:
+                continue
+
+        canvas = getattr(self, "canvas", None)
+        if canvas is not None:
+            hwnd = getattr(canvas, "hwnd", None)
+            if hwnd is not None:
+                return hwnd
+            handle = getattr(canvas, "get_handle", None)
+            if callable(handle):
+                try:
+                    return handle()
+                except Exception:
+                    pass
+
+        raise AttributeError("GiftWindow could not determine native window handle")
     def check_queue(self, dt):
         while not arcade_queue.empty():
             cmd, args = arcade_queue.get()
@@ -50,7 +79,7 @@ class GiftWindow(arcade.Window):
             s.update()
 
     def on_draw(self):
-        self.clear()
+        self.clear(color=self.background_color)
         self.sprite_list.draw()
 
 def run():
