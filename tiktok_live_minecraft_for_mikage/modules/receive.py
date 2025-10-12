@@ -239,5 +239,5 @@ async def on_battle_start(event,streamer_ID):
     asyncio.create_task(arcade_send_queue(("show_frame", (True,))))
     # asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/dj_glasses.png"])))
 async def on_battle_end(event,streamer_ID):
-    print("ballte start...")
+    print("ballte end...")
     asyncio.create_task(arcade_send_queue(("show_frame", (False,))))

@@ -90,7 +90,7 @@ def run(shared_queue):
     # Create a window class. This is what actually shows up on screen
     global arcade_queue
     arcade_queue = shared_queue
-    window = arcade.Window(720, 1280, "Minimal SPrite Example")
+    window = arcade.Window(720, 1280, "Gift Effect")
 
     # Create and setup the GameView
 
