@@ -20,17 +20,6 @@ TOTAL_LIKE_THRESHOLD = 10000
 
 finish_time = 0
 
-
-
-arcade_queue = None
-async def arcade_send_queue(code):
-    global arcade_queue
-    print("send queue...")
-    arcade_queue.put(code)
-
-
-
-
 async def command_send_queue(code):
     # await cwm.command_queue.put(code)
     print("I can't send command!! check your cord")
@@ -222,7 +211,26 @@ async def on_gift_mod(event,streamer_ID):
     #     if name == "Heart Me":
     #         asyncio.create_task(heart_me(user,times,minecraft_id))
 
+    #     # elif name == "Rose":
+    #         # asyncio.create_task(spawn_tnt(user, times,0.1,minecraft_id))
 
+    #     elif name == "Finger Heart":
+    #         asyncio.create_task(Finger_Heart(user, times,minecraft_id))
+
+    #     elif name == "Rosa":
+    #         asyncio.create_task(Rosa(user,times,minecraft_id))
+
+    #     # elif name == "BFF Necklace":
+    #     #     asyncio.create_task(summon_zombies(user, times,minecraft_id))
+
+    #     elif name == "Perfume":
+    #         asyncio.create_task(iron_Golem(user,times,minecraft_id))
+
+    #     elif name == "Doughnut":
+    #         asyncio.create_task(doughnut(user,times,minecraft_id))
+
+    #     elif name == "Genius":
+    #         asyncio.create_task(genius(user,times,minecraft_id))
 
 
     elif not event.gift.streakable:
@@ -232,12 +240,31 @@ async def on_gift_mod(event,streamer_ID):
         await coin_counting(coin,times)
         await workers.coin_count_queue.put(coin * times)
 
+    #     if name == "Paper Crane":
+    #         asyncio.create_task(blank_info(user,name,minecraft_id))
 
+    #     elif name == "Hand Hearts":
+    #         asyncio.create_task(Hand_Hearts(user,times,minecraft_id))
 
-async def on_battle_start(event,streamer_ID):
-    print("ballte start...")
-    asyncio.create_task(arcade_send_queue(("show_frame", (True,))))
-    # asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/dj_glasses.png"])))
-async def on_battle_end(event,streamer_ID):
-    print("ballte start...")
-    asyncio.create_task(arcade_send_queue(("show_frame", (False,))))
+    #     elif name == "Paper Crane":
+    #         asyncio.create_task(blank_info(user,name,minecraft_id))
+
+    #     # elif name == "Mishka Bear":
+    #     #     asyncio.create_task(mishka_storm(user,times,minecraft_id))
+
+    #     elif name == "Corgi":
+    #         asyncio.create_task(corgi(user,times,minecraft_id))
+
+    #     elif name == "Galaxy":
+    #         asyncio.create_task(blank_info(user,times,minecraft_id))
+
+    #     elif str(coin) == "500":
+    #         asyncio.create_task(five_00_coin(user,times,minecraft_id))
+
+    #     elif str(coin) <= "3000":
+    #         asyncio.create_task(thirty_00_over_coin(user,times,minecraft_id))
+
+    # if 5000 <= coin_counter:
+    #     while coin_counter > 5000:
+    #         await add_time()
+    #     asyncio.create_task(time_measurement())

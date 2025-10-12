@@ -1,10 +1,12 @@
 from modules import command_worker_mod as cwm
-from modules import pygame_system
+from modules import arcade_system_alpha
 from modules import config
 import asyncio
 from datetime import datetime
 import random
 import math
+
+
 
 # その配信でのコインの総量
 coin_counter = 0
@@ -24,9 +26,13 @@ finish_time = 0
 async def command_send_queue(code):
 	if config.is_minecraft_server_connect:
 		await cwm.command_queue.put(code)
-
-async def pygame_send_queue(code):
-	pygame_system.pygame_queue.put(code)
+  
+  
+arcade_queue = None
+async def arcade_send_queue(code):
+    global arcade_queue
+    print("send queue...")
+    arcade_queue.put(code)
 
 async def blank_info(user,giftname,minecraft_id):
 	print(f"name:{user}  gift:{giftname} stremar:{minecraft_id}")
@@ -283,7 +289,7 @@ async def on_gift_mod(event,streamer_ID):
 	if config.is_test:
 		print(user)
 		print(name)
-		
+
 		print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')}")
 		# streak 終了時のみ処理
 		print("event.gift.streakable:",event.gift.streakable)
@@ -298,29 +304,29 @@ async def on_gift_mod(event,streamer_ID):
 		if name == "Heart Me":
 			asyncio.create_task(heart_me(user,times,minecraft_id))
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/heart_me.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/heart_me.png"])))
 				await asyncio.sleep(0.1)
 		elif name == "Rose":
 			# asyncio.create_task(spawn_tnt(user, times,0.1,minecraft_id))
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/rose.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/rose.png"])))
 				await asyncio.sleep(0.1)
 
 		elif name == "Go Popular":
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/go_popular.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/go_popular.png"])))
 				await asyncio.sleep(0.1)
 
 		elif name == "Finger Heart":
 			asyncio.create_task(Finger_Heart(user, times,minecraft_id))
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/finger_heart.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/finger_heart.png"])))
 				await asyncio.sleep(0.1)
 
 		elif name == "Rosa":
 			asyncio.create_task(Rosa(user,times,minecraft_id))
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/rosa.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/rosa.png"])))
 				await asyncio.sleep(0.1)
 
 		# elif name == "BFF Necklace":
@@ -332,12 +338,15 @@ async def on_gift_mod(event,streamer_ID):
 		elif name == "Doughnut":
 			asyncio.create_task(doughnut(user,times,minecraft_id))
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/doughnut.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/doughnut.png"])))
 				await asyncio.sleep(0.1)
 
 		elif name == "Genius":
 			asyncio.create_task(genius(user,times,minecraft_id))
-
+		elif name == "test":
+			asyncio.create_task(arcade_send_queue(("show_frame", (True,))))
+		elif name == "test1":
+			asyncio.create_task(arcade_send_queue(("show_frame", (False,))))
 
 	elif not event.gift.streakable and not event.streaking:
 		asyncio.create_task(gift_counting(times))
@@ -348,48 +357,48 @@ async def on_gift_mod(event,streamer_ID):
 			print("notting intreactive...")
 		elif name == "Hat and Mustache":
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/hat_and_mustache.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/hat_and_mustache.png"])))
 				await asyncio.sleep(0.1)
 		elif name == "Hand Hearts":
 			asyncio.create_task(Hand_Hearts(user,times,minecraft_id))
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/hand_hearts.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/hand_hearts.png"])))
 				await asyncio.sleep(0.1)
 		# elif name == "Mishka Bear":
 		#     asyncio.create_task(mishka_storm(user,times,minecraft_id))
 		elif name == "Breakthrough Star":
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/angel_ran.png"])))
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/devil_ran.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/angel_ran.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/devil_ran.png"])))
 				await asyncio.sleep(0.1)
 		elif name == "Hearts":
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/hearts.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/hearts.png"])))
 				await asyncio.sleep(0.1)
 
 		elif name == "Corgi":
 			asyncio.create_task(corgi(user,times,minecraft_id))
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/corgi.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/corgi.png"])))
 				await asyncio.sleep(0.1)
 
 		elif name == "DJ Glasses":
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/dj_glasses.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/dj_glasses.png"])))
 				await asyncio.sleep(0.1)
 		elif name == "Money Gun":
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/money_gun.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/money_gun.png"])))
 				await asyncio.sleep(0.1)
 
 		elif name == "Galaxy":
 			asyncio.create_task(blank_info(user,times,minecraft_id))
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/galaxy.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/galaxy.png"])))
 				await asyncio.sleep(0.1)
 		elif name == "Whale Diving":
 			for _ in range(count):
-				asyncio.create_task(pygame_send_queue(("spawn_gift", ["assets/images/gift/whale_diving.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/whale_diving.png"])))
 				await asyncio.sleep(0.1)
 		elif name == "Star Map Polaris":
 			print("DEBUG: Star_Map_Polaris called", user, times, minecraft_id)

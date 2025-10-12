@@ -14,13 +14,13 @@ from datetime import datetime, date
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import *
 from TikTokLive.client.errors import UserOfflineError
-from modules import config, setup
+from modules import config, setup, receive
 from modules import minecraft_interactive_command as m_intr_c
 from modules import command_worker_mod as cwm
 from modules import combo_system as c_sys
 from modules import arcade_system_alpha
 import obsws_python as obs
-
+from multiprocessing import Process,Queue
 
 
 #--------------------------------------------------
@@ -48,7 +48,11 @@ class TikTokLiveManager:
         self.client = TikTokLiveClient(unique_id=tiktok_user_id)
         self.enable_visuals = tiktok_user_id in config.VISUAL_ENABLED_USERS  # ←特定のIDのみ演出ON
         if self.enable_visuals:
-            arcade_system_alpha.run_async()
+            shared_queue = Queue()
+            self.arcade_process = Process(target=arcade_system_alpha.run,args=(shared_queue,), daemon=True)
+            self.arcade_process.start()
+            m_intr_c.arcade_queue = shared_queue
+
         self.base_dir = base_dir
         os.makedirs(base_dir, exist_ok=True)
         today = date.today()
@@ -163,8 +167,10 @@ class TikTokLiveManager:
             # enumオブジェクト は name や value 属性を持っている
             if event.action.name == "BATTLE_ACTION_OPEN":
                 print("バトル開始ッ…！")
+                await receive.on_battle_start(event,self.client.unique_id)
             if event.action.name == "BATTLE_ACTION_FINISH":
                 print("バトル終了…")
+                await receive.on_battle_end(event,self.client.unique_id)
             print(event.battle_result)
 
 
@@ -211,16 +217,23 @@ class TestSystem:
     def __init__(self):
         self.client = Tiktok_Client("muzukiray963")
         self.user = User("test_user_3699")
-        self.gift = Gift("Heart Me", 9,True)
+        self.gift = Gift("test", 1337,True)
         self.repeat_count = RepeatCount(1)
         self.streaking = CheckStraking(False)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
-        arcade_system_alpha.run_async()
+        shared_queue = Queue()
+        self.arcade_process = Process(target=arcade_system_alpha.run,args=(shared_queue,), daemon=True)
+        self.arcade_process.start()
+        
+        m_intr_c.arcade_queue = shared_queue
+        
     async def change_gift(self,gift_name,coin,streakings):
         self.gift = Gift(gift_name,coin,streakings)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
+# print(arcade_system_alpha.arcade_queue.qsize())
+        
     async def test_input_cord(self):
         while True:
             test_message = """
