@@ -200,9 +200,11 @@ class GiftWindow(arcade.View):
                         self.frame_list.remove(self.sprite_frame)
             elif cmd == "spawn_Icosahedron":
                 print("success...")
-                if args[0]:
+                if args[0] == "light up":
+                    print("1337")
                     self.show_icosahedron = True
-                else:
+                elif args[0] == "light down":
+                    print("31337")
                     self.show_icosahedron = False
 
 
@@ -270,12 +272,13 @@ class GiftWindow(arcade.View):
         for s in list(sprites):
             s.update()
 
-        if self.show_icosahedron:
-            self.angle_x += dt * 0.0
-            self.angle_y += dt * 1.0
+        if not self.show_icosahedron:
+            return
+        self.angle_x += dt * 0.0
+        self.angle_y += dt * 1.0
 
-            for beam in self.beams:
-                beam.update(dt)
+        for beam in self.beams:
+            beam.update(dt)
 
     def on_draw(self):
         self.clear()
