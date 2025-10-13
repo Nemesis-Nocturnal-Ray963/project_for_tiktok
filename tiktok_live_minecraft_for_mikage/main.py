@@ -52,7 +52,8 @@ class TikTokLiveManager:
             self.arcade_process = Process(target=arcade_system_alpha.run,args=(shared_queue,), daemon=True)
             self.arcade_process.start()
             m_intr_c.arcade_queue = shared_queue
-
+            
+            
         self.base_dir = base_dir
         os.makedirs(base_dir, exist_ok=True)
         today = date.today()
@@ -176,20 +177,24 @@ class TikTokLiveManager:
 
 
 class Tiktok_Client:
+    "this is use TestSystem"
     def __init__(self, unique_id):
         self.unique_id = unique_id
 
 class Gift:
+    "this is use TestSystem"
     def __init__(self, name, diamond_count,streakable):
         self.name = name
         self.diamond_count = diamond_count
         self.streakable = streakable
 
 class User:
+    "this is use TestSystem"
     def __init__(self, nickname):
         self.nickname = nickname
 
 class GiftEvent:
+    "this is use TestSystem"
     def __init__(self, client, user, gift, repeat_count, streaking):
         self.client = client
         self.user = user
@@ -197,6 +202,7 @@ class GiftEvent:
         self.repeat_count = repeat_count
         self.streaking = streaking
 class RepeatCount:
+    "this is use TestSystem"
     def __init__(self, times):
         self.repeat_count = times
     def __int__(self):
@@ -205,6 +211,7 @@ class RepeatCount:
         return str(self.repeat_count)
 
 class CheckStraking:
+    "this is use TestSystem"
     def __init__(self, streaking):
         self.streaking = streaking
     def __str__(self):
@@ -214,6 +221,7 @@ class CheckStraking:
         return self.streaking
 
 class TestSystem:
+    "this is use TestSystem"
     def __init__(self):
         self.client = Tiktok_Client("muzukiray963")
         self.user = User("test_user_3699")
@@ -295,7 +303,7 @@ async def main():
         asyncio.create_task(command_worker())
     else:
         config.is_minecraft_server_connect = is_use_minecraft
-    
+
     if is_test:
         for i in range(3):
             print("=== テストプログラム ===")

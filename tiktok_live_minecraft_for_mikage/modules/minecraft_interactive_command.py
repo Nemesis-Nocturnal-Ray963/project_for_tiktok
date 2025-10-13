@@ -29,6 +29,7 @@ async def command_send_queue(code):
   
   
 arcade_queue = None
+
 async def arcade_send_queue(code):
     global arcade_queue
     print("send queue...")
@@ -37,6 +38,18 @@ async def arcade_send_queue(code):
 async def blank_info(user,giftname,minecraft_id):
 	print(f"name:{user}  gift:{giftname} stremar:{minecraft_id}")
 	print(minecraft_id)
+
+async def spawn_test():
+    print("spawn test now...")
+    asyncio.sleep(1)
+    asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/mooncake.png"])))
+    asyncio.sleep(0.1)
+    asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/strawberry_moon.png"])))
+    asyncio.sleep(0.1)
+    asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/magic_hat.png"])))
+    asyncio.sleep(0.1)
+    asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/flating_lanterns.png"])))
+
 
 
 async def heart_me(user,count,minecraft_id):
@@ -320,6 +333,8 @@ async def on_gift_mod(event,streamer_ID):
 			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", (True,))))
 		elif name == "test_irosa_2":
 			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", (False,))))
+		elif name == "spawn_test":
+			await spawn_test()
 
 	elif not event.gift.streakable and not event.streaking:
 		asyncio.create_task(gift_counting(times))
@@ -338,3 +353,11 @@ async def on_gift_mod(event,streamer_ID):
 	#     while coin_counter > 5000:
 	#         await add_time()
 	#     asyncio.create_task(time_measurement())
+
+async def on_battle_start(event,streamer_ID):
+    print("ballte start...")
+    asyncio.create_task(arcade_send_queue(("show_frame", (True,))))
+    # asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/dj_glasses.png"])))
+async def on_battle_end(event,streamer_ID):
+    print("ballte end...")
+    asyncio.create_task(arcade_send_queue(("show_frame", (False,))))
