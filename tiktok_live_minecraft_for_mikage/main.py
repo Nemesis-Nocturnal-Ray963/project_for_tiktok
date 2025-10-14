@@ -168,10 +168,10 @@ class TikTokLiveManager:
             # enumオブジェクト は name や value 属性を持っている
             if event.action.name == "BATTLE_ACTION_OPEN":
                 print("バトル開始ッ…！")
-                await receive.on_battle_start(event,self.client.unique_id)
+                await m_intr_c.on_battle_start(event,self.client.unique_id)
             if event.action.name == "BATTLE_ACTION_FINISH":
                 print("バトル終了…")
-                await receive.on_battle_end(event,self.client.unique_id)
+                await m_intr_c.on_battle_end(event,self.client.unique_id)
             print(event.battle_result)
 
 
