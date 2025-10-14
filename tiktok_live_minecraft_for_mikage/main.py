@@ -46,12 +46,12 @@ async def combo_system():
 class TikTokLiveManager:
     def __init__(self,tiktok_user_id,base_dir="logs"):
         self.client = TikTokLiveClient(unique_id=tiktok_user_id)
-        self.enable_visuals = tiktok_user_id in config.VISUAL_ENABLED_USERS  # ←特定のIDのみ演出ON
-        if self.enable_visuals:
-            shared_queue = Queue()
-            self.arcade_process = Process(target=arcade_system_alpha.run,args=(shared_queue,), daemon=True)
-            self.arcade_process.start()
-            m_intr_c.arcade_queue = shared_queue
+        # self.enable_visuals = tiktok_user_id in config.VISUAL_ENABLED_USERS  # ←特定のIDのみ演出ON
+        # if self.enable_visuals:
+        shared_queue = Queue()
+        self.arcade_process = Process(target=arcade_system_alpha.run,args=(shared_queue,), daemon=True)
+        self.arcade_process.start()
+        m_intr_c.arcade_queue = shared_queue
             
             
         self.base_dir = base_dir
@@ -230,6 +230,7 @@ class TestSystem:
         self.streaking = CheckStraking(False)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
+        
         shared_queue = Queue()
         self.arcade_process = Process(target=arcade_system_alpha.run,args=(shared_queue,), daemon=True)
         self.arcade_process.start()
