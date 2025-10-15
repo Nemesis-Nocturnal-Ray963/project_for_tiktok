@@ -30,17 +30,17 @@ def rotate_point_3d(x, y, z, ax, ay):
 
 
 class LightBeam:
-    def __init__(self, x, y, color, min_angle_deg, max_angle_deg, speed):
+    def __init__(self, x, y, color, min_angle_deg, max_angle_deg, speed,beam_width = 100,alpha = 100,beam_length = 1920):
         self.origin = (x, y)  # 根元の座標
         self.color = color
         self.min_angle = math.radians(min_angle_deg)
         self.max_angle = math.radians(max_angle_deg)
         self.time = 0.0
         self.speed = speed
-        self.beam_length = 1920
-        self.beam_width = 100
+        self.beam_length = beam_length
+        self.beam_width = beam_width
         self.layers = 122
-        self.alpha = 100
+        self.alpha = alpha
 
     def update(self, dt):
         self.time += dt * self.speed
@@ -74,10 +74,7 @@ class LightBeam:
             tip_right_y = tip_y - math.cos(angle) * width
 
             arcade.draw_polygon_filled(
-                [(back_left_x, back_left_y),
-                 (back_right_x, back_right_y),
-                 (tip_right_x, tip_right_y),
-                 (tip_left_x, tip_left_y)],
+                [(back_left_x, back_left_y),(back_right_x, back_right_y),(tip_right_x, tip_right_y),(tip_left_x, tip_left_y)],
                 (r, g, b, alpha)
             )
 
@@ -104,7 +101,7 @@ class GiftWindow(arcade.View):
     # 右下：速く狭い範囲で動くマゼンタ光
     LightBeam(x=720, y=0, color=(255, 0, 255),min_angle_deg=100, max_angle_deg=160, speed=2.2),   # マゼンタ # 高速往復
     # 中央下：黄緑光、広範囲で滑らかに
-    LightBeam(x=360, y=0, color=(180, 255, 120), min_angle_deg=30, max_angle_deg=150, speed=1.3)
+    LightBeam(x=360, y=0, color=(180, 255, 120), min_angle_deg=30, max_angle_deg=150, speed=1.3,beam_width=100,alpha = 100,beam_length = 1920)
     ]
     """
 
@@ -149,8 +146,8 @@ class GiftWindow(arcade.View):
             LightBeam(720, 1280, (250, 194, 222), 180, 270, 0.6),              # 右上
             LightBeam(720, 1280, (250, 194, 222), 180, 270, 0.6),              # 右上
             LightBeam(0, 1280, (250, 194, 222), 270, 360, 0.4),           # 左上
-            LightBeam(240, 0, (255, 255, 255), 115, 125, 0.2),           # 真下から上方向左
-            LightBeam(480, 0, (255, 255, 255), 55, 65, 0.2),           # 真下から上方向右
+            LightBeam(240, 0, (255, 255, 255), 100, 105, 0.2,35,150,640),           # 真下から上方向左
+            LightBeam(480, 0, (255, 255, 255), 40, 45, 0.2,35,150,640),           # 真下から上方向右
         ]
 
         arcade.schedule(self.check_queue, 1/60)  # 60fpsで確認
