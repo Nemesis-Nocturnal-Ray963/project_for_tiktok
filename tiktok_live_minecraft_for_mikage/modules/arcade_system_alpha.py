@@ -207,7 +207,7 @@ class GiftWindow(arcade.View):
                     print("31337")
                     self.show_icosahedron = False
 
-
+                
     def draw_light_beam(self):
         # --- 基本パラメータ ---
         x, y = self.light_pos
