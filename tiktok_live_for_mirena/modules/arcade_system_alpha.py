@@ -30,7 +30,7 @@ def rotate_point_3d(x, y, z, ax, ay):
 
 
 class LightBeam:
-    def __init__(self, x, y, color, min_angle_deg, max_angle_deg, speed,beam_width = 100,alpha = 100,beam_length = 1920):
+    def __init__(self, x, y, color, min_angle_deg, max_angle_deg, speed,beam_width = 100,alpha = 120,beam_length = 1920):
         self.origin = (x, y)  # 根元の座標
         self.color = color
         self.min_angle = math.radians(min_angle_deg)
@@ -141,11 +141,10 @@ class GiftWindow(arcade.View):
 
 
         self.beams = [
-            LightBeam(0, 0, (94, 255, 247),  0, 90, 0.9),                # 左下
-            LightBeam(720, 0, (94, 255, 247), 90, 180, 1.5),              # 右下
-            LightBeam(720, 1280, (250, 194, 222), 180, 270, 0.6),              # 右上
-            LightBeam(720, 1280, (250, 194, 222), 180, 270, 0.6),              # 右上
-            LightBeam(0, 1280, (250, 194, 222), 270, 360, 0.4),           # 左上
+            LightBeam(0, 0, (45, 255, 255),  0, 90, 0.9),                # 左下
+            LightBeam(720, 0, (45, 255, 255), 90, 180, 1.2),              # 右下
+            LightBeam(720, 1280, (255, 180, 230), 180, 270, 0.6),              # 右上
+            LightBeam(0, 1280, (255, 180, 230), 270, 360, 0.4),           # 左上
             LightBeam(240, 0, (255, 255, 255), 118, 123, 0.2,35,150,640),           # 真下から上方向左
             LightBeam(480, 0, (255, 255, 255), 58, 63, 0.2,35,150,640),           # 真下から上方向右
         ]
