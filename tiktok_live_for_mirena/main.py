@@ -148,7 +148,8 @@ class TikTokLiveManager:
         @self.client.on(GiftEvent)
         async def on_gift(event: GiftEvent):
             for _ in range(config.current_multiplier):
-                await m_intr_c.on_gift_mod(event,self.client.unique_id)
+                print("got gift...")
+                # await m_intr_c.on_gift_mod(event,self.client.unique_id)
             # ログ追記
             if (event.gift.streakable and not event.streaking) or (not event.gift.streakable):
                 total_coin = event.gift.diamond_count * int(event.repeat_count)
