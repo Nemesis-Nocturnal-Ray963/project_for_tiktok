@@ -315,7 +315,7 @@ async def main():
         # TikTok アカウント登録
         tiktok_usernames = []
         while True:
-            user = input("TikTokのユーザーIDを入力してください（@は不要）: ").strip()
+            user = input("TikTokのユーザーIDを入力してください（@は不要）ちなみにkai.mirena: ").strip()
             if user:
                 tiktok_usernames.append(user)
             else:
