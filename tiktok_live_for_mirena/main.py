@@ -295,6 +295,11 @@ async def main():
     is_test = input("test mode? (y/n)").lower() == "y"
     is_use_obs = input("OBSを使いますか？ (y/n): ").lower() == "y"
     is_use_minecraft = input("Minecraftを使いますか？ (y/n): ").lower() == "y"
+
+    is_test = input("test mode? (y/n)").lower() == "y"
+    is_use_obs = input("OBSを使いますか？ (y/n): ").lower() == "y"
+    is_use_minecraft = input("Minecraftを使いますか？ (y/n): ").lower() == "y"
+
     config.is_test = is_test
     if is_use_obs:
         config.obs_client = obs.ReqClient(config.HOST, config.PORT, config.PASSWORD)
