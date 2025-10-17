@@ -30,17 +30,17 @@ def rotate_point_3d(x, y, z, ax, ay):
 
 
 class LightBeam:
-    def __init__(self, x, y, color, min_angle_deg, max_angle_deg, speed):
+    def __init__(self, x, y, color, min_angle_deg, max_angle_deg, speed,beam_width = 100,alpha = 120,beam_length = 1920):
         self.origin = (x, y)  # 根元の座標
         self.color = color
         self.min_angle = math.radians(min_angle_deg)
         self.max_angle = math.radians(max_angle_deg)
         self.time = 0.0
         self.speed = speed
-        self.beam_length = 1920
-        self.beam_width = 100
+        self.beam_length = beam_length
+        self.beam_width = beam_width
         self.layers = 122
-        self.alpha = 100
+        self.alpha = alpha
 
     def update(self, dt):
         self.time += dt * self.speed
@@ -86,15 +86,30 @@ class GiftSprite(arcade.Sprite):
         super().__init__(image_path, scale=0.5)
         self.center_x = x
         self.center_y = y
-        self.change_x = random.uniform(-3, 3)
-        self.change_y = random.uniform(4, 8)
+        self.vx = 0
+        self.vy = 0
+        self.dragging = False
 
-    def update(self):
-        self.change_y -= 0.2
-        self.center_x += self.change_x
-        self.center_y += self.change_y
-        if self.center_y < -100:
-            self.remove_from_sprite_lists()
+
+    def update_motion(self, dt, gravity=0.05):
+        if not self.dragging:
+            self.vy -= gravity       # 月の重力（非常に弱い）
+            self.center_x += self.vx * dt * 60
+            self.center_y += self.vy * dt * 60
+            self.vx *= 0.99
+            self.vy *= 0.99
+
+    def keep_in_bounds(self, width, height):
+        margin = 50
+        if self.center_x < margin:
+            self.center_x = margin
+            self.vx *= -0.6
+        elif self.center_x > width - margin:
+            self.center_x = width - margin
+            self.vx *= -0.6
+
+    def is_outside_bottom(self, height):
+        return self.center_y < -100
 
 class GiftWindow(arcade.View):
     """
@@ -112,6 +127,7 @@ class GiftWindow(arcade.View):
         super().__init__()
         self.sprite_list = arcade.SpriteList()
         self.frame_list = arcade.SpriteList()
+        self.drag_target = None
         self.show_frame = False  # ← フラグ
         self.show_icosahedron = False  # ← new
         self.angle_x = 45
@@ -122,27 +138,6 @@ class GiftWindow(arcade.View):
         self.icosahedron_offset_y = 360  # ← 中央より上に表示
         self.time_counter = 0.0
 
-        # self.light_angle = 0.0
-        # self.light_speed = 0.02
-        # self.light_radius = 250
-        # self.light_color = (255, 255, 200)
-        # self.light_alpha = 180
-        # self.light_pos = (self.width // 2, self.height // 2 + 200)
-
-
-        # 光の基本設定
-        self.beam_angle = math.radians(45)   # 初期角度
-        self.beam_speed = 1.5   # 値を上げると往復が速くなる
-        self.beam_accel = 0.0005             # 加速率
-        self.beam_dir = 1                    # 1:右回転 / -1:左回転
-        self.beam_min_angle = math.radians(0)
-        self.beam_max_angle = math.radians(90)
-        # self.light_pos = (0, 0)              # 左下角を根元に固定
-        # self.light_color = (0, 255, 255)     # シアン
-        self.beam_time = 0.0
-        self.beam_speed = 0.75   # 値を上げると往復が速くなる
-
-
         self.beams = [
             LightBeam(0, 0, (0, 255, 255),  0, 90, 1.5),                # 左下
             LightBeam(720, 0, (0, 255, 255), 90, 180, 1.2),              # 右下
@@ -151,16 +146,15 @@ class GiftWindow(arcade.View):
         ]
 
         arcade.schedule(self.check_queue, 1/60)  # 60fpsで確認
-
         self.background_color = (0, 0, 0, 0)
-        try:
-            hwnd = getattr(self, "_hwnd", None)
-            if hwnd:
-                style = user32.GetWindowLongW(hwnd, -20)
-                user32.SetWindowLongW(hwnd, -20, style | 0x80000 | 0x20)
-                user32.SetLayeredWindowAttributes(hwnd, 0, 255, 2)
-        except Exception as e:
-            print("透過処理スキップ:", e)
+        # try:
+        #     hwnd = getattr(self, "_hwnd", None)
+        #     if hwnd:
+        #         style = user32.GetWindowLongW(hwnd, -20)
+        #         user32.SetWindowLongW(hwnd, -20, style | 0x80000 | 0x20)
+        #         user32.SetLayeredWindowAttributes(hwnd, 0, 255, 2)
+        # except Exception as e:
+        #     print("透過処理スキップ:", e)
         # self.circle = arcade.Sprite()
         # self.circle.position = self.center
         # self.sprite_list.append(self.circle)
@@ -179,25 +173,24 @@ class GiftWindow(arcade.View):
             print(args)
             if cmd == "spawn_gift":
                 image_path = args[0]
-                # sprite = GiftSprite(image_path, self.width/2, self.height/2)
-                # self.sprite_list.append(sprite)
                 x = random.randint(100, self.width - 100)
                 y = random.randint(self.height // 2, self.height - 100)
                 sprite = GiftSprite(image_path, x, y)
                 self.sprite_list.append(sprite)
                 sprites.append(sprite)
             elif cmd == "show_frame":
-                print(str(args[0]))
-                if args[0]:
+                # print(str(args[0]))
+                if args[0] == "deployment":
                     self.sprite_frame = arcade.Sprite("assets/images/frame/frame_1.png", scale=1)
                     self.sprite_frame.width = 720
                     self.sprite_frame.height = 1280
                     self.sprite_frame.center_x = self.width // 2
                     self.sprite_frame.center_y = self.height // 2
                     self.frame_list.append(self.sprite_frame)
-                else:
-                    if hasattr(self, "sprite_frame") and self.sprite_frame in self.frame_list:
+                elif args[0] == "shutdown":
+                    if self.sprite_frame in self.frame_list:
                         self.frame_list.remove(self.sprite_frame)
+                    self.sprite_frame = None
             elif cmd == "spawn_Icosahedron":
                 print("success...")
                 if args[0] == "light up":
@@ -207,52 +200,74 @@ class GiftWindow(arcade.View):
                     print("31337")
                     self.show_icosahedron = False
 
-                
-    def draw_light_beam(self):
-        # --- 基本パラメータ ---
-        x, y = self.light_pos
-        beam_length = 1200          # 光の長さ
-        beam_width = 100           # 開き幅
-        layers = 122                # グラデーション層数
-        base_alpha = 122           # 中心の透明度
-        angle = self.beam_angle    # 現在の角度 (ラジアン)
-        base_color = self.light_color
+    # --- マウス操作 ---
+    def on_mouse_press(self, x, y, button, modifiers):
+        for s in reversed(self.sprite_list):
+            if s.collides_with_point((x, y)):
+                s.dragging = True
+                self.drag_target = s
+                s.vx = 0
+                s.vy = 0
+                break
 
-        # --- 各層を順に描画 ---
-        for i in range(layers):
-            t = i / layers
-            alpha = int(base_alpha * 0.6 * (1 - t)**2)
+    def on_mouse_release(self, x, y, button, modifiers):
+        if self.drag_target:
+            self.drag_target.dragging = False
+            self.drag_target = None
 
-            # --- ここが変更ポイント ---
-            # tが進むほど先端を太くする
-            width = beam_width * (0.5 + t)       # ← 先に行くほど広がる
-            length = beam_length * (t * 0.9 + 0.1)  # ← 奥方向に進む
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        if self.drag_target:
+            s = self.drag_target
+            s.center_x += dx
+            s.center_y += dy
+            s.vx = dx / 2
+            s.vy = dy / 2
 
-            dx = math.cos(angle)
-            dy = math.sin(angle)
+    # def draw_light_beam(self):
+    #     # --- 基本パラメータ ---
+    #     x, y = self.light_pos
+    #     beam_length = 1200          # 光の長さ
+    #     beam_width = 100           # 開き幅
+    #     layers = 122                # グラデーション層数
+    #     base_alpha = 122           # 中心の透明度
+    #     angle = self.beam_angle    # 現在の角度 (ラジアン)
+    #     base_color = self.light_color
 
-            # 手前（細い）
-            back_left_x  = x - math.sin(angle) * width * 0.2
-            back_left_y  = y + math.cos(angle) * width * 0.2
-            back_right_x = x + math.sin(angle) * width * 0.2
-            back_right_y = y - math.cos(angle) * width * 0.2
+    #     # --- 各層を順に描画 ---
+    #     for i in range(layers):
+    #         t = i / layers
+    #         alpha = int(base_alpha * 0.6 * (1 - t)**2)
 
-            # 先端（太い）
-            tip_x = x + dx * length
-            tip_y = y + dy * length
-            tip_left_x  = tip_x - math.sin(angle) * width
-            tip_left_y  = tip_y + math.cos(angle) * width
-            tip_right_x = tip_x + math.sin(angle) * width
-            tip_right_y = tip_y - math.cos(angle) * width
+    #         # --- ここが変更ポイント ---
+    #         # tが進むほど先端を太くする
+    #         width = beam_width * (0.5 + t)       # ← 先に行くほど広がる
+    #         length = beam_length * (t * 0.9 + 0.1)  # ← 奥方向に進む
 
-            # 4頂点で台形を描く
-            arcade.draw_polygon_filled(
-                [(back_left_x, back_left_y),
-                (back_right_x, back_right_y),
-                (tip_right_x, tip_right_y),
-                (tip_left_x, tip_left_y)],
-                (base_color[0], base_color[1], base_color[2], alpha)
-            )
+    #         dx = math.cos(angle)
+    #         dy = math.sin(angle)
+
+    #         # 手前（細い）
+    #         back_left_x  = x - math.sin(angle) * width * 0.2
+    #         back_left_y  = y + math.cos(angle) * width * 0.2
+    #         back_right_x = x + math.sin(angle) * width * 0.2
+    #         back_right_y = y - math.cos(angle) * width * 0.2
+
+    #         # 先端（太い）
+    #         tip_x = x + dx * length
+    #         tip_y = y + dy * length
+    #         tip_left_x  = tip_x - math.sin(angle) * width
+    #         tip_left_y  = tip_y + math.cos(angle) * width
+    #         tip_right_x = tip_x + math.sin(angle) * width
+    #         tip_right_y = tip_y - math.cos(angle) * width
+
+    #         # 4頂点で台形を描く
+    #         arcade.draw_polygon_filled(
+    #             [(back_left_x, back_left_y),
+    #             (back_right_x, back_right_y),
+    #             (tip_right_x, tip_right_y),
+    #             (tip_left_x, tip_left_y)],
+    #             (base_color[0], base_color[1], base_color[2], alpha)
+    #         )
 
     # def draw_light(self):
     #     x, y = self.light_pos
@@ -269,8 +284,14 @@ class GiftWindow(arcade.View):
 
 
     def on_update(self, dt):
-        for s in list(sprites):
-            s.update()
+        # for s in list(sprites):
+        #     s.update()
+
+        for s in list(self.sprite_list):
+            s.update_motion(dt)
+            s.keep_in_bounds(self.width, self.height)
+            if s.is_outside_bottom(self.height):
+                s.remove_from_sprite_lists()
 
         if not self.show_icosahedron:
             return
@@ -279,6 +300,8 @@ class GiftWindow(arcade.View):
 
         for beam in self.beams:
             beam.update(dt)
+
+
 
     def on_draw(self):
         self.clear()

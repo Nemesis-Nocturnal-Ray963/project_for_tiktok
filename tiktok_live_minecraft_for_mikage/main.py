@@ -160,6 +160,7 @@ class TikTokLiveManager:
         async def on_battle(event: LinkMicBattleEvent):
             print("バトルについて")
             print(event.base_message)
+            print(event.base_message.monitor)
             print(event.battle_id)
             print(event.battle_setting)
             print(event.action)
@@ -173,7 +174,10 @@ class TikTokLiveManager:
                 print("バトル終了…")
                 await m_intr_c.on_battle_end(event,self.client.unique_id)
             print(event.battle_result)
-
+            for user_id, result in event.battle_result.items():
+                print("user_id:", user_id)
+                print("score:", result.score)
+                print("user_id:", user_id,"result ","score:", result.score)
 
 
 class Tiktok_Client:

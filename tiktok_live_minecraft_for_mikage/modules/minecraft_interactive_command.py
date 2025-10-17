@@ -41,13 +41,13 @@ async def blank_info(user,giftname,minecraft_id):
 
 async def spawn_test():
     print("spawn test now...")
-    asyncio.sleep(1)
+    await asyncio.sleep(1)
     asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/mooncake.png"])))
-    asyncio.sleep(0.1)
+    await asyncio.sleep(0.1)
     asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/strawberry_moon.png"])))
-    asyncio.sleep(0.1)
+    await asyncio.sleep(0.1)
     asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/magic_hat.png"])))
-    asyncio.sleep(0.1)
+    await asyncio.sleep(0.1)
     asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/flating_lanterns.png"])))
 
 
@@ -176,7 +176,7 @@ async def on_like_mod(event,streamer_ID):
 		user_like_count[user_id] = 0
 
 	user_like_count[user_id] += user_like_total_count
-	print("user:",user_id,"like count... ",user_like_count[user_id])
+	# print("user:",user_id,"like count... ",user_like_count[user_id])
 
 	# 全体カウント更新
 	total_likes += user_like_total_count
@@ -326,9 +326,9 @@ async def on_gift_mod(event,streamer_ID):
 
 
 		elif name == "test":
-			asyncio.create_task(arcade_send_queue(("show_frame", (True,))))
+			asyncio.create_task(arcade_send_queue(("show_frame", ("deployment",))))
 		elif name == "test1":
-			asyncio.create_task(arcade_send_queue(("show_frame", (False,))))
+			asyncio.create_task(arcade_send_queue(("show_frame", ("shutdown",))))
 		elif name == "test_icosa_1":
 			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light up",))))
 		elif name == "test_icosa_2":
