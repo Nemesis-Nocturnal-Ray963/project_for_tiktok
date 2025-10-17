@@ -343,14 +343,17 @@ async def on_gift_mod(event,streamer_ID):
 
 		elif name == "Genius":
 			asyncio.create_task(genius(user,times,minecraft_id))
+
 		elif name == "test":
-			asyncio.create_task(arcade_send_queue(("show_frame", (True,))))
+			asyncio.create_task(arcade_send_queue(("show_frame", ("deployment",))))
 		elif name == "test1":
-			asyncio.create_task(arcade_send_queue(("show_frame", (False,))))
+			asyncio.create_task(arcade_send_queue(("show_frame", ("shutdown",))))
 		elif name == "test_icosa_1":
-			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", (True,))))
-		elif name == "test_irosa_2":
-			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", (False,))))
+			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light up",))))
+		elif name == "test_icosa_2":
+			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light down",))))
+		elif name == "spawn_test":
+			await spawn_test()
 
 	elif not event.gift.streakable and not event.streaking:
 		asyncio.create_task(gift_counting(times))
