@@ -292,9 +292,9 @@ async def main():
     # ワーカー開始
 
 
-    is_test = input("test mode? (y/n)").lower() == "y"
-    is_use_obs = input("OBSを使いますか？ (y/n): ").lower() == "y"
-    is_use_minecraft = input("Minecraftを使いますか？ (y/n): ").lower() == "y"
+    # is_test = input("test mode? (y/n)").lower() == "y"
+    # is_use_obs = input("OBSを使いますか？ (y/n): ").lower() == "y"
+    # is_use_minecraft = input("Minecraftを使いますか？ (y/n): ").lower() == "y"
 
     is_test = input("test mode? (y/n)").lower() == "y"
     is_use_obs = input("OBSを使いますか？ (y/n): ").lower() == "y"
