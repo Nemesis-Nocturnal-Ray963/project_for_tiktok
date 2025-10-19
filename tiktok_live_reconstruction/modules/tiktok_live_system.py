@@ -11,7 +11,7 @@ from TikTokLive.client.errors import UserOfflineError
 
 from modules import config, minecraft_interactive_command as m_intr_c
 from modules import arcade_system_alpha
-
+# from TikTokLive.events import GiftGalleryEvent
 
 # ============================================================
 # TikTokLive マネージャー
@@ -73,7 +73,7 @@ class TikTokLiveManager:
             LinkMicBattlePunishFinishEvent, LinkmicAudienceNoticeEvent,
             LinkMicBattleItemCardEvent, LinkmicBattleTaskEvent,
             LinkMicAnchorGuideEvent, LinkmicBattleNoticeEvent,
-            LinkMicArmiesEvent, LinkMicFanTicketMethodEvent, LinkMicMethodEvent
+            LinkMicArmiesEvent, LinkMicFanTicketMethodEvent, LinkMicMethodEvent, GiftGalleryEvent
         )
         @self.client.on(LikeEvent)
         async def on_like(event: LikeEvent):
@@ -117,6 +117,9 @@ class TikTokLiveManager:
                 print("user_id:", user_id)
                 print("score:", result.score)
                 print("user_id:", user_id,"result ","score:", result.score)
+                
+        @self.client.on(GiftGalleryEvent)
+        async def on_gift_gallery(event:GiftGalleryEvent)
     async def start_client_session(self):
         """TikTokLive接続"""
         try:
