@@ -437,8 +437,12 @@ async def on_gift_mod(event,streamer_ID):
 				await asyncio.sleep(0.1)
 
 		elif name == "Star Map Polaris":
-			print("DEBUG: Star_Map_Polaris called", user, times, minecraft_id)
-			await Star_Map_Polaris(user,times,minecraft_id)
+			for _ in range(count):
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/angel_ran.png"])))
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/devil_ran.png"])))
+				await asyncio.sleep(0.1)
+			# print("DEBUG: Star_Map_Polaris called", user, times, minecraft_id)
+			# await Star_Map_Polaris(user,times,minecraft_id)
 
 		elif name == "Meteor Shower":
 			for _ in range(count):
