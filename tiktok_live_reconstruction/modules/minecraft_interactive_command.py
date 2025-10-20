@@ -465,6 +465,11 @@ async def on_gift_mod(event,streamer_ID):
 			for _ in range(count):
 				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/flying_jets.png"])))
 				await asyncio.sleep(0.1)
+    
+		elif name == "Puppy Kisses":
+			for _ in range(count):
+				print("test")
+      
 
 	# if 5000 <= coin_counter:
 	#     while coin_counter > 5000:

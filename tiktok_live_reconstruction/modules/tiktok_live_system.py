@@ -119,7 +119,8 @@ class TikTokLiveManager:
                 print("user_id:", user_id,"result ","score:", result.score)
                 
         @self.client.on(GiftGalleryEvent)
-        async def on_gift_gallery(event:GiftGalleryEvent)
+        async def on_gift_gallery(event:GiftGalleryEvent):
+            print("test_gallery")
     async def start_client_session(self):
         """TikTokLive接続"""
         try:
