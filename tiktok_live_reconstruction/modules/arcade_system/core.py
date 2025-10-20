@@ -20,6 +20,7 @@ class GiftWindow(arcade.View):
     def __init__(self):
         super().__init__()
         self.effects = []          # 登録中の演出（SpriteやBeamなど）
+        self.sprites = arcade.SpriteList(use_spatial_hash=True)  # 動的スプライト
         self.static_layers = []    # 背景やフレームなど固定要素
         self.drag_target = None
         self.background_color = (0, 0, 0, 0)
@@ -33,38 +34,40 @@ class GiftWindow(arcade.View):
         if not arcade_queue:
             return
         while not arcade_queue.empty():
+            print("use updata_queue")
+            
             try:
                 cmd, args = arcade_queue.get_nowait()
             except Exception:
+                print("lost queue...")
                 break
             controller.handle_command(cmd, args, self)
 
     # --- 更新処理 ---
     def on_update(self, dt):
+        self.sprites.update()
+        for s in list(self.sprites):
+            s.keep_in_bounds(self.width, self.height)
+            if s.is_dead():
+                s.remove_from_sprite_lists()
+        # handle_collisions(self)
         for eff in list(self.effects):
             eff.update(dt)
-            # エフェクトが寿命を迎えたら削除
-            if getattr(eff, "is_dead", lambda: False)():
-                self.effects.remove(eff)
 
     # --- 描画処理 ---
     def on_draw(self):
         self.clear()
-        # 静的レイヤ
-        for s in self.static_layers:
-            s.draw()
-        # 動的エフェクト
-        for eff in self.effects:
-            eff.draw()
+        for s in self.static_layers: s.draw()
+        self.sprites.draw()                             # まとめて高速描画
+        for eff in self.effects: eff.draw()
 
     # --- マウス操作（ドラッグ対応）---
     def on_mouse_press(self, x, y, button, modifiers):
-        for eff in reversed(self.effects):
-            if hasattr(eff, "collides_with_point") and eff.collides_with_point((x, y)):
-                eff.dragging = True
-                self.drag_target = eff
-                if hasattr(eff, "vx"): eff.vx = 0
-                if hasattr(eff, "vy"): eff.vy = 0
+        for sprite in reversed(self.sprites):  # 上にあるもの優先
+            if sprite.collides_with_point((x, y)):
+                self.drag_target = sprite
+                sprite.dragging = True
+                sprite.vx = sprite.vy = 0
                 break
 
     def on_mouse_release(self, x, y, button, modifiers):
@@ -77,8 +80,8 @@ class GiftWindow(arcade.View):
             s = self.drag_target
             s.center_x += dx
             s.center_y += dy
-            if hasattr(s, "vx"): s.vx = dx / 2
-            if hasattr(s, "vy"): s.vy = dy / 2
+            s.vx = dx / 2
+            s.vy = dy / 2
 
 
 # --- 外部実行用 ---

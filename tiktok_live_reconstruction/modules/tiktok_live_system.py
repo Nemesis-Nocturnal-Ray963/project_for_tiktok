@@ -10,7 +10,7 @@ from TikTokLive.events import *
 from TikTokLive.client.errors import UserOfflineError
 
 from modules import config, minecraft_interactive_command as m_intr_c
-from modules import arcade_system_alpha
+
 # from TikTokLive.events import GiftGalleryEvent
 
 # ============================================================
@@ -21,14 +21,6 @@ class TikTokLiveManager:
 
     def __init__(self, tiktok_user_id, base_dir="logs"):
         self.client = TikTokLiveClient(unique_id=tiktok_user_id)
-
-        # Arcadeプロセス起動
-        shared_queue = Queue()
-        self.arcade_process = Process(
-            target=arcade_system_alpha.run, args=(shared_queue,), daemon=True
-        )
-        self.arcade_process.start()
-        m_intr_c.arcade_queue = shared_queue
 
         # CSVログ準備
         self.base_dir = base_dir
@@ -188,16 +180,11 @@ class TestSystem:
         self.streaking = CheckStraking(False)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
-        
-        shared_queue = Queue()
 
-        m_intr_c.arcade_queue = shared_queue
-        
     async def change_gift(self,gift_name,coin,streakings):
         self.gift = Gift(gift_name,coin,streakings)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
-# print(arcade_system_alpha.arcade_queue.qsize())
         
     async def test_input_cord(self):
         while True:

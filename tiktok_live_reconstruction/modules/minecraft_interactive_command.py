@@ -1,5 +1,6 @@
 from modules import command_worker_mod as cwm
-from modules import arcade_system_alpha
+# from modules import arcade_system_alpha
+# from modules.arcade_system import core as arcade_system
 from modules import config
 import asyncio
 from datetime import datetime
@@ -24,21 +25,22 @@ TOTAL_LIKE_THRESHOLD = 10000
 
 
 finish_time = 0
-arcade_queue: queue.Queue = arcade_system_alpha.arcade_queue
+arcade_queue = None
 async def command_send_queue(code):
 	if config.is_minecraft_server_connect:
 		await cwm.command_queue.put(code)
 
 async def arcade_send_queue(data):
     """Arcadeスレッドへ安全送信"""
-    print("sender id:", id(arcade_system_alpha.arcade_queue))
+    # print("sender id:", id(arcade_system_alpha.arcade_queue))
     global arcade_queue
-    if arcade_queue is None:
+    if not arcade_queue:
         print("[WARN] arcade_queue 未初期化")
         return
 
     try:
-        await asyncio.to_thread(arcade_system_alpha.arcade_queue.put, data)
+        print("I senf queue...")
+        await asyncio.to_thread(arcade_queue.put, data)
     except Exception as e:
         print(f"[ERROR] arcade_send_queue failed: {e}")
 
@@ -385,6 +387,10 @@ async def on_gift_mod(event,streamer_ID):
 			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light down",))))
 		elif name == "spawn_test":
 			await spawn_test()
+		elif name == "test_print":
+			asyncio.create_task(arcade_send_queue(("test_test", ["check"])))
+			asyncio.create_task(arcade_send_queue(("test_test", ["free comment..."])))
+      
 	elif not event.gift.streakable and not event.streaking:
 		asyncio.create_task(gift_counting(times))
 		asyncio.create_task(coin_counting(coin,times))

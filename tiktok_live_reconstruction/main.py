@@ -14,11 +14,12 @@ from datetime import datetime, date
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import *
 from TikTokLive.client.errors import UserOfflineError
-from modules import config, setup, receive
+from modules import config, setup
 from modules import minecraft_interactive_command as m_intr_c
 from modules import command_worker_mod as cwm
 from modules import combo_system as c_sys
-from modules import arcade_system_alpha
+# from modules import arcade_system_alpha
+from modules.arcade_system import core as arcade_system
 from modules import tiktok_live_system
 import obsws_python as obs
 
@@ -90,15 +91,14 @@ async def main():
     print("=== Arcade Main Thread ===")
     # --- スレッド共有Queue（multiprocessing不使用） ---
     shared_queue = queue.Queue()
-    arcade_system_alpha.arcade_queue = shared_queue
-    receive.arcade_queue = shared_queue
+    # receive.arcade_queue = shared_queue
     m_intr_c.arcade_queue = shared_queue
     # --- バックエンドを別スレッドで非同期実行 ---
     backend_thread = threading.Thread(target=lambda: asyncio.run(backend_async()), daemon=True)
     backend_thread.start()
 
     # --- Arcadeウィンドウ起動（メインスレッドで実行） ---
-    arcade_system_alpha.run(shared_queue)
+    arcade_system.run(shared_queue)
     print("====== main finish line... ======")
 
 # 実行開始
