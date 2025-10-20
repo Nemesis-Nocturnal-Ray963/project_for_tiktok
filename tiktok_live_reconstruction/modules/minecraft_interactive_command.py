@@ -334,7 +334,7 @@ async def on_gift_mod(event,streamer_ID):
 				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/rose.png"])))
 				await asyncio.sleep(0.1)
 
-		elif name == "Go Popular":
+		elif name == "Popular Vote":
 			for _ in range(count):
 				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/go_popular.png"])))
 				await asyncio.sleep(0.1)
