@@ -151,9 +151,11 @@ def toggle_icosahedron(args: list, window):
         ]
 
     if args and args[0] == "light up":
-        window.effects.append(window.beam_manager)
-        print("[ARC-BEAM] Light up")
+        if window.beam_manager not in window.layers["light"]:
+            window.layers["light"].append(window.beam_manager)
+        # window.effects.append(window.beam_manager)
+            print("[ARC-BEAM] Light up")
     elif args and args[0] == "light down":
-        if window.beam_manager in window.effects:
-            window.effects.remove(window.beam_manager)
-        print("[ARC-BEAM] Light down")
+        if window.beam_manager in window.layers["light"]:
+            window.layers["light"].remove(window.beam_manager)
+            print("[ARC-BEAM] Light down")

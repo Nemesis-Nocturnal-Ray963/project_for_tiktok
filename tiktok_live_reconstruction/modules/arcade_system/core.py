@@ -11,6 +11,7 @@ import arcade
 import queue
 import random
 from . import controller
+from .effects.sprite import handle_collisions
 
 arcade_queue: queue.Queue | None = None
 
@@ -19,9 +20,12 @@ class GiftWindow(arcade.View):
     """Arcadeの描画・演出を統括するView"""
     def __init__(self):
         super().__init__()
-        self.effects = []          # 登録中の演出（SpriteやBeamなど）
-        self.sprites = arcade.SpriteList(use_spatial_hash=True)  # 動的スプライト
-        self.static_layers = []    # 背景やフレームなど固定要素
+        self.layers = {
+            "background": [],                     # 枠・固定UI
+            "light": [],                          # LightBeam類（加算/半加算）
+            "sprites": arcade.SpriteList(use_spatial_hash=True),  # ギフト画像
+            "overlay": []                         # テキスト、パーティクル、HUD
+        }
         self.drag_target = None
         self.background_color = (0, 0, 0, 0)
 
@@ -45,25 +49,39 @@ class GiftWindow(arcade.View):
 
     # --- 更新処理 ---
     def on_update(self, dt):
-        self.sprites.update()
-        for s in list(self.sprites):
-            s.keep_in_bounds(self.width, self.height)
-            if s.is_dead():
-                s.remove_from_sprite_lists()
-        # handle_collisions(self)
-        for eff in list(self.effects):
-            eff.update(dt)
+        # 動的スプライト更新
+        self.layers["sprites"].update()
+        for s in list(self.layers["sprites"]):
+            if hasattr(s, "keep_in_bounds"): s.keep_in_bounds(self.width, self.height)
+            if getattr(s, "is_dead", lambda: False)(): s.remove_from_sprite_lists()
+
+        # 衝突（必要なら）
+        try:
+            from .effects.sprite import handle_collisions
+            handle_collisions(self)  # ← 内部で self.layers["sprites"] を参照する実装に変更
+        except Exception:
+            pass
+
+        # light / overlay 側の独自エフェクト（クラスに update があれば呼ぶ）
+        for key in ("light", "overlay"):
+            for obj in list(self.layers[key]):
+                if hasattr(obj, "update"): obj.update(dt)
 
     # --- 描画処理 ---
     def on_draw(self):
         self.clear()
-        for s in self.static_layers: s.draw()
-        self.sprites.draw()                             # まとめて高速描画
-        for eff in self.effects: eff.draw()
+        # 描画順序を固定
+        for obj in self.layers["background"]:
+            obj.draw()
+        for obj in self.layers["light"]:
+            obj.draw()
+        self.layers["sprites"].draw()
+        for obj in self.layers["overlay"]:
+            obj.draw()
 
     # --- マウス操作（ドラッグ対応）---
     def on_mouse_press(self, x, y, button, modifiers):
-        for sprite in reversed(self.sprites):  # 上にあるもの優先
+        for sprite in reversed(self.layers["sprites"]):  # 上にあるもの優先
             if sprite.collides_with_point((x, y)):
                 self.drag_target = sprite
                 sprite.dragging = True

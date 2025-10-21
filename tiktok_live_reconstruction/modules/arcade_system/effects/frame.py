@@ -41,10 +41,10 @@ def toggle_frame(args: list, window):
 
     if action == "deployment":
         # 既に存在していない場合のみ生成
-        if not any(isinstance(f, FrameSprite) for f in window.static_layers):
+        if not any(isinstance(f, FrameSprite) for f in window.layers["background"]):
             try:
                 frame_sprite = FrameSprite(image_path, window.width, window.height)
-                window.static_layers.append(frame_sprite)
+                window.layers["background"].append(frame_sprite)
                 print("[ARC-FRAME] Frame deployed")
             except Exception as e:
                 print(f"[ARC-FRAME] Failed to deploy frame: {e}")
@@ -53,10 +53,8 @@ def toggle_frame(args: list, window):
 
     elif action == "shutdown":
         # 存在していれば削除
-        before = len(window.static_layers)
-        window.static_layers = [f for f in window.static_layers if not isinstance(f, FrameSprite)]
-        after = len(window.static_layers)
-        print(f"[ARC-FRAME] Frame removed ({before - after} deleted)")
+        window.layers["background"] = [f for f in window.layers["background"] if not isinstance(f, FrameSprite)]
+        # print(f"[ARC-FRAME] Frame removed ({before - after} deleted)")
 
     else:
         print(f"[ARC-FRAME] Unknown action: {action}")

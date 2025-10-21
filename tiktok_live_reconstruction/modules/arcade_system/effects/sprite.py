@@ -41,9 +41,9 @@ class GiftSprite(arcade.Sprite):
         elif self.center_x > width - margin:
             self.center_x = width - margin
             self.vx *= -0.6
-        if self.center_y < 0:
-            self.center_y = 0
-            self.vy *= -0.6
+        # if self.center_y < 0:
+        #     self.center_y = 0
+        #     self.vy *= -0.6
 
     def is_dead(self) -> bool:
         """画面外に落ちたか？"""
@@ -74,14 +74,16 @@ def spawn_gift(args: list, window):
 
     try:
         sprite = GiftSprite(image_path, x, y)
-        window.sprites.append(sprite)
+        window.layers["sprites"].append(sprite)
         print(f"[ARC-SPRITE] Spawned gift: {os.path.basename(image_path)}")
     except Exception as e:
         print(f"[ARC-SPRITE] Failed to spawn gift: {e}")
 
 
 def handle_collisions(window):
-    sprites = window.sprites
+    restitution = 0.8
+    separation = 0.2
+    sprites = window.layers["sprites"]
     # 全スプライトで衝突を検出
     for sprite in sprites:
         hit_list = arcade.check_for_collision_with_list(sprite, sprites)
@@ -97,11 +99,18 @@ def handle_collisions(window):
             overlap = (sprite.width / 2 + other.width / 2 - dist)
             if overlap > 0:
                 nx, ny = dx / dist, dy / dist
-                sprite.center_x += nx * overlap / 2
-                sprite.center_y += ny * overlap / 2
-                other.center_x -= nx * overlap / 2
-                other.center_y -= ny * overlap / 2
+                sprite.center_x += nx * overlap * separation / 2
+                sprite.center_y += ny * overlap * separation / 2
+                other.center_x -= nx * overlap * separation / 2
+                other.center_y -= ny * overlap * separation / 2
 
                 # --- 速度反転（単純弾性衝突）---
-                sprite.vx, other.vx = other.vx, sprite.vx
-                sprite.vy, other.vy = other.vy, sprite.vy
+                
+                tmp_vx,tmp_vy = sprite.vx , sprite.vy
+                
+                sprite.vx = other.vx * restitution
+                sprite.vy = other.vy * restitution
+                other.vx = tmp_vx * restitution
+                other.vy = tmp_vy * restitution
+                # sprite.vx, other.vx = other.vx, sprite.vx
+                # sprite.vy, other.vy = other.vy, sprite.vy
