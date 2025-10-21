@@ -175,7 +175,7 @@ class TestSystem:
     def __init__(self):
         self.client = Tiktok_Client("muzukiray963")
         self.user = User("test_user_3699")
-        self.gift = Gift("test_icosa_1", 1337,True)
+        self.gift = Gift("test_print", 1337,True)
         self.repeat_count = RepeatCount(1)
         self.streaking = CheckStraking(False)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
@@ -204,7 +204,7 @@ self.event = GiftEvent(*args)
 
 self.client = Tiktok_Client("muzukiray963")
 self.user = User("test_user_3699")
-self.gift = Gift("Heart Me", 9,True)
+self.gift = Gift("test_print", 9,True)
 self.repeat_count = RepeatCount(1)
 self.streaking = CheckStraking(False)
 args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
