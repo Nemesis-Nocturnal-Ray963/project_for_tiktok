@@ -4,7 +4,7 @@ print("//sys.path")
 print(sys.path)
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from modules import setup,config,receive
+from modules import config
 
 import asyncio
 import obsws_python as obs

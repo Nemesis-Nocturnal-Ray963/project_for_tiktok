@@ -10,7 +10,7 @@ from TikTokLive.events import *
 from TikTokLive.client.errors import UserOfflineError
 
 from modules import config, minecraft_interactive_command as m_intr_c
-from modules import arcade_system_alpha
+
 # from TikTokLive.events import GiftGalleryEvent
 
 # ============================================================
@@ -21,14 +21,6 @@ class TikTokLiveManager:
 
     def __init__(self, tiktok_user_id, base_dir="logs"):
         self.client = TikTokLiveClient(unique_id=tiktok_user_id)
-
-        # Arcadeプロセス起動
-        shared_queue = Queue()
-        self.arcade_process = Process(
-            target=arcade_system_alpha.run, args=(shared_queue,), daemon=True
-        )
-        self.arcade_process.start()
-        m_intr_c.arcade_queue = shared_queue
 
         # CSVログ準備
         self.base_dir = base_dir
@@ -119,7 +111,8 @@ class TikTokLiveManager:
                 print("user_id:", user_id,"result ","score:", result.score)
                 
         @self.client.on(GiftGalleryEvent)
-        async def on_gift_gallery(event:GiftGalleryEvent)
+        async def on_gift_gallery(event:GiftGalleryEvent):
+            print("test_gallery")
     async def start_client_session(self):
         """TikTokLive接続"""
         try:
@@ -182,21 +175,16 @@ class TestSystem:
     def __init__(self):
         self.client = Tiktok_Client("muzukiray963")
         self.user = User("test_user_3699")
-        self.gift = Gift("test_icosa_1", 1337,True)
+        self.gift = Gift("test_print", 1337,True)
         self.repeat_count = RepeatCount(1)
         self.streaking = CheckStraking(False)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
-        
-        shared_queue = Queue()
 
-        m_intr_c.arcade_queue = shared_queue
-        
     async def change_gift(self,gift_name,coin,streakings):
         self.gift = Gift(gift_name,coin,streakings)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
         self.event = GiftEvent(*args)
-# print(arcade_system_alpha.arcade_queue.qsize())
         
     async def test_input_cord(self):
         while True:
@@ -216,7 +204,7 @@ self.event = GiftEvent(*args)
 
 self.client = Tiktok_Client("muzukiray963")
 self.user = User("test_user_3699")
-self.gift = Gift("Heart Me", 9,True)
+self.gift = Gift("test_print", 9,True)
 self.repeat_count = RepeatCount(1)
 self.streaking = CheckStraking(False)
 args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
