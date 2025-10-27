@@ -17,7 +17,7 @@ class FloatingText:
         self.lifetime = lifetime  # フレーム数（60fpsなら約3秒）
         self.base_color = color
 
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         abs_path = os.path.join(project_root, self.RELATIVE_FONT_PATH)
         abs_path = os.path.abspath(abs_path).replace("\\", "/")
 

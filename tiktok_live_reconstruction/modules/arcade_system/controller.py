@@ -5,8 +5,8 @@
 #  - main.py や他システムから送られる cmd を受け取り
 #  - 登録済みのエフェクト生成関数を実行する
 # ==============================================
-
-from .effects import sprite, beams, frame, test
+import arcade
+from .effects import sprite, beams, frame, test, sound
 
 # --- コマンドと関数の対応表 ---
 EFFECT_REGISTRY = {
@@ -14,6 +14,7 @@ EFFECT_REGISTRY = {
     "show_frame": frame.toggle_frame,
     "spawn_Icosahedron": beams.toggle_icosahedron,
     "test_test":test.test_print,
+    "play_sound": sound.play_sound,
 }
 
 
@@ -34,3 +35,15 @@ def handle_command(cmd: str, args: list, window):
             print(f"[ARC-CONTROLLER] Error: {cmd} failed → {e}")
     else:
         print(f"[ARC-CONTROLLER] Unknown command: {cmd}")
+
+
+
+
+# === MP3音源の絶対パス ===
+SOUND_PATH = "C:/Users/x701c/project_for_tiktok/tiktok_live_reconstruction/assets/sounds/boot_sounds.wav"
+
+# === サウンドのロード ===
+bgm_sound = arcade.load_sound(SOUND_PATH)
+
+# === 再生 ===
+player = arcade.play_sound(bgm_sound)

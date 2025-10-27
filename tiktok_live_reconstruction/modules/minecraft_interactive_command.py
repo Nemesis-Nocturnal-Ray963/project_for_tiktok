@@ -325,12 +325,12 @@ async def on_gift_mod(event,streamer_ID):
 
 		print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')} to {minecraft_id}")
 
-		if name == "Heart Me":
-			asyncio.create_task(heart_me(user,times,minecraft_id))
-			for _ in range(count):
-				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/heart_me.png"])))
-				await asyncio.sleep(0.1)
-		elif name == "Rose":
+		# if name == "Heart Me":
+		# 	asyncio.create_task(heart_me(user,times,minecraft_id))
+		# 	for _ in range(count):
+		# 		asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/heart_me.png"])))
+		# 		await asyncio.sleep(0.1)
+		if name == "Rose":
 			# asyncio.create_task(spawn_tnt(user, times,0.1,minecraft_id))
 			for _ in range(count):
 				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/rose.png"])))
@@ -363,6 +363,12 @@ async def on_gift_mod(event,streamer_ID):
 		elif name == "Perfume":
 			asyncio.create_task(iron_Golem(user,times,minecraft_id))
 
+		elif name == "Carbuncle":
+			for _ in range(count):
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/puyopuyo_1.png"])))
+				await asyncio.sleep(0.1)
+
+
 		elif name == "Doughnut":
 			asyncio.create_task(doughnut(user,times,minecraft_id))
 			for _ in range(count):
@@ -378,7 +384,7 @@ async def on_gift_mod(event,streamer_ID):
 			asyncio.create_task(genius(user,times,minecraft_id))
 
 		elif name == "test":
-			asyncio.create_task(arcade_send_queue(("show_frame", ("deployment",))))
+			asyncio.create_task(arcade_send_queue(("play_sound", ["assets/sounds/Raffina_Voice_Chain.wav"])))
 		elif name == "test1":
 			asyncio.create_task(arcade_send_queue(("show_frame", ("shutdown",))))
 		elif name == "test_icosa_1":
@@ -387,15 +393,27 @@ async def on_gift_mod(event,streamer_ID):
 			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light down",))))
 		elif name == "spawn_test":
 			await spawn_test()
-		elif name == "test_print":
-			asyncio.create_task(arcade_send_queue(("test_test", ["check"])))
-			asyncio.create_task(arcade_send_queue(("test_test", ["free comment..."])))
-      
 	elif not event.gift.streakable and not event.streaking:
 		asyncio.create_task(gift_counting(times))
 		asyncio.create_task(coin_counting(coin,times))
 
-		if name == "Paper Crane":
+		if name == "Heart Me":
+			asyncio.create_task(heart_me(user,times,minecraft_id))
+			for _ in range(count):
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/heart_me.png"])))
+				await asyncio.sleep(0.1)
+		
+		elif name == "WIN!":
+			for _ in range(count):
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/puyopuyo_2.png"])))
+				await asyncio.sleep(0.1)
+
+		elif name == "LOSE":
+			for _ in range(count):
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/puyopuyo_3.png"])))
+				await asyncio.sleep(0.1)
+		
+		elif name == "Paper Crane":
 			# asyncio.create_task(blank_info(user,times,minecraft_id))
 			print("notting intreactive...")
 		elif name == "Hat and Mustache":
@@ -471,6 +489,12 @@ async def on_gift_mod(event,streamer_ID):
 			# print("DEBUG: Star_Map_Polaris called", user, times, minecraft_id)
 			# await Star_Map_Polaris(user,times,minecraft_id)
 
+		elif name == "Puyo Shuffle!":
+			for _ in range(count):
+				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/puyopuyo_4.png"])))
+				await asyncio.sleep(0.1)
+		
+
 		elif name == "Meteor Shower":
 			for _ in range(count):
 				asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/meteor_shower.png"])))
@@ -495,8 +519,10 @@ async def on_gift_mod(event,streamer_ID):
 		elif name == "Puppy Kisses":
 			for _ in range(count):
 				print("test")
-      
-
+    
+		elif name == "Puyopuyo Chain!":
+			for _ in range(count):
+				asyncio.create_task(arcade_send_queue(("play_sound", ["assets/sounds/Raffina_Voice_Chain.wav"])))
 	# if 5000 <= coin_counter:
 	#     while coin_counter > 5000:
 	#         await add_time()
