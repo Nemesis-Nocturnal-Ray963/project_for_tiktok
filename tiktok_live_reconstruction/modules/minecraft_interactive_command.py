@@ -531,9 +531,9 @@ async def on_gift_mod(event,streamer_ID):
 async def on_battle_start(event,streamer_ID):
     print("ballte start...")
     asyncio.create_task(arcade_send_queue(("show_frame", (True,))))
-    asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light up",))))
+    # asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light up",))))
     # asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/dj_glasses.png"])))
 async def on_battle_end(event,streamer_ID):
     print("ballte end...")
     asyncio.create_task(arcade_send_queue(("show_frame", (False,))))
-    asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light down",))))
+    # asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light down",))))

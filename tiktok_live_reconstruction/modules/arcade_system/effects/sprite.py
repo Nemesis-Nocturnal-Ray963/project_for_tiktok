@@ -11,18 +11,46 @@ import random
 import math
 import os
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+BASE_DIR = os.path.abspath(BASE_DIR).replace("\\", "/")
+
+SOUND_DIR = os.path.join(BASE_DIR, "assets", "sounds", "spawn_sounds")
+SOUND_PATHS = [os.path.join(SOUND_DIR, f"spawn{i}.mp3") for i in range(1, 4)]
+
+SOUNDS = []
+for path in SOUND_PATHS:
+    try:
+        SOUNDS.append(arcade.load_sound(path))
+    except Exception as e:
+        print(f"[ARC-SOUND] Failed to load: {path} ({e})")
 
 class GiftSprite(arcade.Sprite):
     """単一ギフト画像を管理するSprite"""
-    def __init__(self, image_path: str, x: float, y: float, scale: float = 0.5):
+    def __init__(self, image_path: str, x: float, y: float, scale: float = 0.1):
         super().__init__(image_path, scale=scale)
+        self.target_scale = 0.5
         self.center_x = x
         self.center_y = y
+        self.spawn_timer = 0.0
         self.vx = random.uniform(-1.0, 1.0)
         self.vy = random.uniform(-1.0, 1.0)
         self.dragging = False
+        if SOUNDS:
+            arcade.play_sound(random.choice(SOUNDS))
 
     def update(self, dt: float = 1/60):
+        current_scale = self.scale[0] if isinstance(self.scale, tuple) else self.scale
+        # print(self.scale)
+        # 出現時の拡大アニメーション（ease-out）
+        if current_scale < self.target_scale:
+            self.spawn_timer += dt
+            duration = 0.25
+            progress = min(self.spawn_timer / duration, 1.0)
+            ease = 1 - math.pow(1 - progress, 3)  # キュービックイーズアウト
+            new_scale = self.target_scale * ease
+            self.scale = new_scale
+            # print(self.scale)
+
         """物理挙動（慣性・重力・減衰）"""
         if not self.dragging:
             gravity = 0.05
