@@ -6,7 +6,7 @@
 #  - 登録済みのエフェクト生成関数を実行する
 # ==============================================
 import arcade
-from .effects import sprite, beams, frame, test, sound
+from .effects import sprite, beams, frame, test, sound,combo,fireworks
 import os
 # --- コマンドと関数の対応表 ---
 EFFECT_REGISTRY = {
@@ -15,6 +15,8 @@ EFFECT_REGISTRY = {
     "spawn_Icosahedron": beams.toggle_icosahedron,
     "test_test":test.test_print,
     "play_sound": sound.play_sound,
+    # "spawn_combo": combo.spawn_combo_text,
+    "spawn_fireworks": fireworks.spawn_fireworks,
 }
 
 

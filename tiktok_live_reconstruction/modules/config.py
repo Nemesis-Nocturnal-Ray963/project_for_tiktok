@@ -21,8 +21,10 @@ usernames = []
 
 is_test_now = False
 is_test = False
+
 gift_counter = 0
 combo_counter = 0
+
 last_update_time = 0
 
 attacks_queue = asyncio.Queue()
@@ -244,3 +246,16 @@ VISUAL_ENABLED_USERS = ["muzukiray963", "mkg_ran", "another_user","lucir_otodoke
 async def re_mcid(tiktok_id):
     mc_id = tiktok_to_minecraft.get(tiktok_id,"@a")
     return mc_id
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# 便利なパス変数を追加
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+IMAGES_DIR = os.path.join(ASSETS_DIR, "images")
+SOUNDS_DIR = os.path.join(ASSETS_DIR, "sounds")
+LOGS_DIR = os.path.join(BASE_DIR, "logs")
+
+# 例: 絶対パスで確認
+print("[CONFIG] BASE_DIR:", BASE_DIR)
+print("[CONFIG] ASSETS_DIR:", ASSETS_DIR)

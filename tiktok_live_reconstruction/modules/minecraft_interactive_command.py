@@ -49,6 +49,7 @@ async def blank_info(user,giftname,minecraft_id):
 	print(minecraft_id)
 
 async def spawn_test():
+    config.gift_counter += 15
     print("spawn test now...")
     await asyncio.sleep(1)
     asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/whale_diving.png"])))
@@ -318,9 +319,11 @@ async def on_gift_mod(event,streamer_ID):
 		# streak 終了時のみ処理
 		print("event.gift.streakable:",event.gift.streakable)
 		print("event.streaking:",event.streaking)
+	# if event.gift.streakable and not event.streaking or not event.gift.streakable:
+		# config.gift_counter += event.repeat_count
 
 	if event.gift.streakable and not event.streaking:
-		asyncio.create_task(gift_counting(times))
+		# asyncio.create_task(gift_counting(times))
 		asyncio.create_task(coin_counting(coin,times))
 
 		print(f"{user} sent a {name} (x{times}) at {now.strftime('%Y-%m-%d %H:%M:%S')} to {minecraft_id}")
@@ -384,7 +387,8 @@ async def on_gift_mod(event,streamer_ID):
 			asyncio.create_task(genius(user,times,minecraft_id))
 
 		elif name == "test":
-			asyncio.create_task(arcade_send_queue(("play_sound", ["assets/sounds/Raffina_Voice_Chain.wav"])))
+			asyncio.create_task(arcade_send_queue(("spawn_fireworks", [6, 0.2])))
+
 		elif name == "test1":
 			asyncio.create_task(arcade_send_queue(("show_frame", ("shutdown",))))
 		elif name == "test_icosa_1":
@@ -393,6 +397,12 @@ async def on_gift_mod(event,streamer_ID):
 			asyncio.create_task(arcade_send_queue(("spawn_Icosahedron", ("light down",))))
 		elif name == "spawn_test":
 			await spawn_test()
+   
+		elif name == "Fireworks":
+			for _ in range(count):
+				asyncio.create_task(arcade_send_queue(("spawn_fireworks", [])))
+				await asyncio.sleep(0.1)
+   
 	elif not event.gift.streakable and not event.streaking:
 		asyncio.create_task(gift_counting(times))
 		asyncio.create_task(coin_counting(coin,times))

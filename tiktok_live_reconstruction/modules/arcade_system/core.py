@@ -12,6 +12,7 @@ import queue
 import random
 from . import controller
 from .effects.sprite import handle_collisions
+from .effects.combo import ComboText
 
 arcade_queue: queue.Queue | None = None
 
@@ -29,6 +30,9 @@ class GiftWindow(arcade.View):
         self.drag_target = None
         self.background_color = (0, 0, 0, 0)
 
+        combo_display = ComboText(self.width / 2, self.height - 200)
+        self.layers["overlay"].append(combo_display)
+        print("[ARC-COMBO] 常駐コンボシステム起動")
         # 60FPSでqueue監視
         arcade.schedule(self.update_queue, 1 / 60)
 

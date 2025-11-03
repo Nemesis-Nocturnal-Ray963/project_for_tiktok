@@ -105,13 +105,14 @@ class TikTokLiveManager:
                 print("バトル終了…")
                 await m_intr_c.on_battle_end(event,self.client.unique_id)
             print(event.battle_result)
-            for user_id, result in event.battle_result.items():
-                print("user_id:", user_id)
-                print("score:", result.score)
-                print("user_id:", user_id,"result ","score:", result.score)
+            # for user_id, result in event.battle_result.items():
+            #     print("user_id:", user_id)
+            #     print("score:", result.score)
+            #     print("user_id:", user_id,"result ","score:", result.score)
                 
         @self.client.on(GiftGalleryEvent)
         async def on_gift_gallery(event:GiftGalleryEvent):
+            print(event)
             print("test_gallery")
     async def start_client_session(self):
         """TikTokLive接続"""
@@ -175,7 +176,7 @@ class TestSystem:
     def __init__(self):
         self.client = Tiktok_Client("muzukiray963")
         self.user = User("test_user_3699")
-        self.gift = Gift("test_print", 1337,True)
+        self.gift = Gift("test", 1337,True)
         self.repeat_count = RepeatCount(1)
         self.streaking = CheckStraking(False)
         args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
@@ -204,7 +205,7 @@ self.event = GiftEvent(*args)
 
 self.client = Tiktok_Client("muzukiray963")
 self.user = User("test_user_3699")
-self.gift = Gift("test_print", 9,True)
+self.gift = Gift("test", 9,True)
 self.repeat_count = RepeatCount(1)
 self.streaking = CheckStraking(False)
 args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
@@ -213,10 +214,10 @@ self.event = GiftEvent(*args)
 # 実行するとき
 asyncio.create_task(m_intr_c.on_gift_mod(self.event, self.client.unique_id))
 
-便利関数
-change_gift
-入力引数：ギフト名,コイン数,連続可能ギフト(True or False)
-asyncio.create_task(self.change_gift(gift_name,coin,streakings))
+
+args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
+self.event = GiftEvent(*args)
+asyncio.create_task(m_intr_c.on_gift_mod(self.event, self.client.unique_id))
             """
             print(test_message)
             for i in range(3):
