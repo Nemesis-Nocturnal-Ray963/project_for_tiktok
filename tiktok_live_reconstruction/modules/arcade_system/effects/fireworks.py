@@ -24,6 +24,7 @@ class FireworkParticle:
     def __init__(self, x, y, color, speed, angle, lifetime=60):
         self.x = x
         self.y = y
+        self.prev_positions = []
         self.color = color
         self.speed = speed
         self.angle = angle
@@ -32,6 +33,9 @@ class FireworkParticle:
 
     def update(self):
         self.timer += 1
+        self.prev_positions.append((self.x, self.y))  # 位置を保存
+        if len(self.prev_positions) > 3:  # 長すぎる軌跡はカット
+            self.prev_positions.pop(0)
         self.x += math.cos(self.angle) * self.speed
         self.y += math.sin(self.angle) * self.speed
         # 重力効果
@@ -40,8 +44,14 @@ class FireworkParticle:
         return self.timer < self.lifetime
 
     def draw(self):
+                # メイン粒子
         fade = max(0, 255 - int((self.timer / self.lifetime) * 255))
         arcade.draw_circle_filled(self.x, self.y, 2, (*self.color[:3], fade))
+
+        # 軌跡部分
+        for i, (px, py) in enumerate(reversed(self.prev_positions)):
+            trail_opacity = int(fade * (1 - i / len(self.prev_positions)))  # 徐々に薄く
+            arcade.draw_circle_filled(px, py, 2, (*self.color[:3], trail_opacity))
 
 class Firework:
     """単一花火（上昇→爆発）"""
@@ -50,6 +60,8 @@ class Firework:
         self.y = y
         self.vy = random.uniform(18, 21)
         self.state = "ascending"
+        self.inner_color = (random.randint(50, 150), random.randint(50, 150), 255)
+        self.outer_color = (255, random.randint(200, 255), 100)
         self.color = random.choice([
             arcade.color.CYAN, arcade.color.PINK, arcade.color.YELLOW,
             arcade.color.RED, arcade.color.MAGENTA, arcade.color.WHITE
@@ -63,16 +75,13 @@ class Firework:
             self.vy -= 0.25
             if self.vy <= 0:
                 self.state = "exploded"
-                for _ in range(80):
-                    angle = random.uniform(0, 2 * math.pi)
-                    speed = random.uniform(1.5, 5)
-                    color = (
-                        random.randint(100, 255),
-                        random.randint(100, 255),
-                        random.randint(100, 255),
-                        255
-                    )
-                    self.particles.append(FireworkParticle(self.x, self.y, color, speed, angle))
+                num_rays = 36
+                for i in range(num_rays):
+                    angle = (2 * math.pi / num_rays) * i
+                    # speed = random.uniform(1.5, 5)
+                    self.particles.append(FireworkParticle(self.x, self.y, self.inner_color, 2.5, angle))
+                    self.particles.append(FireworkParticle(self.x, self.y, self.outer_color, 5.0, angle))
+
                         # --- 音を一度だけ再生 ---
                 if not self.sound_played and FIREWORK_SOUNDS:
                     snd = random.choice(FIREWORK_SOUNDS)
@@ -80,15 +89,11 @@ class Firework:
                     self.sound_played = True  # ← フラグを立てる
 
         elif self.state == "exploded":
-            alive_particles = []
-            for p in self.particles:
-                if p.update():
-                    alive_particles.append(p)
-            self.particles = alive_particles
+            self.particles = [p for p in self.particles if p.update()]
 
     def draw(self):
         if self.state == "ascending":
-            arcade.draw_circle_filled(self.x, self.y, 3, self.color)
+            arcade.draw_circle_filled(self.x, self.y, 3, self.outer_color)
         else:
             for p in self.particles:
                 p.draw()
