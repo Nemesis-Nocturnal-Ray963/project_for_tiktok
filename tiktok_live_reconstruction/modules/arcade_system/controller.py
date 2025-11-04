@@ -7,6 +7,7 @@
 # ==============================================
 import arcade
 from .effects import sprite, beams, frame, test, sound
+import os
 
 # --- コマンドと関数の対応表 ---
 EFFECT_REGISTRY = {
@@ -40,8 +41,17 @@ def handle_command(cmd: str, args: list, window):
 
 
 # === MP3音源の絶対パス ===
-SOUND_PATH = "C:/Users/x701c/project_for_tiktok/tiktok_live_reconstruction/assets/sounds/boot_sounds.wav"
+# SOUND_PATH = "C:/Users/x701c/project_for_tiktok/tiktok_live_reconstruction/assets/sounds/boot_sounds.wav"
+BASE_DIR =     os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__))
+        )
+    )
+SOUND_PATH = os.path.join(BASE_DIR, "assets/sounds/boot_sounds.wav")
+SOUND_PATH = os.path.abspath(SOUND_PATH)
+#.replace("\\", "/")
 
+print(SOUND_PATH)  # デバッグ確認用
 # === サウンドのロード ===
 bgm_sound = arcade.load_sound(SOUND_PATH)
 
