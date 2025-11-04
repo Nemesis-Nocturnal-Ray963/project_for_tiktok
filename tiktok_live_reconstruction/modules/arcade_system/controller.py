@@ -6,8 +6,14 @@
 #  - 登録済みのエフェクト生成関数を実行する
 # ==============================================
 import arcade
+<<<<<<< HEAD
+from .effects import sprite, beams, frame, test, sound
+import os
+
+=======
 from .effects import sprite, beams, frame, test, sound,combo,fireworks
 import os
+>>>>>>> 3f0e2a39304c71605ae4b3cd5e505511f1bbf907
 # --- コマンドと関数の対応表 ---
 EFFECT_REGISTRY = {
 	"spawn_gift": sprite.spawn_gift,
@@ -43,15 +49,30 @@ def handle_command(cmd: str, args: list, window):
 
 # === MP3音源の絶対パス ===
 # SOUND_PATH = "C:/Users/x701c/project_for_tiktok/tiktok_live_reconstruction/assets/sounds/boot_sounds.wav"
+<<<<<<< HEAD
 BASE_DIR =	 os.path.dirname(
 		os.path.dirname(
 			os.path.dirname(os.path.abspath(__file__))
 		)
 	)
+=======
+BASE_DIR =     os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__))
+        )
+    )
+<<<<<<< HEAD
+SOUND_PATH = os.path.join(BASE_DIR, "assets/sounds/boot_sounds.wav")
+SOUND_PATH = os.path.abspath(SOUND_PATH)
+#.replace("\\", "/")
+
+=======
+>>>>>>> 3f8335581af1721cc355f97451e1e5334042cbc3
 
 SOUND_PATH = os.path.join(BASE_DIR, "assets/sounds/boot_sounds.wav")
 SOUND_PATH = os.path.abspath(SOUND_PATH).replace("\\", "/")
 
+>>>>>>> 3f0e2a39304c71605ae4b3cd5e505511f1bbf907
 print(SOUND_PATH)  # デバッグ確認用
 # === サウンドのロード ===
 bgm_sound = arcade.load_sound(SOUND_PATH)
