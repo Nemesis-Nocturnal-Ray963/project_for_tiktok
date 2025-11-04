@@ -10,7 +10,7 @@ import arcade
 import os
 
 class FloatingText:
-    RELATIVE_FONT_PATH = "assets/images/fonts/SoukouMincho.ttf"
+    
     """一時的に画面に文字を表示する軽量エフェクト"""
     def __init__(self, text: str, x: float, y: float, color=arcade.color.CYAN, size=32, lifetime=180,font_name="装甲明朝"):
         self.timer = 0
