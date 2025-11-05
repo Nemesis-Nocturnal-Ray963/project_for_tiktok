@@ -91,7 +91,7 @@ modules/arcade_system/
 
 ■ 動作フロー
 -----------------------------------------------
-1. TikTokイベント受信 → minecraft_interactive_command.on_gift_mod()
+1. TikTokイベント受信 → receive.on_gift_mod()
 2. on_gift_mod() 内で arcade_send_queue(("spawn_gift", ["path"])) 等を発行
 3. core.GiftWindow.update_queue() が受信し controller.handle_command() に渡す
 4. controllerが該当モジュール（effects/*.py）の関数を実行
@@ -105,12 +105,12 @@ modules/arcade_system/
 	 例:  "spawn_fireworks": fireworks.spawn_fireworks
 
 2. TikTok連携に組み込む場合：
-   - minecraft_interactive_command.py 内で arcade_send_queue() を呼ぶ
+   - receive.py 内で arcade_send_queue() を呼ぶ
    - 例: asyncio.create_task(arcade_send_queue(("spawn_fireworks", ["start"])))
 
 3. 表示確認：
    - TestSystem() の test_input_cord() コンソールから
-	 asyncio.create_task(m_intr_c.arcade_send_queue(("test_test", ["Hello"])))
+	 asyncio.create_task(receive.arcade_send_queue(("test_test", ["Hello"])))
 	 で確認可能
 
 ■ 注意点

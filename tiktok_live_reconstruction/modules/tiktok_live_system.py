@@ -9,7 +9,7 @@ from TikTokLive import TikTokLiveClient
 from TikTokLive.events import *
 from TikTokLive.client.errors import UserOfflineError
 
-from modules import config, minecraft_interactive_command as m_intr_c
+from modules import config, receive
 
 # from TikTokLive.events import GiftGalleryEvent
 
@@ -69,20 +69,20 @@ class TikTokLiveManager:
 		)
 		@self.client.on(LikeEvent)
 		async def on_like(event: LikeEvent):
-			await m_intr_c.on_like_mod(event, self.client.unique_id)
+			await receive.on_like_mod(event, self.client.unique_id)
 
 		@self.client.on(FollowEvent)
 		async def on_follow(event: FollowEvent):
-			await m_intr_c.on_follow_mod(event, self.client.unique_id)
+			await receive.on_follow_mod(event, self.client.unique_id)
 
 		@self.client.on(CommentEvent)
 		async def on_comment(event: CommentEvent):
-			await m_intr_c.on_comment_mod(event, self.client.unique_id)
+			await receive.on_comment_mod(event, self.client.unique_id)
 
 		@self.client.on(GiftEvent)
 		async def on_gift(event: GiftEvent):
 			for _ in range(config.current_multiplier):
-				await m_intr_c.on_gift_mod(event, self.client.unique_id)
+				await receive.on_gift_mod(event, self.client.unique_id)
 			if (event.gift.streakable and not event.streaking) or (not event.gift.streakable):
 				total_coin = event.gift.diamond_count * int(event.repeat_count)
 				self.log(event.user.nickname, event.gift.name, total_coin)
@@ -100,10 +100,10 @@ class TikTokLiveManager:
 			# enumオブジェクト は name や value 属性を持っている
 			if event.action.name == "BATTLE_ACTION_OPEN":
 				print("バトル開始ッ…！")
-				await m_intr_c.on_battle_start(event,self.client.unique_id)
+				await receive.on_battle_start(event,self.client.unique_id)
 			if event.action.name == "BATTLE_ACTION_FINISH":
 				print("バトル終了…")
-				await m_intr_c.on_battle_end(event,self.client.unique_id)
+				await receive.on_battle_end(event,self.client.unique_id)
 			print(event.battle_result)
 			# for user_id, result in event.battle_result.items():
 			#	 print("user_id:", user_id)
@@ -212,12 +212,12 @@ args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
 self.event = GiftEvent(*args)
 
 # 実行するとき
-asyncio.create_task(m_intr_c.on_gift_mod(self.event, self.client.unique_id))
+asyncio.create_task(receive.on_gift_mod(self.event, self.client.unique_id))
 
 
 args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
 self.event = GiftEvent(*args)
-asyncio.create_task(m_intr_c.on_gift_mod(self.event, self.client.unique_id))
+asyncio.create_task(receive.on_gift_mod(self.event, self.client.unique_id))
 			"""
 			print(test_message)
 			for i in range(3):

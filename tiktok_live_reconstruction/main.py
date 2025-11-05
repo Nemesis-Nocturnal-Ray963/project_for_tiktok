@@ -15,7 +15,7 @@ from TikTokLive import TikTokLiveClient
 from TikTokLive.events import *
 from TikTokLive.client.errors import UserOfflineError
 from modules import config, setup
-from modules import minecraft_interactive_command as m_intr_c
+from modules import receive
 from modules import command_worker_mod as cwm
 from modules import combo_system as c_sys
 # from modules import arcade_system_alpha
@@ -91,8 +91,7 @@ async def main():
 	print("=== Arcade Main Thread ===")
 	# --- スレッド共有Queue（multiprocessing不使用） ---
 	shared_queue = queue.Queue()
-	# receive.arcade_queue = shared_queue
-	m_intr_c.arcade_queue = shared_queue
+	receive.arcade_queue = shared_queue
 	# --- バックエンドを別スレッドで非同期実行 ---
 	backend_thread = threading.Thread(target=lambda: asyncio.run(backend_async()), daemon=True)
 	backend_thread.start()
