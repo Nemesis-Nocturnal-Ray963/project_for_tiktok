@@ -255,7 +255,10 @@ ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 IMAGES_DIR = os.path.join(ASSETS_DIR, "images")
 SOUNDS_DIR = os.path.join(ASSETS_DIR, "sounds")
 LOGS_DIR = os.path.join(BASE_DIR, "logs")
+FONT_TYPE_SOUKOU = os.path.join(ASSETS_DIR,"fonts","SoukouMincho.ttf")
+FONT_TYPE_TOROMAN = os.path.join(ASSETS_DIR,"fonts","toroman.ttf")
 
 # 例: 絶対パスで確認
 print("[CONFIG] BASE_DIR:", BASE_DIR)
 print("[CONFIG] ASSETS_DIR:", ASSETS_DIR)
+
