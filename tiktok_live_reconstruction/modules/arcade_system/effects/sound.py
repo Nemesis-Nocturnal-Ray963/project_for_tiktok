@@ -16,7 +16,8 @@ def play_sound(args, window):
     if not os.path.isabs(sound_path):
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         sound_path = os.path.join(project_root, sound_path)
-    sound_path = os.path.abspath(sound_path).replace("\\", "/")
+    sound_path = os.path.abspath(sound_path)
+    #.replace("\\", "/")
     print(sound_path)
     try:
         if sound_path not in SOUND_CACHE:

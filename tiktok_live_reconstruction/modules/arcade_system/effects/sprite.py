@@ -11,18 +11,56 @@ import random
 import math
 import os
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+BASE_DIR = os.path.abspath(BASE_DIR).replace("\\", "/")
+
+SOUND_DIR = os.path.join(BASE_DIR, "assets", "sounds", "spawn_sounds")
+SOUND_PATHS = [os.path.join(SOUND_DIR, f"spawn{i}.mp3") for i in range(1, 4)]
+
+SOUNDS = []
+for path in SOUND_PATHS:
+    try:
+        SOUNDS.append(arcade.load_sound(path))
+    except Exception as e:
+        print(f"[ARC-SOUND] Failed to load: {path} ({e})")
 
 class GiftSprite(arcade.Sprite):
     """単一ギフト画像を管理するSprite"""
-    def __init__(self, image_path: str, x: float, y: float, scale: float = 0.5):
+    def __init__(self, image_path: str, x: float, y: float, scale: float = 0.1):
         super().__init__(image_path, scale=scale)
+        self.target_scale = 0.5
         self.center_x = x
         self.center_y = y
+        self.spawn_timer = 0.0
         self.vx = random.uniform(-1.0, 1.0)
         self.vy = random.uniform(-1.0, 1.0)
         self.dragging = False
+        
+        # --- 角度系の追加 ---
+        self.angle = random.uniform(0, 360)
+        self.angular_velocity = random.uniform(-60, 60)  # 度/秒
+        
+        if SOUNDS:
+            arcade.play_sound(random.choice(SOUNDS))
 
     def update(self, dt: float = 1/60):
+        # --- 回転（自然転がり）---
+        self.angle += self.angular_velocity * dt
+        self.angular_velocity *= 0.98  # 減衰
+
+
+        # print(self.scale)
+        # 出現時の拡大アニメーション（ease-out）
+        current_scale = self.scale[0] if isinstance(self.scale, tuple) else self.scale
+        if current_scale < self.target_scale:
+            self.spawn_timer += dt
+            duration = 0.25
+            progress = min(self.spawn_timer / duration, 1.0)
+            ease = 1 - math.pow(1 - progress, 3)  # キュービックイーズアウト
+            new_scale = self.target_scale * ease
+            self.scale = new_scale
+            # print(self.scale)
+
         """物理挙動（慣性・重力・減衰）"""
         if not self.dragging:
             gravity = 0.05
@@ -80,13 +118,62 @@ def spawn_gift(args: list, window):
         print(f"[ARC-SPRITE] Failed to spawn gift: {e}")
 
 
+# def handle_collisions(window):
+#     restitution = 0.8
+#     separation = 0.2
+#     sprites = window.layers["sprites"]
+#     # 全スプライトで衝突を検出
+#     for sprite in sprites:
+#         hit_list = arcade.check_for_collision_with_list(sprite, sprites)
+#         for other in hit_list:
+#             if sprite is other:
+#                 continue
+#             # --- 距離補正 ---
+#             dx = sprite.center_x - other.center_x
+#             dy = sprite.center_y - other.center_y
+#             dist = math.hypot(dx, dy)
+#             if dist == 0:
+#                 continue
+#             overlap = (sprite.width / 2 + other.width / 2 - dist)
+#             if overlap > 0:
+#                 nx, ny = dx / dist, dy / dist
+#                 sprite.center_x += nx * overlap * separation / 2
+#                 sprite.center_y += ny * overlap * separation / 2
+#                 other.center_x -= nx * overlap * separation / 2
+#                 other.center_y -= ny * overlap * separation / 2
+
+#                 # --- 速度反転（単純弾性衝突）---
+                
+#                 tmp_vx,tmp_vy = sprite.vx , sprite.vy
+                
+#                 sprite.vx = other.vx * restitution
+#                 sprite.vy = other.vy * restitution
+#                 other.vx = tmp_vx * restitution
+#                 other.vy = tmp_vy * restitution
+#                 # sprite.vx, other.vx = other.vx, sprite.vx
+#                 # sprite.vy, other.vy = other.vy, sprite.vy
+                
+                
+#                 # --- 追加：衝突による回転発生 ---
+#                 # 相対速度の大きさをトルクの強さに変換
+#                 relative_speed = math.hypot(sprite.vx - other.vx, sprite.vy - other.vy)
+
+#                 # 接触方向に基づいてランダムな回転方向を付与
+#                 torque = (random.random() - 0.5) * relative_speed * 2
+
+#                 if hasattr(sprite, "angular_velocity"):
+#                     sprite.angular_velocity += torque
+#                 if hasattr(other, "angular_velocity"):
+#                     other.angular_velocity -= torque
+                    
 def handle_collisions(window):
-    restitution = 0.8
-    separation = 0.2
+    restitution = 0.5
+    separation = 0.0
     sprites = window.layers["sprites"]
     # 全スプライトで衝突を検出
     for sprite in sprites:
         hit_list = arcade.check_for_collision_with_list(sprite, sprites)
+
         for other in hit_list:
             if sprite is other:
                 continue
@@ -97,6 +184,7 @@ def handle_collisions(window):
             if dist == 0:
                 continue
             overlap = (sprite.width / 2 + other.width / 2 - dist)
+
             if overlap > 0:
                 nx, ny = dx / dist, dy / dist
                 sprite.center_x += nx * overlap * separation / 2
@@ -104,13 +192,45 @@ def handle_collisions(window):
                 other.center_x -= nx * overlap * separation / 2
                 other.center_y -= ny * overlap * separation / 2
 
+                def _get_scale(s):
+                    return s.scale[0] if isinstance(s.scale, (tuple, list)) else s.scale
+                # === 合体処理 ===
+                if sprite.image_path == other.image_path:
+                    # 新しいスプライト作成
+                    merged = GiftSprite(
+                    sprite.image_path,
+                    (sprite.center_x + other.center_x) / 2,
+                    (sprite.center_y + other.center_y) / 2,
+                    scale=max(_get_scale(sprite), _get_scale(other)) * 1.03
+                    )
+                    # 適当な初速
+                    merged.vx = (sprite.vx + other.vx) / 2
+                    merged.vy = (sprite.vy + other.vy) / 2 + 1.5
+                    sprites.append(merged)
+
+                    # 元を削除
+                    sprite.remove_from_sprite_lists()
+                    other.remove_from_sprite_lists()
+                    print(f"[ARC-SPRITE] 合体: {os.path.basename(sprite.image_path)}")
+                    break
                 # --- 速度反転（単純弾性衝突）---
-                
-                tmp_vx,tmp_vy = sprite.vx , sprite.vy
-                
-                sprite.vx = other.vx * restitution
-                sprite.vy = other.vy * restitution
-                other.vx = tmp_vx * restitution
-                other.vy = tmp_vy * restitution
-                # sprite.vx, other.vx = other.vx, sprite.vx
-                # sprite.vy, other.vy = other.vy, sprite.vy
+                # --- 通常反発（別画像）---
+                else:
+                    tmp_vx,tmp_vy = sprite.vx , sprite.vy
+                    sprite.vx = other.vx * restitution
+                    sprite.vy = other.vy * restitution
+                    other.vx = tmp_vx * restitution
+                    other.vy = tmp_vy * restitution
+
+
+                # --- 追加：衝突による回転発生 ---
+                # 相対速度の大きさをトルクの強さに変換
+                relative_speed = math.hypot(sprite.vx - other.vx, sprite.vy - other.vy)
+
+                # 接触方向に基づいてランダムな回転方向を付与
+                torque = (random.random() - 0.5) * relative_speed * 2
+
+                if hasattr(sprite, "angular_velocity"):
+                    sprite.angular_velocity += torque
+                if hasattr(other, "angular_velocity"):
+                    other.angular_velocity -= torque
