@@ -262,3 +262,4 @@ FONT_TYPE_TOROMAN = os.path.join(ASSETS_DIR,"fonts","toroman.ttf")
 print("[CONFIG] BASE_DIR:", BASE_DIR)
 print("[CONFIG] ASSETS_DIR:", ASSETS_DIR)
 
+tiktok_usernames = []

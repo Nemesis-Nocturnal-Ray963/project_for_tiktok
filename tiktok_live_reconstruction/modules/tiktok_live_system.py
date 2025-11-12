@@ -100,19 +100,29 @@ class TikTokLiveManager:
 			# enumオブジェクト は name や value 属性を持っている
 			if event.action.name == "BATTLE_ACTION_OPEN":
 				print("バトル開始ッ…！")
-				await receive.on_battle_start(event,self.client.unique_id)
+				await receive.on_battle_start()
 			if event.action.name == "BATTLE_ACTION_FINISH":
 				print("バトル終了…")
-				await receive.on_battle_end(event,self.client.unique_id)
+				await receive.on_battle_end()
 			print(event.battle_result)
 			# for user_id, result in event.battle_result.items():
 			#	 print("user_id:", user_id)
 			#	 print("score:", result.score)
 			#	 print("user_id:", user_id,"result ","score:", result.score)
-				
+
 		@self.client.on(GiftGalleryEvent)
 		async def on_gift_gallery(event:GiftGalleryEvent):
-			print(event)
+			await receive.on_fireworks(event)
+			nick_name = event.user.nick_name
+			avatar_urls = event.user.avatar_thumb.m_urls  # list型 (複数URLが入る)
+			# --- ギフト情報 ---
+			gift = event.gift_info.gift
+			gift_image_urls = gift.image.m_urls            # list型
+			gift_name = gift.name                          # ギフト名
+			print(f"User: {nick_name}")
+			print(f"Avatar: {avatar_url}")
+			print(f"Gift: {gift_name}")
+			print(f"Gift Image: {gift_image_url}")
 			print("test_gallery")
 	async def start_client_session(self):
 		"""TikTokLive接続"""

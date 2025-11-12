@@ -6,14 +6,15 @@
 #  - 登録済みのエフェクト生成関数を実行する
 # ==============================================
 import arcade
+from modules import config
 
-
-from .effects import sprite, beams, frame, test, sound,combo,fireworks,fireworks_numpy
+from .effects import sprite, gift_balloon, beams, frame, test, sound,combo,fireworks,fireworks_numpy,fireworks_numpy_ex
 import os
 
 # --- コマンドと関数の対応表 ---
 EFFECT_REGISTRY = {
     "spawn_gift": sprite.spawn_gift,
+    "spawn_gift_balloon": gift_balloon.spawn_gift,
     "show_frame": frame.toggle_frame,
     "spawn_Icosahedron": beams.toggle_icosahedron,
     "test_test":test.test_print,
@@ -21,6 +22,7 @@ EFFECT_REGISTRY = {
     # "spawn_combo": combo.spawn_combo_text,
     # "spawn_fireworks": fireworks.spawn_fireworks,
 	"spawn_fireworks": fireworks_numpy.trigger_global,
+	"spawn_fireworks_ex": fireworks_numpy_ex.trigger_global,
 }
 
 
@@ -48,18 +50,26 @@ def handle_command(cmd: str, args: list, window):
 # === MP3音源の絶対パス ===
 # SOUND_PATH = "C:/Users/x701c/project_for_tiktok/tiktok_live_reconstruction/assets/sounds/boot_sounds.wav"
 
-BASE_DIR =     os.path.dirname(
-        os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__))
-        )
-    )
+# BASE_DIR =os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-SOUND_PATH = os.path.join(BASE_DIR, "assets/sounds/boot_sounds.wav")
-SOUND_PATH = os.path.abspath(SOUND_PATH)
+# SOUND_PATH = os.path.join(BASE_DIR, "assets/sounds/boot_sounds.wav")
+# SOUND_PATH = os.path.abspath(SOUND_PATH)
 
-print(SOUND_PATH)  # デバッグ確認用
+# print(SOUND_PATH)  # デバッグ確認用
+# # === サウンドのロード ===
+# bgm_sound = arcade.load_sound(SOUND_PATH)
+
+# # === 再生 ===
+# player = arcade.play_sound(bgm_sound)
+
 # === サウンドのロード ===
-bgm_sound = arcade.load_sound(SOUND_PATH)
-
-# === 再生 ===
-player = arcade.play_sound(bgm_sound)
+boot_sound_path = os.path.join(config.SOUNDS_DIR, "boot_sounds.wav")
+if os.path.exists(boot_sound_path):
+    try:
+        bgm_sound = arcade.load_sound(boot_sound_path)
+        arcade.play_sound(bgm_sound)
+        print(f"[ARC-CONTROLLER] Boot sound loaded: {boot_sound_path}")
+    except Exception as e:
+        print(f"[ARC-CONTROLLER] Failed to load boot sound: {e}")
+else:
+    print(f"[ARC-CONTROLLER] Boot sound not found: {boot_sound_path}")

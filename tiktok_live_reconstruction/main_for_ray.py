@@ -73,9 +73,26 @@ async def backend_async():
         await test_env.test_input_cord()
     else:
         # --- TikTok Live クライアント ---
-        tiktok_usernames = ["muzukiray963"]
-        print("登録されたユーザー:", tiktok_usernames)
-        await tiktok_live_system.start_tiktok_clients(tiktok_usernames)
+        config.tiktok_usernames = ["muzukiray963"]
+        print("登録されたユーザー:", config.tiktok_usernames)
+        await tiktok_live_system.start_tiktok_clients(config.tiktok_usernames)
+
+    asyncio.create_task(receive.fireworks_queue_worker())
+    while True:
+        cmd = input("コマンド (reconnect / exit /Zootopia Family): ").strip()
+        if cmd == "help":
+            print("reconnect/exit/battle_on/battle_off")
+        elif cmd == "reconnect":
+            await tiktok_live_system.start_tiktok_clients(config.tiktok_usernames)
+        elif cmd == "exit":
+            break
+        elif cmd == "battle_on":
+            await receive.on_battle_start()
+        elif cmd == "battle_off":
+            await receive.on_battle_end()
+        elif cmd == "Zootopia Family":
+            await receive.Zootopia_Family()
+
 
 async def main():
     print("=== Arcade Main Thread ===")
@@ -83,6 +100,7 @@ async def main():
     shared_queue = queue.Queue()
     # receive.arcade_queue = shared_queue
     receive.arcade_queue = shared_queue
+    
     # --- バックエンドを別スレッドで非同期実行 ---
     backend_thread = threading.Thread(target=lambda: asyncio.run(backend_async()), daemon=True)
     backend_thread.start()

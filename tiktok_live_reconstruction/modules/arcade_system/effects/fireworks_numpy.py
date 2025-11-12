@@ -4,7 +4,7 @@
 #   2) on_updateで update(dt)、on_drawで draw() を呼ぶ
 #   3) 既存の「花火発火」から trigger(x, y, color) を呼ぶ
 #   4) 互換用：init_global(effect) 後に trigger_global(x, y, color) も可
-
+import os, config
 import arcade
 import numpy as np
 import math
@@ -12,6 +12,15 @@ import random
 from typing import Tuple, Optional
 
 Color = Tuple[int, int, int]
+
+# --- 効果音ロード ---
+SOUNDS_DIR = os.path.join(config.SOUNDS_DIR, "fireworks")
+FIREWORK_SOUNDS = []
+for name in ("fireworks1.mp3", "fireworks2.mp3", "fireworks3.mp3"):
+    path = os.path.join(SOUNDS_DIR, name)
+    if os.path.exists(path):
+        FIREWORK_SOUNDS.append(arcade.load_sound(path))
+print(f"[ARC-FW_NP] Loaded {len(FIREWORK_SOUNDS)} firework sounds")
 
 class _FireworkSystem:
     """NumPy配列で粒子を一括管理"""
@@ -89,13 +98,29 @@ class NumpyFireworksEffect:
         ])
         self.sys.spawn(x, y, color=color, num=num)
 
+        # --- 効果音を再生（音ファイルがある場合のみ）---
+        if FIREWORK_SOUNDS:
+            snd = random.choice(FIREWORK_SOUNDS)
+            arcade.play_sound(snd, volume=0.5)
+
     def update(self, dt: float):
         self.sys.update()
 
     def draw(self):
+        if self.sys.count == 0:
+            return
         for i in range(self.sys.count):
+            # --- フェードアウト処理 ---
+            # 寿命を 0〜1 に正規化
+            life_ratio = max(0.0, min(1.0, self.sys.life[i] / 90.0))
+            alpha = int(255 * life_ratio)
+
+            # 色に透明度を追加
             rgb = tuple(int(v) for v in self.sys.rgb[i])
-            arcade.draw_circle_filled(self.sys.x[i], self.sys.y[i], self.radius, rgb)
+            color_with_alpha = (*rgb, alpha)
+
+            # 描画
+            arcade.draw_circle_filled(self.sys.x[i],self.sys.y[i],self.radius,color_with_alpha)
 
 
 # --- controller互換関数 ---

@@ -72,11 +72,11 @@ async def backend_async():
 		await test_env.test_input_cord()
 	else:
 		# --- TikTok Live クライアント ---
-		tiktok_usernames = []
+		config.tiktok_usernames = []
 		while True:
 			user = input("TikTokのユーザーIDを入力してください（@は不要）: ").strip()
 			if user:
-				tiktok_usernames.append(user)
+				config.tiktok_usernames.append(user)
 			else:
 				print("入力が空です。スキップします。")
 
@@ -84,9 +84,14 @@ async def backend_async():
 			if more != "y":
 				break
 
-		print("登録されたユーザー:", tiktok_usernames)
-		await tiktok_live_system.start_tiktok_clients(tiktok_usernames)
-
+		print("登録されたユーザー:", config.tiktok_usernames)
+		await tiktok_live_system.start_tiktok_clients(config.tiktok_usernames)
+	while True:
+		cmd = input("コマンド (reconnect / exit): ").strip()
+		if cmd == "reconnect":
+			await tiktok_live_system.start_tiktok_clients(config.tiktok_usernames)
+		elif cmd == "exit":
+			break
 async def main():
 	print("=== Arcade Main Thread ===")
 	# --- スレッド共有Queue（multiprocessing不使用） ---
