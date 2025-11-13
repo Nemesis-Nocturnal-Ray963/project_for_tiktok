@@ -1,6 +1,5 @@
 from modules import command_worker_mod as cwm
-# from modules import arcade_system_alpha
-# from modules.arcade_system import core as arcade_system
+from modules import logger_viewer
 from modules import config
 import asyncio
 from datetime import datetime
@@ -8,7 +7,8 @@ import random
 import math
 import queue
 import os
-print("2025年11月日 ギフトギャラリー+α+イベント+ズートピア開催前")
+
+print("2025年11月日 ズートピア開催")
 
 # その配信でのコインの総量
 coin_counter = 0
@@ -27,6 +27,9 @@ TOTAL_LIKE_THRESHOLD = 10000
 finish_time = 0
 arcade_queue = None
 fireworks_buffer_queue = asyncio.Queue()  # 花火専用の中間キュー
+
+
+
 
 async def fireworks_queue_worker():
     """花火専用キュー → Arcadeキューへ2秒ごとに流す"""
@@ -128,8 +131,56 @@ async def on_follow_mod(event,streamer_ID):
 
 # 対応済み
 async def on_comment_mod(event,streamer_ID):
+    user_id = event.user.unique_id
+    nickname = event.user.nickname
+    avatar_urls = event.user.avatar_thumb.m_urls
+    now_date = datetime.now().strftime("%Y-%m-%d")
+    db = config.nickname_history
+    
+    
+    # --- キャッシュに無い場合だけ保存 ---
+    if user_id not in config.avatar_url_cache:
+        if avatar_urls:
+            config.avatar_url_cache[user_id] = avatar_urls[0]
+            print("[Avatar] New icon saved:", user_id, avatar_urls[0])
+
+            # JSONファイルへの永続保存
+            config.save_avatar_cache(config.avatar_url_cache)
+
+
+    # 初回ユーザー
+    if user_id not in db:
+        db[user_id] = {
+            "history": [
+                {"name": nickname, "first_seen": now_date}
+            ],
+            "latest": nickname
+        }
+        config.save_nickname_history(db)
+        print("[Nickname] 初回登録:", user_id, nickname)
+    else:
+        # 既存ユーザー → 最新と違うなら履歴追加
+        if db[user_id]["latest"] != nickname:
+            db[user_id]["latest"] = nickname
+            db[user_id]["history"].append({
+                "name": nickname,
+                "first_seen": now_date
+            })
+            config.save_nickname_history(db)
+            print("[Nickname] 変更検出:", user_id, nickname)
+
+
+    # あとは通常の処理
+    now = datetime.now()
+    print(f"{nickname} >> {event.comment}")
     now = datetime.now()
     print(f"{event.user.nickname} >> {event.comment} at {now.strftime('%Y-%m-%d %H:%M:%S')} form {streamer_ID}")
+    logger_viewer.add_log(
+        user_id,
+        nickname,
+        "comment",
+        event.comment
+    )
 
 async def add_time(seconds=300):
     global finish_time,coin_counter
@@ -204,7 +255,7 @@ async def on_gift_mod(event,streamer_ID):
                 for _ in range(3):
                     shape_name = random.choices(["Judith1", "Judith2","nick1", "nick2"], weights=[4, 4,1, 1])[0]
                     asyncio.create_task(arcade_send_queue(("spawn_fireworks_ex", [1, 3.0,shape_name])))
-                await asyncio.sleep(0.1)
+                    await asyncio.sleep(1.2)
 
         if name == "Last take":
             for _ in range(count):
@@ -212,7 +263,7 @@ async def on_gift_mod(event,streamer_ID):
                 for _ in range(9):
                     shape_name = random.choices(["Judith1", "Judith2","nick1", "nick2"], weights=[1,1,1,1])[0]
                     asyncio.create_task(arcade_send_queue(("spawn_fireworks_ex", [1, 3.0,shape_name])))
-                await asyncio.sleep(0.1)
+                    await asyncio.sleep(1.2)
 
         if name == "Movie Moment":
             for _ in range(count):
@@ -220,7 +271,7 @@ async def on_gift_mod(event,streamer_ID):
                 for _ in range(9):
                     shape_name = random.choices(["Judith1", "Judith2","nick1", "nick2"], weights=[1,1,1,1])[0]
                     asyncio.create_task(arcade_send_queue(("spawn_fireworks_ex", [1, 3.0,shape_name])))
-                await asyncio.sleep(0.1)
+                    await asyncio.sleep(1.2)
 
         if name == "Rollercoaster":
             for _ in range(count):
@@ -228,7 +279,7 @@ async def on_gift_mod(event,streamer_ID):
                 for _ in range(9):
                     shape_name = random.choices(["Judith1", "Judith2","nick1", "nick2"], weights=[1,1,1,1])[0]
                     asyncio.create_task(arcade_send_queue(("spawn_fireworks_ex", [1, 3.0,shape_name])))
-                await asyncio.sleep(0.1)
+                    await asyncio.sleep(1.2)
 
         if name == "Zootopia Family":
             for _ in range(count):
@@ -236,12 +287,18 @@ async def on_gift_mod(event,streamer_ID):
                 for _ in range(9):
                     shape_name = random.choices(["Judith1", "Judith2","nick1", "nick2"], weights=[1,1,1,1])[0]
                     asyncio.create_task(arcade_send_queue(("spawn_fireworks_ex", [1, 3.0,shape_name])))
-                await asyncio.sleep(0.1)
+                    await asyncio.sleep(1.2)
 
     # if 5000 <= coin_counter:
     #     while coin_counter > 5000:
     #         await add_time()
     #     asyncio.create_task(time_measurement())
+    logger_viewer.add_log(
+    event.user.unique_id,
+    event.user.nickname,
+    "gift",
+    f"{event.gift.name} x{event.repeat_count} ({event.gift.diamond_count}coin)"
+    )
 
 async def on_battle_start():
     print("ballte start...")

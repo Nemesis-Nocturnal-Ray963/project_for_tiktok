@@ -22,7 +22,7 @@ from modules import combo_system as c_sys
 from modules.arcade_system import core as arcade_system
 from modules import tiktok_live_system
 import obsws_python as obs
-
+from modules import logger_viewer
 
 
 #--------------------------------------------------
@@ -65,6 +65,8 @@ async def backend_async():
         await setup.setup_scene_and_source(config.obs_client, config.SCENE_NAME, config.SOURCES_NAMES)
         asyncio.create_task(c_sys.combo_system_mod())
 
+    asyncio.create_task(receive.fireworks_queue_worker())
+
     if is_test:
         for i in range(3):
             print("=== テストプログラム ===")
@@ -77,7 +79,7 @@ async def backend_async():
         print("登録されたユーザー:", config.tiktok_usernames)
         await tiktok_live_system.start_tiktok_clients(config.tiktok_usernames)
 
-    asyncio.create_task(receive.fireworks_queue_worker())
+
     while True:
         cmd = input("コマンド (reconnect / exit /Zootopia Family): ").strip()
         if cmd == "help":

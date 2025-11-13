@@ -8,10 +8,27 @@ from multiprocessing import Queue, Process
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import *
 from TikTokLive.client.errors import UserOfflineError
-
+from modules import logger_viewer
 from modules import config, receive
 
 # from TikTokLive.events import GiftGalleryEvent
+
+
+def save_raw_event_auto(event_obj):
+    """イベント名を自動抽出して、そのまま.pklとして保存"""
+    os.makedirs(config.LOGS_DIR, exist_ok=True)
+
+    event_name = event_obj.__class__.__name__
+    now = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    filename = f"{event_name}_{now}.pkl"
+    filepath = os.path.join(config.LOGS_DIR, filename)
+
+    try:
+        with open(filepath, "wb") as f:
+            pickle.dump(event_obj, f)
+        print(f"[EVENT-LOG] 保存 → {filepath}")
+    except Exception as e:
+        print(f"[ERROR] event保存失敗: {e}")
 
 # ============================================================
 # TikTokLive マネージャー
@@ -65,11 +82,12 @@ class TikTokLiveManager:
 			LinkMicBattlePunishFinishEvent, LinkmicAudienceNoticeEvent,
 			LinkMicBattleItemCardEvent, LinkmicBattleTaskEvent,
 			LinkMicAnchorGuideEvent, LinkmicBattleNoticeEvent,
-			LinkMicArmiesEvent, LinkMicFanTicketMethodEvent, LinkMicMethodEvent, GiftGalleryEvent
+			LinkMicArmiesEvent, LinkMicFanTicketMethodEvent, LinkMicMethodEvent, GiftGalleryEvent,GiftUpdateEvent,
+			FansEventEvent,GoodyBagEvent,JoinEvent,EnvelopeEvent,UnknownEvent
 		)
-		@self.client.on(LikeEvent)
-		async def on_like(event: LikeEvent):
-			await receive.on_like_mod(event, self.client.unique_id)
+		# @self.client.on(LikeEvent)
+		# async def on_like(event: LikeEvent):
+		# 	await receive.on_like_mod(event, self.client.unique_id)
 
 		@self.client.on(FollowEvent)
 		async def on_follow(event: FollowEvent):
@@ -89,12 +107,8 @@ class TikTokLiveManager:
 
 		@self.client.on(LinkMicBattleEvent)
 		async def on_battle(event: LinkMicBattleEvent):
-			print("バトルについて")
-			print(event.base_message)
-			print(event.base_message.monitor)
-			print(event.battle_id)
-			print(event.battle_setting)
-			print(event.action)
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
 			battle_action = event.action
 			print(type(battle_action), battle_action)
 			# enumオブジェクト は name や value 属性を持っている
@@ -104,26 +118,50 @@ class TikTokLiveManager:
 			if event.action.name == "BATTLE_ACTION_FINISH":
 				print("バトル終了…")
 				await receive.on_battle_end()
-			print(event.battle_result)
 			# for user_id, result in event.battle_result.items():
 			#	 print("user_id:", user_id)
 			#	 print("score:", result.score)
 			#	 print("user_id:", user_id,"result ","score:", result.score)
 
+		@self.client.on(GiftUpdateEvent)
+		async def on_gift_updata(event:GiftUpdateEvent):
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
+
 		@self.client.on(GiftGalleryEvent)
 		async def on_gift_gallery(event:GiftGalleryEvent):
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
 			await receive.on_fireworks(event)
-			nick_name = event.user.nick_name
-			avatar_urls = event.user.avatar_thumb.m_urls  # list型 (複数URLが入る)
-			# --- ギフト情報 ---
-			gift = event.gift_info.gift
-			gift_image_urls = gift.image.m_urls            # list型
-			gift_name = gift.name                          # ギフト名
-			print(f"User: {nick_name}")
-			print(f"Avatar: {avatar_url}")
-			print(f"Gift: {gift_name}")
-			print(f"Gift Image: {gift_image_url}")
-			print("test_gallery")
+
+		@self.client.on(FansEventEvent)
+		async def on_fans_event(event:FansEventEvent):
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
+
+		@self.client.on(GoodyBagEvent)
+		async def on_fans_event(event:GoodyBagEvent):
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
+
+		@self.client.on(JoinEvent)
+		async def on_fans_event(event:JoinEvent):
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
+			print(event.user.nickname)
+
+		@self.client.on(EnvelopeEvent)
+		async def on_fans_event(event:EnvelopeEvent):
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
+			print(event.user.name)
+
+		@self.client.on(UnknownEvent)
+		async def on_fans_event(event:UnknownEvent):
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
+			print(event.user.name)
+
 	async def start_client_session(self):
 		"""TikTokLive接続"""
 		try:
@@ -132,7 +170,7 @@ class TikTokLiveManager:
 			print(f"⚠️ {self.client.unique_id} はオフラインです。")
 		finally:
 			print(f"終了: {self.client.unique_id}")
-
+			await logger_viewer.flush_all()
 
 # ============================================================
 # テストシステム
@@ -151,7 +189,8 @@ class Gift:
 
 class User:
 	"this is use TestSystem"
-	def __init__(self, nickname):
+	def __init__(self, unique_id ,nickname):
+		self.unique_id = unique_id
 		self.nickname = nickname
 
 class GiftEvent:
@@ -185,7 +224,7 @@ class TestSystem:
 	"this is use TestSystem"
 	def __init__(self):
 		self.client = Tiktok_Client("muzukiray963")
-		self.user = User("test_user_3699")
+		self.user = User("user1111111","test_user_3699")
 		self.gift = Gift("test", 1337,True)
 		self.repeat_count = RepeatCount(1)
 		self.streaking = CheckStraking(False)
