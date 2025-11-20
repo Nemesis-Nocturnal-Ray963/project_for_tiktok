@@ -1,0 +1,204 @@
+{
+  "_serialized_on_wire": true,
+  "base_message": {
+    "_serialized_on_wire": true,
+    "method": "WebcastLinkMicBattle",
+    "message_id": 7572553922698382100,
+    "room_id": 7572536122333481748,
+    "create_time": 1763122626509,
+    "monitor": 1,
+    "show_msg": "<object object at 0x000001E068BE5330>",
+    "describe": "<object object at 0x000001E068BE5330>",
+    "display_text": "<object object at 0x000001E068BE5330>",
+    "fold_type": "<object object at 0x000001E068BE5330>",
+    "anchor_fold_type": "<object object at 0x000001E068BE5330>",
+    "priority_score": "<object object at 0x000001E068BE5330>",
+    "log_id": "<object object at 0x000001E068BE5330>",
+    "msg_process_filter_k": "<object object at 0x000001E068BE5330>",
+    "msg_process_filter_v": "<object object at 0x000001E068BE5330>",
+    "from_idc": "<object object at 0x000001E068BE5330>",
+    "to_idc": "<object object at 0x000001E068BE5330>",
+    "filter_tags": "<object object at 0x000001E068BE5330>",
+    "message_s_e_i": "<object object at 0x000001E068BE5330>",
+    "depend_root_i_d": "<object object at 0x000001E068BE5330>",
+    "depend_i_d": "<object object at 0x000001E068BE5330>",
+    "anchor_priority_score": "<object object at 0x000001E068BE5330>",
+    "room_message_heat_level": "<object object at 0x000001E068BE5330>",
+    "fold_type_for_web": "<object object at 0x000001E068BE5330>",
+    "anchor_fold_type_for_web": "<object object at 0x000001E068BE5330>",
+    "client_send_time": "<object object at 0x000001E068BE5330>",
+    "dispatch_strategy": 1,
+    "_unknown_fields": "b''",
+    "_group_current": {
+      "_dispatch_strategy": "dispatch_strategy"
+    }
+  },
+  "battle_id": 7572553939215633172,
+  "battle_setting": {
+    "_serialized_on_wire": true,
+    "battle_id": 7572553939215633172,
+    "start_time_ms": 1763122626469,
+    "duration": 301,
+    "channel_id": 7572552253752773396,
+    "status": 1,
+    "invite_type": 1,
+    "gift_mode_meta": {
+      "_serialized_on_wire": true,
+      "gift_id": "<object object at 0x000001E068BE5330>",
+      "gift_name_key": "pm_mt_match_gift_option_select_page_all_option",
+      "gift_icon_image": {
+        "_serialized_on_wire": true,
+        "m_urls": [
+          "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/gift_only_all_gifts~tplv-obj.png",
+          "https://p19-webcast.tiktokcdn.com/img/alisg/webcast-sg/gift_only_all_gifts~tplv-obj.png"
+        ],
+        "m_uri": "webcast-sg/gift_only_all_gifts",
+        "height": "<object object at 0x000001E068BE5330>",
+        "width": "<object object at 0x000001E068BE5330>",
+        "avg_color": "#CCBEA3",
+        "image_type": "<object object at 0x000001E068BE5330>",
+        "schema": "<object object at 0x000001E068BE5330>",
+        "content": "<object object at 0x000001E068BE5330>",
+        "is_animated": "<object object at 0x000001E068BE5330>",
+        "_unknown_fields": "b''",
+        "_group_current": {}
+      },
+      "gift_mode_desc": "<object object at 0x000001E068BE5330>",
+      "_unknown_fields": "b''",
+      "_group_current": {}
+    },
+    "battle_type": 1,
+    "extra_duration_second": "<object object at 0x000001E068BE5330>",
+    "end_time_ms": "<object object at 0x000001E068BE5330>",
+    "_unknown_fields": "b''",
+    "_group_current": {}
+  },
+  "action": 4,
+  "battle_result": "<object object at 0x000001E068BE5330>",
+  "m_battle_display_config": "<object object at 0x000001E068BE5330>",
+  "invitee_gift_permission_type": null,
+  "armies": "<object object at 0x000001E068BE5330>",
+  "anchor_info": [
+    {
+      "_serialized_on_wire": true,
+      "user_id": 7496348199869088776,
+      "user_info": {
+        "_serialized_on_wire": true,
+        "user": {
+          "_serialized_on_wire": true,
+          "user_id": 7496348199869088776,
+          "nick_name": "夢月レイ",
+          "avatar_thumb": {
+            "_serialized_on_wire": true,
+            "m_urls": [
+              "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/e4eed51182c8a54142e60ede8d7b086a~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=cb9c7932&x-expires=1763294400&x-signature=SpudhPXW0uHdcKviwF3LQRPyNkA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p77-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/e4eed51182c8a54142e60ede8d7b086a~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=36aea7c7&x-expires=1763294400&x-signature=DAX9mfT30lcR5AyfJf5EBV%2FNZBY%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/e4eed51182c8a54142e60ede8d7b086a~tplv-tiktokx-cropcenter:100:100.jpeg?dr=14579&refresh_token=d1770f83&x-expires=1763294400&x-signature=PsqXL%2FcYErbb%2FIzzHhMp4CcHA3E%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/e4eed51182c8a54142e60ede8d7b086a~tplv-tiktokx-cropcenter:100:100.webp?dr=18067&refresh_token=a5ccb00d&x-expires=1763294400&x-signature=EqIrFDl3IopUkVwQ2By8lXirWTw%3D&t=4d5b0474&ps=ae600521&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p19-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/e4eed51182c8a54142e60ede8d7b086a~tplv-tiktokx-cropcenter:100:100.webp?dr=18067&refresh_token=61361b9b&x-expires=1763294400&x-signature=o3ptOvSUR1N39RgoHlu9WORU1es%3D&t=4d5b0474&ps=ae600521&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/e4eed51182c8a54142e60ede8d7b086a~tplv-tiktokx-cropcenter:100:100.jpeg?dr=18067&refresh_token=9d07ecf3&x-expires=1763294400&x-signature=elogymL9ya1os9XUioDBu%2FWztOM%3D&t=4d5b0474&ps=ae600521&shp=a5d48078&shcp=fdd36af4&idc=my"
+            ],
+            "m_uri": "tos-alisg-avt-0068/e4eed51182c8a54142e60ede8d7b086a",
+            "height": "<object object at 0x000001E068BE5330>",
+            "width": "<object object at 0x000001E068BE5330>",
+            "avg_color": "<object object at 0x000001E068BE5330>",
+            "image_type": "<object object at 0x000001E068BE5330>",
+            "schema": "<object object at 0x000001E068BE5330>",
+            "content": "<object object at 0x000001E068BE5330>",
+            "is_animated": "<object object at 0x000001E068BE5330>",
+            "_unknown_fields": "b''",
+            "_group_current": {}
+          },
+          "display_id": "muzukiray963",
+          "_unknown_fields": "b''",
+          "_group_current": {}
+        },
+        "tags": "<object object at 0x000001E068BE5330>",
+        "_unknown_fields": "b''",
+        "_group_current": {}
+      },
+      "_unknown_fields": "b''",
+      "_group_current": {}
+    },
+    {
+      "_serialized_on_wire": true,
+      "user_id": 7498220649266840594,
+      "user_info": {
+        "_serialized_on_wire": true,
+        "user": {
+          "_serialized_on_wire": true,
+          "user_id": 7498220649266840594,
+          "nick_name": "宵狐ヒサギ🦊🏰",
+          "avatar_thumb": {
+            "_serialized_on_wire": true,
+            "m_urls": [
+              "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/12e67f9c8f4424201fc5fdd867f24595~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=00373eee&x-expires=1763294400&x-signature=%2BgIx1c3cdlOV%2B7qapeWG8HkvLDw%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p77-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/12e67f9c8f4424201fc5fdd867f24595~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=264aea3b&x-expires=1763294400&x-signature=VvmouxR1uuFPXVA8PL6MzzExu1M%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p16-sign-sg.tiktokcdn.com/tos-alisg-avt-0068/12e67f9c8f4424201fc5fdd867f24595~tplv-tiktokx-cropcenter:100:100.jpeg?dr=14579&refresh_token=a33e45f8&x-expires=1763294400&x-signature=k2TR2CJox92777zkzF57674wxBc%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/12e67f9c8f4424201fc5fdd867f24595~tplv-tiktokx-cropcenter:100:100.webp?dr=18067&refresh_token=b514613a&x-expires=1763294400&x-signature=58QsQs2M9PUD697WKRahtsTT3R4%3D&t=4d5b0474&ps=ae600521&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p19-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/12e67f9c8f4424201fc5fdd867f24595~tplv-tiktokx-cropcenter:100:100.webp?dr=18067&refresh_token=e851bf34&x-expires=1763294400&x-signature=9XP09ODXlFKMiWa88eS9nOlKf%2FE%3D&t=4d5b0474&ps=ae600521&shp=a5d48078&shcp=fdd36af4&idc=my",
+              "https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/12e67f9c8f4424201fc5fdd867f24595~tplv-tiktokx-cropcenter:100:100.jpeg?dr=18067&refresh_token=799f3aab&x-expires=1763294400&x-signature=Xci%2F%2FsS04ejnA72PUVzWo96YWi8%3D&t=4d5b0474&ps=ae600521&shp=a5d48078&shcp=fdd36af4&idc=my"
+            ],
+            "m_uri": "tos-alisg-avt-0068/12e67f9c8f4424201fc5fdd867f24595",
+            "height": "<object object at 0x000001E068BE5330>",
+            "width": "<object object at 0x000001E068BE5330>",
+            "avg_color": "<object object at 0x000001E068BE5330>",
+            "image_type": "<object object at 0x000001E068BE5330>",
+            "schema": "<object object at 0x000001E068BE5330>",
+            "content": "<object object at 0x000001E068BE5330>",
+            "is_animated": "<object object at 0x000001E068BE5330>",
+            "_unknown_fields": "b''",
+            "_group_current": {}
+          },
+          "display_id": "hisagi_yoigitsune",
+          "_unknown_fields": "b''",
+          "_group_current": {}
+        },
+        "tags": "<object object at 0x000001E068BE5330>",
+        "_unknown_fields": "b''",
+        "_group_current": {}
+      },
+      "_unknown_fields": "b''",
+      "_group_current": {}
+    }
+  ],
+  "bubble_text": "<object object at 0x000001E068BE5330>",
+  "supported_actions": "<object object at 0x000001E068BE5330>",
+  "battle_combos": {
+    "7498220649266840594": {
+      "_serialized_on_wire": true,
+      "user_id": 7498220649266840594,
+      "combo_status": "<object object at 0x000001E068BE5330>",
+      "combo_count": 1,
+      "combo_icon_url": "<object object at 0x000001E068BE5330>",
+      "combo_type": 1,
+      "combo_rule_guide_schema": "sslocal://webcast_lynxview_popup?url=https%3A%2F%2Flf16-gecko-source.tiktokcdn.com%2Fobj%2Fbyte-gurd-source-sg%2Ftiktok%2Ffe%2Flive%2Ftiktok_live_revenue_match%2Fpages%2Flive_match_streak%2Ftemplate.js&height=832rpx&radius=16rpx&container_bg_color=FFFFFF&bdhm_bid=tiktok_live_revenue_match&bdhm_pid=tiktok_live_revenue_match_pages_live_match_streak&server_room_id=7572542281123777298",
+      "_unknown_fields": "b''",
+      "_group_current": {}
+    },
+    "7496348199869088776": {
+      "_serialized_on_wire": true,
+      "user_id": 7496348199869088776,
+      "combo_status": "<object object at 0x000001E068BE5330>",
+      "combo_count": "<object object at 0x000001E068BE5330>",
+      "combo_icon_url": "<object object at 0x000001E068BE5330>",
+      "combo_type": 1,
+      "combo_rule_guide_schema": "sslocal://webcast_lynxview_popup?url=https%3A%2F%2Flf16-gecko-source.tiktokcdn.com%2Fobj%2Fbyte-gurd-source-sg%2Ftiktok%2Ffe%2Flive%2Ftiktok_live_revenue_match%2Fpages%2Flive_match_streak%2Ftemplate.js&height=832rpx&radius=16rpx&container_bg_color=FFFFFF&bdhm_bid=tiktok_live_revenue_match&bdhm_pid=tiktok_live_revenue_match_pages_live_match_streak&server_room_id=7572536122333481748",
+      "_unknown_fields": "b''",
+      "_group_current": {}
+    }
+  },
+  "team_users": "<object object at 0x000001E068BE5330>",
+  "invitee_gift_permission_types": "<object object at 0x000001E068BE5330>",
+  "action_by_user_id": 7496348199869088776,
+  "team_battle_result": "<object object at 0x000001E068BE5330>",
+  "team_armies": "<object object at 0x000001E068BE5330>",
+  "abtest_settings": "<object object at 0x000001E068BE5330>",
+  "team_match_campaign": "<object object at 0x000001E068BE5330>",
+  "fuzzy_display_config_v2": "<object object at 0x000001E068BE5330>",
+  "_unknown_fields": "b'\\xb2\\x01\\xf0\\x05\\x08\\x92\\x88\\xb2\\xb8\\xc0\\xfe\\xc1\\x87h\\x12\\xe3\\x05\\n\\xce\\x05\\n\\xd0\\x02\\n\\x8e\\x02http://p16-sign-sg.tiktokcdn.com/tos-alisg-i-cuqfs489yo-sg/class_rank/league_C_icon_v1.png~tplv-tiktokx-origin.image?dr=14582&refresh_token=c0ec0bfb&x-expires=1763143200&x-signature=7wuNTGvVFzJYrpubHd6xEQM0lTU%3D&t=4d5b0474&ps=13740610&shp=c991cdcb&shcp=75a09491&idc=my2\\x129tos-alisg-i-cuqfs489yo-sg/class_rank/league_C_icon_v1.png\\x18\\x0e  \\x12\\x16\\n\\x02C5\\x12\\x07#C97D4A\\x1a\\x07#FFFFFF\\x18\\x01\"\\xde\\x02\\n\\x97\\x02http://p16-sign-sg.tiktokcdn.com/tos-alisg-i-cuqfs489yo-sg/class_rank/league_C_icon_dark_v1.png~tplv-tiktokx-origin.image?dr=14582&refresh_token=4ae37049&x-expires=1763143200&x-signature=5D%2B6QHLmnu%2Bury5Y93zyck4npdc%3D&t=4d5b0474&ps=13740610&shp=c991cdcb&shcp=75a09491&idc=my2\\x12>tos-alisg-i-cuqfs489yo-sg/class_rank/league_C_icon_dark_v1.png\\x18\\x0e  \\x1a\\x07#FCE7D9*\\x07#6F4A30\\xb2\\x01\\xee\\x05\\x08\\x88\\x88\\xd8\\xee\\x86\\x9f\\x98\\x84h\\x12\\xe1\\x05\\n\\xcc\\x05\\n\\xd2\\x02\\n\\x90\\x02http://p16-sign-sg.tiktokcdn.com/tos-alisg-i-cuqfs489yo-sg/class_rank/league_D_icon_v1.png~tplv-tiktokx-origin.image?dr=14582&refresh_token=85c9be28&x-expires=1763143200&x-signature=cD%2FOjUu7EKavzNngU2NNNMfXH0E%3D&t=4d5b0474&ps=13740610&shp=c991cdcb&shcp=75a09491&idc=my2\\x129tos-alisg-i-cuqfs489yo-sg/class_rank/league_D_icon_v1.png\\x18\\x0e  \\x12\\x16\\n\\x02D1\\x12\\x07#936A6A\\x1a\\x07#FFFFFF\\x18\\x01\"\\xda\\x02\\n\\x93\\x02http://p16-sign-sg.tiktokcdn.com/tos-alisg-i-cuqfs489yo-sg/class_rank/league_D_icon_dark_v1.png~tplv-tiktokx-origin.image?dr=14582&refresh_token=4805433b&x-expires=1763143200&x-signature=sTSb0fculoFfHYvDMYCc1iq2WaA%3D&t=4d5b0474&ps=13740610&shp=c991cdcb&shcp=75a09491&idc=my2\\x12>tos-alisg-i-cuqfs489yo-sg/class_rank/league_D_icon_dark_v1.png\\x18\\x0e  \\x1a\\x07#F3E6E7*\\x07#5D4242\\xba\\x01^\\x08\\x92\\x88\\xb2\\xb8\\xc0\\xfe\\xc1\\x87h\\x12R\\x18\\x01\"N\\n\"ttlive_leagueMatch_banner_winToGet\\x12\\x18Win to get legend points\\x1a\\x0e\\n\\t#ffffffff \\x90\\x03\\xba\\x01\\xfe\\x02\\x08\\x88\\x88\\xd8\\xee\\x86\\x9f\\x98\\x84h\\x12\\xf1\\x02\\x08\\x14\\x18\\x01\"\\xea\\x02\\n/ttlive_leagueMatch_inMatchLabel_winToGetPoints2\\x12\\x1cWin to get {0:string}% bonus\\x1a\\x0e\\n\\t#ffffffff \\x90\\x03\"\\x06\\x08\\x01Z\\x0220\"\\x80\\x02\\x08\\x0f\\xca\\x01\\xfa\\x01\\n\\xf7\\x01\\n_https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/league_match_glove_icon.png~tplv-obj.png\\n_https://p19-webcast.tiktokcdn.com/img/alisg/webcast-sg/league_match_glove_icon.png~tplv-obj.png\\x12&webcast-sg/league_match_glove_icon.png\\x18\\x0e \\x0e*\\x07#CCA3A3\\xca\\x01\\x0c\\x10\\xb4\\xd7\\xd6\\xc7\\x06\\x18\\xd4\\xa5\\xa0\\xc9\\x06'",
+  "_group_current": {
+    "_action": "action",
+    "_invitee_gift_permission_type": null
+  }
+}

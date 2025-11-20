@@ -17,7 +17,7 @@ from TikTokLive.client.errors import UserOfflineError
 from modules import config, setup
 from modules import receive
 from modules import command_worker_mod as cwm
-from modules import combo_system as c_sys
+# from modules import combo_system as c_sys
 # from modules import arcade_system_alpha
 from modules.arcade_system import core as arcade_system
 from modules import tiktok_live_system
@@ -39,16 +39,26 @@ from modules import logger_viewer
 async def command_worker():
     await cwm.command_worker_mod()
 
-async def combo_system():
-    await c_sys.combo_system_mod()
+# async def combo_system():
+#     await c_sys.combo_system_mod()
 
 # ==========================================================
 # TikTok クライアント管理クラス
 # ==========================================================
 async def backend_async():
     print("=== Backend systems started ===")
+    # asyncio.create_task(receive.admin_processor())
+    # asyncio.create_task(receive.admin_console())
+    receive.stream_start_time = datetime.now()
 
-    print("test mode (y/n)")
+    base = receive.stream_start_time.strftime("%Y-%m-%d_%H-%M-%S")
+    subtitle_dir = os.path.join(config.LOGS_DIR, "subtitles", base)
+    os.makedirs(subtitle_dir, exist_ok=True)
+
+    receive.subtitle_dir = subtitle_dir
+    receive.subtitle_index = 0
+
+    print(f"[SRT] 字幕フォルダ作成: {subtitle_dir}")
     # --- 設定入力 ---
     is_test = False
     is_use_obs = False
@@ -65,7 +75,7 @@ async def backend_async():
         await setup.setup_scene_and_source(config.obs_client, config.SCENE_NAME, config.SOURCES_NAMES)
         asyncio.create_task(c_sys.combo_system_mod())
 
-    asyncio.create_task(receive.fireworks_queue_worker())
+
 
     if is_test:
         for i in range(3):

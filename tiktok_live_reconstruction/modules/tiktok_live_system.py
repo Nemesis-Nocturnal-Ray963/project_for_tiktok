@@ -4,16 +4,18 @@ import os
 import random
 from datetime import date
 from multiprocessing import Queue, Process
-
+import pickle
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import *
 from TikTokLive.client.errors import UserOfflineError
 from modules import logger_viewer
 from modules import config, receive
-
+from datetime import datetime
+from modules import receive
+from TikTokLive.client.web.web_settings import WebDefaults
 # from TikTokLive.events import GiftGalleryEvent
 
-
+WebDefaults.tiktok_sign_api_key = "euler_MDE0NmVkYjE2M2FhOWYxNTliYTE4ODRhOTJiYTBlOTMzMzNlZjhhZjg0ODBhZjk5ZGZkOTc0"
 def save_raw_event_auto(event_obj):
     """イベント名を自動抽出して、そのまま.pklとして保存"""
     os.makedirs(config.LOGS_DIR, exist_ok=True)
@@ -35,7 +37,7 @@ def save_raw_event_auto(event_obj):
 # ============================================================
 class TikTokLiveManager:
 	"""TikTokLive 接続 + イベント管理"""
-
+	
 	def __init__(self, tiktok_user_id, base_dir="logs"):
 		self.client = TikTokLiveClient(unique_id=tiktok_user_id)
 
@@ -85,6 +87,7 @@ class TikTokLiveManager:
 			LinkMicArmiesEvent, LinkMicFanTicketMethodEvent, LinkMicMethodEvent, GiftGalleryEvent,GiftUpdateEvent,
 			FansEventEvent,GoodyBagEvent,JoinEvent,EnvelopeEvent,UnknownEvent
 		)
+		from TikTokLive.client.web.web_settings import WebDefaults
 		# @self.client.on(LikeEvent)
 		# async def on_like(event: LikeEvent):
 		# 	await receive.on_like_mod(event, self.client.unique_id)
@@ -144,8 +147,13 @@ class TikTokLiveManager:
 			save_raw_event_auto(event)
 			print(event.__class__.__name__)
 
+		@self.client.on(BarrageEvent)
+		async def on_vip_join_event(evant:BarrageEvent):
+			save_raw_event_auto(event)
+			print(event.__class__.__name__)
+			print(event.user.nickname)
 		@self.client.on(JoinEvent)
-		async def on_fans_event(event:JoinEvent):
+		async def on_join_event(event:JoinEvent):
 			save_raw_event_auto(event)
 			print(event.__class__.__name__)
 			print(event.user.nickname)
@@ -154,24 +162,24 @@ class TikTokLiveManager:
 		async def on_fans_event(event:EnvelopeEvent):
 			save_raw_event_auto(event)
 			print(event.__class__.__name__)
-			print(event.user.name)
+			# print(event.user.name)
 
 		@self.client.on(UnknownEvent)
 		async def on_fans_event(event:UnknownEvent):
 			save_raw_event_auto(event)
 			print(event.__class__.__name__)
-			print(event.user.name)
+
 
 	async def start_client_session(self):
 		"""TikTokLive接続"""
+		# self.WebDefaults.tiktok_sign_api_key = "euler_MDE0NmVkYjE2M2FhOWYxNTliYTE4ODRhOTJiYTBlOTMzMzNlZjhhZjg0ODBhZjk5ZGZkOTc0"
 		try:
 			await self.client.connect()
 		except UserOfflineError:
 			print(f"⚠️ {self.client.unique_id} はオフラインです。")
 		finally:
-			print(f"終了: {self.client.unique_id}")
+			print(f"配信終了: {self.client.unique_id}")
 			await logger_viewer.flush_all()
-
 # ============================================================
 # テストシステム
 # ============================================================

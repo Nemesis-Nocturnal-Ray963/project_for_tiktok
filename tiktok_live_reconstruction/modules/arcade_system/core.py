@@ -12,7 +12,7 @@ import queue
 import random
 from . import controller
 from .effects.sprite import handle_collisions
-from .effects.combo import ComboText
+# from .effects.combo import ComboText
 
 from .effects.fireworks_numpy import NumpyFireworksEffect, init_global as _fw_init_global
 # from .effects.reconnect import ReconnectButton
@@ -26,9 +26,17 @@ class GiftWindow(arcade.View):
         super().__init__()
         self.layers = {
             "background": [],                     # 枠・固定UI
-            "light": [],                          # LightBeam類（加算/半加算）
+            "background_static":[],
+            "background_dynamic":[],
+            
+            "stickers_static":[],
+            "stickers_particles":[],
+            "stickers_sprites":arcade.SpriteList(use_spatial_hash=True),
+
+            "effects":[],
             "sprites": arcade.SpriteList(use_spatial_hash=True),  # ギフト画像
-            "overlay": []                         # テキスト、パーティクル、HUD
+            "ui":[],
+            "overlay": [],                         # テキスト、パーティクル、HUD
         }
         self.drag_target = None
         self.background_color = (0, 0, 0, 0)
@@ -37,15 +45,16 @@ class GiftWindow(arcade.View):
         self.last_queue_time = 0  # ← 追加
         self.queue_cooldown = 2.0  # ← クールタイム秒
         
-        combo_display = ComboText(self.width / 2, self.height - 200)
-        self.layers["overlay"].append(combo_display)
+        # combo_display = ComboText(self.width / 2, self.height - 200)
+        # self.layers["overlay"].append(combo_display)
         print("[ARC-COMBO] 常駐コンボシステム起動")
         
         self.fx_fireworks = NumpyFireworksEffect(max_particles=20000, particle_radius=2.0)
         _fw_init_global(self.fx_fireworks)
+
         # 60FPSでqueue監視
         arcade.schedule(self.update_queue, 1 / 60)
-        
+
     # --- Queue監視 ---
     def update_queue(self, dt):
         """mainスレッドからの命令を受信しcontrollerへ転送"""
@@ -69,6 +78,9 @@ class GiftWindow(arcade.View):
             if hasattr(s, "keep_in_bounds"): s.keep_in_bounds(self.width, self.height)
             if getattr(s, "is_dead", lambda: False)(): s.remove_from_sprite_lists()
 
+
+        self.layers["stickers_sprites"].update()
+
         # 衝突（必要なら）
         try:
             from .effects.gift_balloon import handle_collisions
@@ -76,12 +88,7 @@ class GiftWindow(arcade.View):
         except Exception as e:
             print("[DEBUG] Error:", e)
 
-        # light / overlay 側の独自エフェクト（クラスに update があれば呼ぶ）
-        for key in ("light", "overlay"):
-            for obj in list(self.layers[key]):
-                if hasattr(obj, "update"): obj.update(dt)
-
-        # 2) 更新フック
+       # 2) 更新フック
         self.fx_fireworks.update(dt)
 
 
@@ -95,14 +102,30 @@ class GiftWindow(arcade.View):
     # --- 描画処理 ---
     def on_draw(self):
         self.clear()
+        draw_order = [
+            "background",
+            "background_static",
+            "background_dynamic",
+            "stickers_static",
+            "stickers_particles",
+            "stickers_sprites",
+            "effects",
+            "ui",
+            "overlay",
+        ]
+        
+        for key in draw_order:
+            layer = self.layers[key]
+            if key == "stickers_sprites":
+                layer.draw()
+                continue
+            for obj in layer:
+                if hasattr(obj, "draw"):
+                    obj.draw()
         # 描画順序を固定
-        for obj in self.layers["background"]:
-            obj.draw()
-        for obj in self.layers["light"]:
-            obj.draw()
+
         self.layers["sprites"].draw()
-        for obj in self.layers["overlay"]:
-            obj.draw()
+
 
         # 3) 描画フック
         self.fx_fireworks.draw()
@@ -119,6 +142,10 @@ class GiftWindow(arcade.View):
                 sprite._drag_offset_y = y - sprite.center_y
                 # ----------------
                 break
+        # ★ 新規：ステッカー押しのけ
+        for system in self.layers["stickers_particles"]:
+            if hasattr(system, "tap_push"):
+                system.tap_push(x, y)
 
     def on_mouse_release(self, x, y, button, modifiers):
         if self.drag_target:

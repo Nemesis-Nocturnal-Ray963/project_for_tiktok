@@ -8,7 +8,7 @@
 import arcade
 from modules import config
 
-from .effects import sprite, gift_balloon, beams, frame, test, sound,combo,fireworks,fireworks_numpy,fireworks_numpy_ex
+from .effects import sprite, gift_balloon, beams, frame, test, sound,fireworks,fireworks_numpy,fireworks_numpy_ex,sticker_particles
 import os
 
 # --- コマンドと関数の対応表 ---
@@ -23,6 +23,7 @@ EFFECT_REGISTRY = {
     # "spawn_fireworks": fireworks.spawn_fireworks,
 	"spawn_fireworks": fireworks_numpy.trigger_global,
 	"spawn_fireworks_ex": fireworks_numpy_ex.trigger_global,
+    "spawn_sticker": sticker_particles.spawn_sticker_particles,
 }
 
 
@@ -44,32 +45,3 @@ def handle_command(cmd: str, args: list, window):
     else:
         print(f"[ARC-CONTROLLER] Unknown command: {cmd}")
 
-
-
-
-# === MP3音源の絶対パス ===
-# SOUND_PATH = "C:/Users/x701c/project_for_tiktok/tiktok_live_reconstruction/assets/sounds/boot_sounds.wav"
-
-# BASE_DIR =os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# SOUND_PATH = os.path.join(BASE_DIR, "assets/sounds/boot_sounds.wav")
-# SOUND_PATH = os.path.abspath(SOUND_PATH)
-
-# print(SOUND_PATH)  # デバッグ確認用
-# # === サウンドのロード ===
-# bgm_sound = arcade.load_sound(SOUND_PATH)
-
-# # === 再生 ===
-# player = arcade.play_sound(bgm_sound)
-
-# === サウンドのロード ===
-boot_sound_path = os.path.join(config.SOUNDS_DIR, "boot_sounds.wav")
-if os.path.exists(boot_sound_path):
-    try:
-        bgm_sound = arcade.load_sound(boot_sound_path)
-        arcade.play_sound(bgm_sound)
-        print(f"[ARC-CONTROLLER] Boot sound loaded: {boot_sound_path}")
-    except Exception as e:
-        print(f"[ARC-CONTROLLER] Failed to load boot sound: {e}")
-else:
-    print(f"[ARC-CONTROLLER] Boot sound not found: {boot_sound_path}")
