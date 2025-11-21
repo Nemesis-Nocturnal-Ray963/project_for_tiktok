@@ -1,4 +1,5 @@
 import arcade
+import config
 
 class PointText:
     def __init__(self, x, y):
@@ -8,7 +9,7 @@ class PointText:
         self.arc_text = arcade.Text(self.text, x, y, arcade.color.WHITE, 40,anchor_x="center", anchor_y="center")
 
     def update_text(self, point):
-        self.text = f"POINT : {point}"
+        self.text = f"POINT : {config.POINT_TOTAL}"
         self.arc_text.text = self.text
 
     def draw(self):

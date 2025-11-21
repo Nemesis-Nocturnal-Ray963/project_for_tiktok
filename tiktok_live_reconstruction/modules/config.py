@@ -152,3 +152,5 @@ def save_nickname_history(db: dict):
         json.dump(db, f, ensure_ascii=False, indent=2)
 
 nickname_history = load_nickname_history()
+
+POINT_TOTAL = 0

@@ -8,7 +8,7 @@
 import arcade
 from modules import config
 
-from .effects import sprite, gift_balloon, beams, frame, test, sound,fireworks,fireworks_numpy,fireworks_numpy_ex,sticker_particles,point_text
+from .effects import sprite, gift_balloon, beams, frame, test, sound,fireworks,fireworks_numpy,fireworks_numpy_ex,sticker_particles,point_text,point_controller
 import os
 
 # --- コマンドと関数の対応表 ---

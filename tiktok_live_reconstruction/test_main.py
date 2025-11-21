@@ -17,7 +17,7 @@ from TikTokLive.client.errors import UserOfflineError
 from modules import config, setup
 from modules import receive
 from modules import command_worker_mod as cwm
-from modules import combo_system as c_sys
+# from modules import combo_system as c_sys
 # from modules import arcade_system_alpha
 from modules.arcade_system import core as arcade_system
 from modules import tiktok_live_system
@@ -39,15 +39,15 @@ import obsws_python as obs
 async def command_worker():
 	await cwm.command_worker_mod()
 
-async def combo_system():
-	await c_sys.combo_system_mod()
+# async def combo_system():
+# 	await c_sys.combo_system_mod()
 
 # ==========================================================
 # TikTok クライアント管理クラス
 # ==========================================================
 async def backend_async():
 	print("=== Backend systems started ===")
-
+	asyncio.create_task(receive.point_worker())
 	print("test mode (y/n)")
 	# --- 設定入力 ---
 	is_test = True

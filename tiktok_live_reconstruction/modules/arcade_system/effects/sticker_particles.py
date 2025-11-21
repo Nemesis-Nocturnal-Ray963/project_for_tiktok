@@ -7,19 +7,35 @@ from arcade import Rect
 
 class StickerLayerSprite(arcade.Sprite):
     """地層化されたステッカー画像を保持するSprite"""
-    def __init__(self, tex):
+    def __init__(self, tex, window):
         super().__init__()
         self.texture = tex
-        self.center_x = tex.width // 2
-        self.center_y = tex.height // 2
+
+        # window 全体の中心へ配置
+        self.center_x = window.width / 2
+        self.center_y = window.height / 2
 
     def draw(self):
-        arcade.draw_texture_rectangle(
-            self.center_x,
-            self.center_y,
-            self.texture.width,
-            self.texture.height,
-            self.texture
+        tex = self.texture
+        tw = tex.width
+        th = tex.height
+
+        half_w = tw / 2
+        half_h = th / 2
+
+        left   = self.center_x - half_w
+        right  = self.center_x + half_w
+        bottom = self.center_y - half_h
+        top    = self.center_y + half_h
+
+        rect = Rect(left, right, bottom, top, tw, th, self.center_x, self.center_y)
+
+        arcade.draw_texture_rect(
+            texture = tex,
+            rect    = rect,
+            angle   = 0.0,
+            alpha   = 255,
+            pixelated = False
         )
 
 class StickerParticleSystem:
@@ -198,7 +214,7 @@ class StickerParticleSystem:
                 )
 
         # --- 3. 新しくできた地層 sprite を static に置く ---
-        static_sprite = StickerLayerSprite(fbo)
+        static_sprite = StickerLayerSprite(fbo,window)
         window.layers["stickers_static"] = [static_sprite]
 
         # --- 4. 動的ステッカーのリセット ---

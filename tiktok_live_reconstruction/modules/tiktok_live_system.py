@@ -84,7 +84,7 @@ class TikTokLiveManager:
 			LinkMicBattlePunishFinishEvent, LinkmicAudienceNoticeEvent,
 			LinkMicBattleItemCardEvent, LinkmicBattleTaskEvent,
 			LinkMicAnchorGuideEvent, LinkmicBattleNoticeEvent,
-			LinkMicArmiesEvent, LinkMicFanTicketMethodEvent, LinkMicMethodEvent, GiftGalleryEvent,GiftUpdateEvent,
+			LinkMicArmiesEvent, LinkMicFanTicketMethodEvent, LinkMicMethodEvent, GiftGalleryEvent,GiftUpdateEvent,BarrageEvent,
 			FansEventEvent,GoodyBagEvent,JoinEvent,EnvelopeEvent,UnknownEvent
 		)
 		from TikTokLive.client.web.web_settings import WebDefaults
@@ -135,7 +135,7 @@ class TikTokLiveManager:
 		async def on_gift_gallery(event:GiftGalleryEvent):
 			save_raw_event_auto(event)
 			print(event.__class__.__name__)
-			await receive.on_fireworks(event)
+			# await receive.on_fireworks(event)
 
 		@self.client.on(FansEventEvent)
 		async def on_fans_event(event:FansEventEvent):
@@ -151,7 +151,7 @@ class TikTokLiveManager:
 		async def on_vip_join_event(evant:BarrageEvent):
 			save_raw_event_auto(event)
 			print(event.__class__.__name__)
-			print(event.user.nickname)
+			# print(event.user.nickname)
 		@self.client.on(JoinEvent)
 		async def on_join_event(event:JoinEvent):
 			save_raw_event_auto(event)
@@ -234,7 +234,7 @@ class TestSystem:
 		self.client = Tiktok_Client("muzukiray963")
 		self.user = User("user1111111","test_user_3699")
 		self.gift = Gift("test", 1337,True)
-		self.repeat_count = RepeatCount(1)
+		self.repeat_count = RepeatCount(1000)
 		self.streaking = CheckStraking(False)
 		args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
 		self.event = GiftEvent(*args)

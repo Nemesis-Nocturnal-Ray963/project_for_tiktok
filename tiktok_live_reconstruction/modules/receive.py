@@ -8,12 +8,13 @@ import random
 import math
 import queue
 import os
+from modules.arcade_system.effects import point_controller
 print("2025年11月20日 ギフトギャラリー+myイベント")
 
 # ================================
 # ポイントシステム
 # ================================
-POINT_TOTAL = 0
+POINT_TOTAL = config.POINT_TOTAL
 point_queue = asyncio.Queue()
 # 個人ごとのコメントクールタイム
 COMMENT_COOLDOWN = {}   # { user_id : timestamp }
@@ -46,12 +47,11 @@ async def command_send_queue(code):
         await cwm.command_queue.put(code)
 
 async def point_worker():
-    global POINT_TOTAL
     while True:
         value = await point_queue.get()   # ポイントを受信
-        POINT_TOTAL += value
-        print(f"[POINT] +{value} → total={POINT_TOTAL}")
-        await update_point_display()
+        config.POINT_TOTAL += value
+        print(f"[POINT] +{value} → total={config.POINT_TOTAL}")
+        arcade_queue.put(("update_point_text", [config.POINT_TOTAL]))
 
 async def arcade_send_queue(data):
     """Arcadeスレッドへ安全送信"""
@@ -187,7 +187,7 @@ async def add_time(seconds=300):
 
 
 async def on_gift_mod(event,streamer_ID):
-    global gift_counter,coin_counter ,POINT_TOTAL, IS_BATTLE
+    global gift_counter,coin_counter , IS_BATTLE
     #ギフトを受け取るたびに取得する情報
     user = event.user.nickname
     name = event.gift.name
@@ -213,12 +213,13 @@ async def on_gift_mod(event,streamer_ID):
         
                 # --- ポイント倍率 ---
         per_coin = 8 if IS_BATTLE else 4
-        add_point = coin * repeat * per_coin
+        add_point = coin * times * per_coin
 
-        POINT_TOTAL += add_point
-        print(f"[POINT] +{add_point}pt ({coin}c x{repeat}, battle={IS_BATTLE})")
+        await point_queue.put(add_point)
+        print(f"[POINT] queue +{add_point} (gift: {name})")
+        # print(f"[POINT] +{add_point}pt ({coin}c x{times}, battle={IS_BATTLE})")
 
-        await update_point_display()
+        # asyncio.create_task(point_controller.update_point_text())
         # asyncio.create_task(gift_counting(times))
         asyncio.create_task(coin_counting(coin,times))
 
@@ -377,12 +378,12 @@ async def on_gift_mod(event,streamer_ID):
 
         elif name == "test":
             for _ in range(count):
-                asyncio.create_task(arcade_send_queue(("spawn_gift_balloon", ["assets/images/gift/rose.png",coin])))
+                # asyncio.create_task(arcade_send_queue(("spawn_gift_balloon", ["assets/images/gift/rose.png",coin])))
                 
             # asyncio.create_task(arcade_send_queue(("spawn_fireworks_ex", [3, 1.0, "devil_ran_shape"])))
             # asyncio.create_task(arcade_send_queue(("spawn_gift_balloon", ["assets/images/gift/0000.png",coin])))
             # asyncio.create_task(arcade_send_queue(("spawn_gift_balloon", ["assets/images/gift/heart_me.png",1000])))
-                # asyncio.create_task(arcade_send_queue(("spawn_sticker", [1])))
+                asyncio.create_task(arcade_send_queue(("spawn_sticker", [1])))
             # await on_fireworks(event)
 
         elif name == "test1":
@@ -413,12 +414,11 @@ async def on_gift_mod(event,streamer_ID):
         asyncio.create_task(coin_counting(coin,times))
         # --- ポイント倍率 ---
         per_coin = 8 if IS_BATTLE else 4
-        add_point = coin * repeat * per_coin
+        add_point = coin * times * per_coin
+        
+        await point_queue.put(add_point)
+        print(f"[POINT] queue +{add_point} (gift: {name})")
 
-        POINT_TOTAL += add_point
-        print(f"[POINT] +{add_point}pt ({coin}c x{repeat}, battle={IS_BATTLE})")
-
-        await update_point_display()
         if name == "Heart Me":
             # asyncio.create_task(heart_me(user,times,minecraft_id))
             for _ in range(count):
