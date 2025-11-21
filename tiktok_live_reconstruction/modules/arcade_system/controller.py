@@ -8,7 +8,7 @@
 import arcade
 from modules import config
 
-from .effects import sprite, gift_balloon, beams, frame, test, sound,fireworks,fireworks_numpy,fireworks_numpy_ex,sticker_particles
+from .effects import sprite, gift_balloon, beams, frame, test, sound,fireworks,fireworks_numpy,fireworks_numpy_ex,sticker_particles,point_text
 import os
 
 # --- コマンドと関数の対応表 ---
@@ -24,6 +24,7 @@ EFFECT_REGISTRY = {
 	"spawn_fireworks": fireworks_numpy.trigger_global,
 	"spawn_fireworks_ex": fireworks_numpy_ex.trigger_global,
     "spawn_sticker": sticker_particles.spawn_sticker_particles,
+    "update_point_text":point_controller.update_point_text
 }
 
 

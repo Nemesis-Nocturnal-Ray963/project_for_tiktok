@@ -16,7 +16,7 @@ from .effects.sprite import handle_collisions
 
 from .effects.fireworks_numpy import NumpyFireworksEffect, init_global as _fw_init_global
 # from .effects.reconnect import ReconnectButton
-
+from .effects.point_text import PointText
 arcade_queue: queue.Queue | None = None
 
 
@@ -45,6 +45,8 @@ class GiftWindow(arcade.View):
         self.last_queue_time = 0  # ← 追加
         self.queue_cooldown = 2.0  # ← クールタイム秒
         
+        self.point_ui = PointText(self.width/2, self.height - 100)
+        self.layers["overlay"].append(self.point_ui)
         # combo_display = ComboText(self.width / 2, self.height - 200)
         # self.layers["overlay"].append(combo_display)
         print("[ARC-COMBO] 常駐コンボシステム起動")
