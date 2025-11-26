@@ -154,3 +154,4 @@ def save_nickname_history(db: dict):
 nickname_history = load_nickname_history()
 
 POINT_TOTAL = 0
+ROSE_TOTAL = 0

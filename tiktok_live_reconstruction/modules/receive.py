@@ -15,6 +15,7 @@ print("2025年11月20日 ギフトギャラリー+myイベント")
 # ポイントシステム
 # ================================
 POINT_TOTAL = config.POINT_TOTAL
+rose_queue = asyncio.Queue()
 point_queue = asyncio.Queue()
 # 個人ごとのコメントクールタイム
 COMMENT_COOLDOWN = {}   # { user_id : timestamp }
@@ -45,6 +46,13 @@ arcade_queue = None
 async def command_send_queue(code):
     if config.is_minecraft_server_connect:
         await cwm.command_queue.put(code)
+
+
+async def rose_count_worker():
+    while True:
+        value = await rose_queue.get()   # ポイントを受信
+        config.ROSE_TOTAL += int(value)
+        print(f"[ROSE] +{value} → total={config.ROSE_TOTAL}")
 
 async def point_worker():
     while True:
@@ -229,6 +237,7 @@ async def on_gift_mod(event,streamer_ID):
             for _ in range(count):
                 # asyncio.create_task(arcade_send_queue(("spawn_gift", ["assets/images/gift/rose.png"])))
                 asyncio.create_task(arcade_send_queue(("spawn_sticker", [1])))
+                await rose_queue.put(1)
                 # asyncio.create_task(arcade_send_queue(("spawn_gift_balloon", ["assets/images/gift/rose.png",coin])))
                 await asyncio.sleep(0.1)
 

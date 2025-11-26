@@ -50,7 +50,7 @@ async def backend_async():
     # asyncio.create_task(receive.admin_processor())
     # asyncio.create_task(receive.admin_console())
     receive.stream_start_time = datetime.now()
-    asyncio.create_task(receive.point_worker())
+    asyncio.create_task(receive.rose_count_worker())
     print("[POINT] worker started.")
     base = receive.stream_start_time.strftime("%Y-%m-%d_%H-%M-%S")
     subtitle_dir = os.path.join(config.LOGS_DIR, "subtitles", base)

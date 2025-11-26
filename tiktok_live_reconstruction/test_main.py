@@ -47,7 +47,8 @@ async def command_worker():
 # ==========================================================
 async def backend_async():
 	print("=== Backend systems started ===")
-	asyncio.create_task(receive.point_worker())
+	asyncio.create_task(receive.rose_count_worker())
+	print("[POINT] worker started.")
 	print("test mode (y/n)")
 	# --- 設定入力 ---
 	is_test = True

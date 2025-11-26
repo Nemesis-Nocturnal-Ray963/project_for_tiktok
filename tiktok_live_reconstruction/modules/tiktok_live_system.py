@@ -233,8 +233,8 @@ class TestSystem:
 	def __init__(self):
 		self.client = Tiktok_Client("muzukiray963")
 		self.user = User("user1111111","test_user_3699")
-		self.gift = Gift("test", 1337,True)
-		self.repeat_count = RepeatCount(1000)
+		self.gift = Gift("Rose", 1337,True)
+		self.repeat_count = RepeatCount(10000)
 		self.streaking = CheckStraking(False)
 		args = (self.client, self.user, self.gift, self.repeat_count, self.streaking)
 		self.event = GiftEvent(*args)
